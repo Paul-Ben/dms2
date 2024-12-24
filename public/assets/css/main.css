@@ -1,0 +1,308 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+	overflow: hidden;
+	overflow-y: scroll;
+	font-size:14px;
+    color: rgb(105, 105, 105);
+}
+p { margin: 0 0 10px; }
+/*=====================
+2-General Styles
+======================*/
+.lt-ie9 .animated {
+	opacity: 1 !important;
+	-webkit-animation: none !important;
+	animation: none !important;
+	transform: none !important;
+}
+section{ padding: 50px 0; }
+img {
+	max-width: 100%;
+	height: auto;
+}
+ul{
+	margin:0;
+}
+a { outline: none !important; color:#fff; }
+a:hover{color: inherit;}
+h1, h2, h3, h4, h5, h6 {
+    font-family: oswald;
+	margin:10px 0;
+    color:#424345;
+}
+h1 { font-size: 72px; }
+h2 { font-size: 48px; }
+h3 { font-size: 36px; }
+h4 { font-size: 24px; }
+h5 { font-size: 22px; }
+h6 { font-size: 14px; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.btn-default{
+	background:#46505c;
+	color:#fff;
+}
+.btn{
+	padding:15px 70px;
+    background: -webkit-linear-gradient(#424345,#424345);
+    background: -moz-linear-gradient(#424345,#424345);
+    background: -ms-linear-gradient(#424345,#424345);
+    background: -o-linear-gradient(#424345,#424345);
+    background: linear-gradient(#424345,#424345);
+    -pie-background: linear-gradient(#424345,#424345);
+	border-radius:5px;
+    font-family: 'arial';
+    text-align: center;
+    border:none;
+	text-transform:inherit;
+    font-size: 16px;
+    position: relative;
+    color: #fff;
+}
+.btn-yellow{    background: rgba(235,128,22,1);}
+
+.btn-wide{	width:100%;}
+.btn:hover{
+    color: inherit;
+}
+.text-extralight{font-weight:100 !important;}
+.text-light{font-weight:300 !important;}
+.text-semibold{font-weight:600 !important;}
+.text-bold{font-weight:700 !important;}
+.text-extrabold{font-weight:800 !important;}
+.text-uppercase{text-transform:uppercase !important;}
+.text-lowercase{text-transform:lowercase !important;}
+/*===============================================
+Form Styling
+=================================================*/
+
+form .btn{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+input[type="text"],input[type="tel"],input[type="email"],input[type="password"],textarea{
+	    background-color: #ffffff;
+    color: #6a6a6a;
+    box-shadow: inset 0px 2px 3px #dddddd;
+    -webkit-box-shadow: inset 0px 2px 3px #dddddd;
+    -moz-box-shadow: inset 0px 2px 3px #dddddd;
+    border-radius: 3px;
+        border-style: solid;
+    border-width: 1px;
+    border-color: #bbbbbb;
+    width: 100%;
+    font-size: 16px;
+    line-height: 16px;
+    height: 34px;
+    padding-left: 9px;
+    padding-right: 9px;
+    margin-bottom: 15px;
+}
+input[type="text"].tranparent,input[type="tel"].tranparent,input[type="email"].tranparent,input[type="password"].tranparent,textarea.tranparent{
+	background:none;
+	border:1px solid #7cbf1d;
+	color:#7cbf1d;
+}
+textarea{
+	height:180px;
+	padding:25px 35px;
+}
+label{
+	color:#fff;
+    font-size: 14px;
+    font-family: arial;
+}
+label.tranparent{
+	color:#8e9297;
+}
+/*==============================================
+Spacing Helping Classes
+===============================================*/
+.mb-10{ margin-bottom:10px;}
+.mb-15{ margin-bottom:15px;}
+.mb-20{ margin-bottom:20px;}
+.mb-25{ margin-bottom:25px;}
+.mb-30{ margin-bottom:30px;}
+.mb-35{ margin-bottom:35px;}
+.mb-40{ margin-bottom:40px;}
+.mb-45{ margin-bottom:45px;}
+.mb-50{ margin-bottom:50px;}
+.mt-10{ margin-top:10px;}
+.mt-15{ margin-top:15px;}
+.mt-20{ margin-top:20px;}
+.mt-25{ margin-top:25px;}
+.mt-30{ margin-top:30px;}
+.mt-35{ margin-top:35px;}
+.mt-40{ margin-top:40px;}
+.mt-45{ margin-top:45px;}
+.mt-50{ margin-top:50px;}
+
+/*==========================
+parallax
+==========================*/
+
+.parallax {
+	overflow: hidden;
+	clear: both;
+	position: relative;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: 50% 0;
+	height: 100%;
+	width: 100%;
+	color: #fff;
+	padding: 0;
+	background:#78e2dc;
+}
+.overlay {
+	background: rgba(50,58,69,0.95);
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+}
+.parallax_inner {
+	position: relative;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	min-height:250px;
+}
+.parallax_one { background-image: url(../demo-data/banner.png); }
+.parallax_two { background-image: url(../demo-data/bg2.png); }
+/*=======MAin=======*/
+.color-white{color: #fff;}
+.homes header{background: #FBFBFB; padding: 15px 0;}
+.homes header .contact{
+    font-size: 18px;
+    color: #5d717c;
+    text-align: center;
+}
+.homes header .contact span{
+    font-size: 24px;
+    display: block;
+    color: rgb(48, 179, 78);
+}
+.homes .sign-up{color: #fff;}
+.homes .sign-up .parallax_inner{padding: 0;}
+.homes .signup-form{
+    background: #1A293E;
+    padding: 52px 45px;
+}
+.homes .signup-form h5{
+    color: #ababab;
+    font-family: open sans;
+}
+.homes .signup-form h4{font-family: open sans; margin-bottom: 35px;}
+.homes .signup-form h5 span{    color: #da9537;}
+.homes .sign-up h1{margin-bottom: 80px; font-weight: bold;}
+.homes .sign-up .subscribe{
+    font-size: 24px;
+    position: relative;
+    margin-top: 20px;
+}
+.homes .sign-up .subscribe .fa{
+    font-size: 35px;
+    position: absolute;
+    right: -50px;
+    top: 12px;
+}
+.homes .sign-up .info{padding-top: 100px;}
+.homes .features figure{position: relative; margin-bottom: 46px;}
+.homes .features figcaption{
+    color: #fff;
+    width: 100%;
+    background: #30B34E;
+    padding: 10px 10px 15px 10px;
+}
+.homes .video-demo iframe{width: 100%; margin-top: 50px; border: 0;}
+.homes .promo{background: #30B34E; color: #fff;}
+.homes .testimonial{
+    position: relative;
+    padding-left: 168px;
+    margin-top: 50px;
+}
+.homes .testimonial figure{
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+.homes .testimonial q,.homes .testimonial span{ 
+    font-size: 16px;
+    color:#424345;
+    display: block;
+    line-height: 30px;
+}
+.homes .testimonial span{margin-top: 15px;}
+.homes footer{color: #fff;
+    background: #30B34E;
+    padding: 25px 0;
+}
+.homes footer span{
+    display: block;
+    margin-top: 12px;
+}
+.homes footer li{
+    display: inline-block;
+    margin-left: 18px;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    line-height: 45px;
+    text-align: center;
+    font-size: 20px;
+}
+/*=========================
+Responsive
+==========================*/
+/*===Break Point===*/
+@media (max-width: 1199px) {
+    .container{width: 100%;}
+    
+}
+/*===Break Point===*/
+@media (max-width: 990px) {
+    h1{font-size: 64px;}
+    h2{font-size: 36px;}
+   
+}
+/*===Break Point===*/
+@media (max-width: 767px) {
+    .homes .sign-up h1{margin-bottom: 30px;}
+    .homes .signup-form{margin: 50px auto; max-width: 75%;}
+    .homes .sign-up .subscribe .fa{display: none;}
+    .homes .sign-up .info{padding-top: 50px;}
+    .homes .signup-form h4{margin-bottom: 18px;}
+    .homes .welcome figure{display: none;}
+    .homes .welcome{padding-bottom: 0;}
+    .homes .features figure img{width: 100%;}
+    .homes .features{padding-bottom: 0; padding-top: 20px;}
+    .homes footer span,.homes footer ul{float: none !important;}
+    .homes footer{text-align: center;}
+    .homes footer ul{padding: 0; margin-top: 25px;}
+}
+/*===Break Point===*/
+@media (max-width: 600px) {
+    h4{font-size: 20px;}
+   .homes .signup-form{max-width: 100%;}
+    .homes .signup-form{padding: 20px 24px;}
+    
+}
+@media (max-width:560px){
+    h1{font-size: 50px;}
+    h2{font-size: 30px;}
+    .homes .sign-up .subscribe{font-size: 20px;}
+    .homes header a.logo,.homes header .contact{text-align: center; float: none !important; display: block;}
+    .homes header a.logo{margin-bottom: 10px;}
+    .homes .testimonials{text-align: center;}
+    .homes .testimonial span{margin-top: 5px;}
+    .homes .testimonial figure{position: relative; margin-bottom: 20px;}
+    .homes .testimonial{padding-left: 0; text-align: center; margin-top: 10px; margin-bottom: 20px;}
+}
+/*===Break Point===*/
+@media (max-width: 360px) {
+   
+    
+}
