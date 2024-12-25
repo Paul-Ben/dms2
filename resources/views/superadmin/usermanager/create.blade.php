@@ -88,11 +88,10 @@
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
                                     <select id="departmentSelect" name="department_id" class="form-select">
-                                        <option selected>select menu</option>
-                                    
-                                            @foreach ($departments  as $department)
+                                        <option value="">select menu</option>
+                                            {{-- @foreach ($departments  as $department)
                                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                     </select>
                                 </div>
                                 
@@ -109,8 +108,8 @@
         </div>
         <!-- Form End -->
     </div>
-@endsection
-{{-- @section('scripts')
+
+
 <script>
     function getDepartments(organisationId) {
         if (organisationId) {
@@ -132,4 +131,6 @@
         }
     }
 </script>
-@endsection --}}
+@endsection
+
+

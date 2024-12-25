@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(FileMovement::class);
     }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetails::class);
+    }
 }

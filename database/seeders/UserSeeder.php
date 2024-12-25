@@ -17,8 +17,6 @@ class UserSeeder extends Seeder
             'name' => 'Super Admin',
             'email' => 'superadmin@bdic.com',
             'password' => bcrypt('123456'),
-            'phone' => '1234567890',
-            'avatar' => 'avatars/superadmin.png',
             'status' => 'active',
             'default_role' => 'superadmin',
         ]);
@@ -30,6 +28,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@bdic.com',
             'password' => bcrypt('123456'),
             'default_role' => 'Admin',
+            'status' => 'active',
         ]);
         $admin->assignRole('Admin');
 

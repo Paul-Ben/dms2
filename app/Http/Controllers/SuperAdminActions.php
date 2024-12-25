@@ -45,16 +45,11 @@ class SuperAdminActions extends Controller
     public function user_create()
     {
         if (Auth::user()->default_role === 'superadmin') {
-            // $organisations = Tenant::with('tenant_departments')->get();
-            // $roles = Role::where('name', '!=', Auth::user()->default_role)->get();
-            // foreach ($organisations as $key => $value) {
-            //     $departments = TenantDepartment::where('tenant_id', $value->id)->get();
-
-            // }
+           
         list($organisations, $roles) = UserAction::getOrganisationDetails();
-        $departments = TenantDepartment::all();
+    
             
-            return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments'));
+            return view('superadmin.usermanager.create', compact('organisations', 'roles'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $organisations = Tenant::with('tenant_departments')->where('id', Auth::user()->tenant_id)->get();
@@ -65,7 +60,7 @@ class SuperAdminActions extends Controller
 
     public function getDepartments($organisationId)
     {
-        $departments = TenantDepartment::where('organisation_id', $organisationId)->get();
+        $departments = TenantDepartment::where('tenant_id', $organisationId)->get();
 
         return response()->json($departments);
     }

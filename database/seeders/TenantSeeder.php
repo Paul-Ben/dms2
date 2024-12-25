@@ -17,10 +17,10 @@ class TenantSeeder extends Seeder
         DB::table('tenants')->insert([
             [
                 'name' => 'Citizens',
-                'email' => 'me@bnsg.com',
+                'email' => 'mec@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
-                'code' => 'MOWA',
+                'code' => 'citezen',
                 'address' => 'Responsible for Women Affairs.',
                 'status' => 'Active',
             ],
@@ -29,7 +29,7 @@ class TenantSeeder extends Seeder
                 'email' => 'hos@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
-                'code' => 'MOWA',
+                'code' => 'HOS',
                 'address' => 'Responsible for Women Affairs.',
                 'status' => 'Active',
             ],
@@ -44,7 +44,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Information, Culture and Tourism',
-                'email' => 'me@bnsg.com',
+                'email' => 'mes@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MOICT',
@@ -53,7 +53,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Health and Human Services',
-                'email' => 'me@bnsg.com',
+                'email' => 'mxe@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MOHHS',
@@ -62,7 +62,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry Of Science, Technology and Innovation.',
-                'email' => 'me@bnsg.com',
+                'email' => 'meq@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MOSTI',
@@ -71,7 +71,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Youths, Sports and Creativity.',
-                'email' => 'me@bnsg.com',
+                'email' => 'mew@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MYSC',
@@ -80,7 +80,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Works, Housing and Urban Development.',
-                'email' => 'me@bnsg.com',
+                'email' => 'mer@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MWHUD',
@@ -89,7 +89,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Power and Transportation.',
-                'email' => 'me@bnsg.com',
+                'email' => 'mee@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MOPT',
@@ -98,7 +98,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Water Resources, Environment and Climate Change.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me3@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MWREC',
@@ -107,7 +107,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Local Government and Chieftaincy Affairs.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me4r@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MLCA',
@@ -116,7 +116,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Cooperative and Rural Development.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me1@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MCRD',
@@ -125,7 +125,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Education and Knowledge Management.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me2@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MEKM',
@@ -134,7 +134,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Finance, Budget and Economic Planning.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me4c@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MFBEP',
@@ -143,7 +143,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Agriculture.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me5@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MOA',
@@ -152,7 +152,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of Humanitarian and Disaster Management.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me6@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MHDM',
@@ -161,7 +161,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Ministry of ICT and Digital Economy.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me7@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
                 'code' => 'MIDE',
@@ -170,7 +170,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State tractor Hiring Services.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me8@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BENTHA',
@@ -179,7 +179,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Agricultural and Rural Development Authority.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me9@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BNARDA',
@@ -188,7 +188,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Technical Education Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me0@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSTEB',
@@ -197,7 +197,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Scholarship Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me09@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSSB',
@@ -206,7 +206,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Adult and Non-Formal Education Agency.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me99@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'ANFEA',
@@ -215,7 +215,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Examination Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me88@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSEB',
@@ -224,7 +224,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'State Universal Basic Education Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me77@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'SUBEB',
@@ -233,7 +233,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Teaching Service Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me66@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'TSB',
@@ -242,7 +242,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue state Urban Development Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me55@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSUDB',
@@ -251,7 +251,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Rural Water Supply and Sanitation Agency.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me44@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BERWASSA',
@@ -260,7 +260,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue state Water Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me33@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSWB',
@@ -269,7 +269,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue Information Technology Agency.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me22@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BITA',
@@ -278,7 +278,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Hospitals Management Board.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me11@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BSHMB',
@@ -287,7 +287,7 @@ class TenantSeeder extends Seeder
             ],
             [
                 'name' => 'Benue State Agency for Aids Control.',
-                'email' => 'me@bnsg.com',
+                'email' => 'me12@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Agency',
                 'code' => 'BENSACA',

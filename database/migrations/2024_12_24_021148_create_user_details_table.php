@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('nin_number')->nullable();
+            $table->enum('gender',['male', 'female'])->nullable();
             $table->string('phone_number')->nullable();
+            $table->string('designation')->nullable();
             $table->string('avatar')->nullable();
             $table->string('signature')->nullable();
-            $table->foreignId('department_id')->constrained()->onDelete('cascade');
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('tenant_departments')->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->timestamps();
         });
     }
