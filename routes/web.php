@@ -22,11 +22,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/ministries', function () {
-    $ministries = Tenant::where('name', '!=', 'General User')->paginate(10); //Tenant::where('type', 'ministry')->paginate(10);
+    $ministries = Tenant::where('category', 'Ministry')->paginate(10);
     return view('mdalistings', compact('ministries'));
 })->name('mdas');
 Route::get('/agencies', function () {
-    $agencies =  Tenant::where('name', '!=', 'General User')->paginate(10); //Tenant::where('type', 'agency')->paginate(10);
+    $agencies =  Tenant::where('category', 'Agency')->paginate(10);
     return view('agencylisting', compact('agencies'));
 })->name('agency');
 
@@ -43,16 +43,17 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('dashboard')->middleware('auth')->group(function () {
+    /**User managem related links */
     Route::get('/superadmin/users', [SuperAdminActions::class, 'user_index'])->name('users.index');
     Route::get('/superadmin/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
     Route::post('/superadmin/users/create', [SuperAdminActions::class, 'user_store'])->name('user.save');
     Route::get('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_store'])->name('user.edit');
     Route::put('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
-    // Route::get('/get-departments/{organisationId}', [DepartmentController::class, 'getDepartments']);
+
     Route::get('/superadmin/organisations', [SuperAdminActions::class, 'org_index'])->name('organisation.index');
 
-
+    /**Document management related links */
     Route::get('/document', [SuperAdminActions::class, 'document_index'])->name('document.index');
     Route::get('/document/create', [SuperAdminActions::class, 'document_create'])->name('document.create');
     Route::post('/document/create', [SuperAdminActions::class, 'document_store'])->name('document.store');
@@ -67,23 +68,5 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
 });
 
-// Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('superadmin.dashboard');
-//     });
-// });
-
-// Route::prefix('dashboard')->middleware(['auth', 'role:staff'])->group(function () {
-//     Route::get('/staff/document', [SuperAdminActions::class, 'document_index'])->name('document.index');
-//     Route::get('/staff/document/create', [SuperAdminActions::class, 'document_create'])->name('document.create');
-
-// });
-
-
-Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    });
-});
 
 require __DIR__.'/auth.php';
