@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('wrokflow_actions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('document_workflow_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('document_workflow_id')->constrained('document_workflows');
+            $table->foreignId('user_id')->constrained('users');
             $table->string('action'); // approve, reject, comment
             $table->text('comments')->nullable();
             $table->timestamps();

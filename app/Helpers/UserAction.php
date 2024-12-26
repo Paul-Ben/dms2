@@ -6,6 +6,7 @@ use App\Models\Designation;
 use App\Models\Tenant;
 use App\Models\TenantDepartment;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
@@ -79,5 +80,11 @@ class UserAction
                 'message' => 'An error occurred while fetching organisation details',
             ], 500);
         }
+    }
+
+    public static function getUserDetails()
+    {
+        $user_details = UserDetails::where('user_id', Auth::user()->id)->first();
+        return $user_details;
     }
 }

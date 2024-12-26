@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('designation')->nullable();
             $table->string('avatar')->nullable();
             $table->string('signature')->nullable();
-            $table->foreignId('department_id')->constrained('tenant_departments');
-            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->integer('department_id')->nullable();
+            $table->integer('tenant_id')->nullable();
             $table->timestamps();
         });
     }

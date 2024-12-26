@@ -92,8 +92,8 @@ class SuperAdminActions extends Controller
         if ($request->default_role === 'User') {
             $user->userDetail()->create([
                 'user_id' => $user->id,
-                'department_id' => null,
-                'tenant_id' => null,
+                'department_id' => $request->input('department_id'),
+                'tenant_id' => $request->input('tenant_id'),
                 'phone_number' => $request->input('phone_number'),
                 'designation' => $request->input('designation'),
                 'avatar' => $request->input('avatar'),
@@ -116,17 +116,15 @@ class SuperAdminActions extends Controller
             ]);
         }
 
-
-
-
-
         return redirect()->route('users.index')->with('success', 'User  created successfully.');
     }
 
     public function user_edit(User $user)
     {
         try {
-            $user_details = UserDetails::where('user_id', $user->id)->first();
+            // $user_details = UserDetails::where('user_id', $user->id)->first();
+            $user_details = User::with('userDetail')->where('id', $user->id)->first();
+            // dd($user_details->userDetail);
 
             list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 

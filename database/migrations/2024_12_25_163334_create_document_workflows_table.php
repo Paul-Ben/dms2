@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('document_workflows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('document_id')->constrained();
-            $table->foreignId('workflow_id')->constrained();
+            $table->foreignId('document_id')->constrained('documents');
+            $table->foreignId('workflow_id')->constrained('workflows');
             $table->integer('current_step');
             $table->string('status');
             $table->timestamps();

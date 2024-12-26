@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('document_recipients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('file_movement_id')->constrained();
+            $table->foreignId('file_movement_id')->constrained('file_movements');
             $table->foreignId('recipient_id')->constrained('users');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();

@@ -17,21 +17,22 @@ class DashboardController extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-
+           
             return view('superadmin.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-
+           
             return view('admin.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-
+           
             return view('staff.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count'));
         }
         if (Auth::user()->default_role === 'User') {
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
+           
             return view('user.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count'));
         }
         return view('errors.404');

@@ -50,25 +50,22 @@
                                         aria-describedby="emailHelp" required>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    {{-- <label for="exampleInputEmail1" class="form-label">Confirm Password</label>
-                                    <input type="password" name="password_confirmation" class="form-control" required> --}}
+                                    <label for="exampleInputEmail1" class="form-label">NIN</label>
+                                    <input type="text" value="{{$user_details->userDetail->nin_number}}" name="nin_number" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">NIN</label>
-                                    <input type="text" value="{{$user_details->nin_number}}" name="nin_number" class="form-control">
-                                </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Phone</label>
-                                    <input type="text" value="{{$user_details->phone}}" name="phone" class="form-control">
+                                    <input type="text" value="{{$user_details->userDetail->phone_number}}" name="phone_number" class="form-control">
+                                </div>
+                                 <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Avatar</label>
+                                    <input type="file" value="{{$user_details->userDetail->avatar}}" name="avatar" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Avatar</label>
-                                    <input type="file" value="{{$user_details->avatar}}" name="avatar" class="form-control">
-                                </div>
+                               
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
                                     <select name="default_role" class="form-select">
@@ -78,23 +75,10 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Organisation</label>
-                                    <select id="organisationSelect" name="tenant_id" onchange="getDepartments(this.value)"
-                                        class="form-select">
-                                        <option value="{{$user_details->tenant_id}}">{{$user_details->tenant_id}}</option>
-                                        @foreach ($organisations as $organisation)
-                                            <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Designation</label>
                                     <select id="designationSelect" name="designation" class="form-select">
-                                        <option value="{{$user_details->designation}}">{{$user_details->designation}}</option>
+                                        <option value="{{$user_details->userDetail->designation}}">{{$user_details->userDetail->designation}}</option>
                                         @foreach ($designations as $designation)
                                             <option value="{{ $designation->name }}">{{ $designation->name }}</option>
                                         @endforeach
@@ -103,30 +87,44 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="genderSelect" class="form-label">Gender</label>
-                                    <select id="genderSelect" name="gender" class="form-select">
-                                        <option value="{{$user_details->gender}}">{{$user_details->gender}}</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
+                                    <label for="exampleInputEmail1" class="form-label">Organisation</label>
+                                    <select id="organisationSelect" name="tenant_id" onchange="getDepartments(this.value)"
+                                        class="form-select">
+                                        <option value="{{$user_details->userDetail->tenant_id}}">{{$user_details->userDetail->tenant_id}}</option>
+                                        @foreach ($organisations as $organisation)
+                                            <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
                                     <select id="departmentSelect" name="department_id" class="form-select">
-                                        <option value="{{$user_details->department_id}}">{{$user_details->department_id}}</option>
+                                        <option value="{{$user_details->userDetail->department_id}}">{{$user_details->userDetail->department_id}}</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                                
                             </div>
                             <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="genderSelect" class="form-label">Gender</label>
+                                    <select id="genderSelect" name="gender" class="form-select">
+                                        <option value="{{$user_details->userDetail->gender}}">{{$user_details->userDetail->gender}}</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect"
                                         class="form-label
                                     ">Signature</label>
-                                    <input type="text" value="{{$user_details->signature}}" name="signature" class="form-control">
+                                    <input type="text" value="{{$user_details->userDetail->signature}}" name="signature" class="form-control">
                                 </div>
+                            </div>
+                            <div class="row">
+                                
                             </div>
                             <div style="text-align: center;">
                                 <button type="submit" class="btn btn-primary">Submit</button>

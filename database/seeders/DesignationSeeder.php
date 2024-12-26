@@ -32,6 +32,9 @@ class DesignationSeeder extends Seeder
             [
                 'name' => 'Admin Officer',
             ],
+            [
+                'name' => 'System Admin',
+            ],
             
         ]);
         // $designations = [

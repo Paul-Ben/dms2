@@ -13,16 +13,14 @@ return new class extends Migration
     {
         Schema::create('tenant_departments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id'); 
+            // $table->unsignedBigInteger('tenant_id'); 
+            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->string('name'); 
             $table->string('email')->nullable(); 
             $table->string('phone')->nullable(); 
             $table->enum('status', ['active', 'inactive'])->default('active'); 
             $table->text('description')->nullable(); 
             $table->timestamps(); 
-
-            // Foreign key constraints
-            $table->foreign('tenant_id')->references('id')->on('tenant_departments');
            
         });
     }

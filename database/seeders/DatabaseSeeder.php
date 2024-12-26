@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             TenantDepartmentSeeder::class,
             UserSeeder::class,
             DesignationSeeder::class,
+            UserDetailsSeeder::class,
 
         ]);
     }
