@@ -26,11 +26,6 @@
                                     <h3>Sign In</h3>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                    
-                                     {{-- <a href="index.html" class="">
-                                        <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Code School</h3>
-                                    </a> --}}
-                                     
                                     @if (session('errors'))
                                         <span class="alert alert-danger" role="alert">{{ $errors->first('email') }}</span>
                                     @endif

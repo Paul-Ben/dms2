@@ -23,9 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
-        'nin_number',
-        'avatar',
+        'default_role',
         'status'
     ];
 

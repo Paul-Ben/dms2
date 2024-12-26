@@ -32,7 +32,7 @@ class DashboardController extends Controller
         }
         if (Auth::user()->default_role === 'User') {
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-           
+        //    dd(Auth::user()->userDetail);
             return view('user.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count'));
         }
         return view('errors.404');
