@@ -60,6 +60,11 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::put('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_update'])->name('organisation.update');
     Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminActions::class, 'org_delete'])->name('organisation.delete');
 
+    /**Department Management related links */
+    Route::get('/superadmin/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
+    Route::get('/superadmin/departments/create', [SuperAdminActions::class, 'department_create'])->name('department.create');
+    Route::post('/superadmin/departments/create', [SuperAdminActions::class, 'department_store'])->name('department.store');
+
 
     /**Document management related links */
     Route::get('/document', [SuperAdminActions::class, 'document_index'])->name('document.index');

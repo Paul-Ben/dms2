@@ -16,11 +16,20 @@ class TenantSeeder extends Seeder
     {
         DB::table('tenants')->insert([
             [
+                'name' => 'General Users',
+                'email' => 'gus3@bnsg.com',
+                'phone' => '1234567890',
+                'category' => 'Citizen',
+                'code' => 'citezen',
+                'address' => 'Responsible for Women Affairs.',
+                'status' => 'Active',
+            ],
+            [
                 'name' => 'Government House',
                 'email' => 'mec@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',
-                'code' => 'citezen',
+                'code' => 'GH',
                 'address' => 'Responsible for Women Affairs.',
                 'status' => 'Active',
             ],

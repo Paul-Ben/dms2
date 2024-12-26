@@ -14,32 +14,39 @@ class TenantDepartmentSeeder extends Seeder
     public function run(): void
     {
         $tenant = TenantDepartment::create([
+            'name' => 'General Users',
+            'email' => 'gus33@bngh.ng',
+            'phone' => '1234567890',
+            'status' => 'active',
+            'tenant_id' => 1
+        ]);
+        $tenant = TenantDepartment::create([
             'name' => 'Protocol Office',
             'email' => 'gh1@bngh.ng',
             'phone' => '1234567890',
             'status' => 'active',
-            'tenant_id' => 1
+            'tenant_id' => 2
         ]);
         $tenant = TenantDepartment::create([
             'name' => 'Bureau of Administrative',
             'email' => 'ba@bnsg.com',
             'phone' => '1234567890',
             'status' => 'active',
-            'tenant_id' => 2
+            'tenant_id' => 3
         ]);
         $tenant = TenantDepartment::create([
             'name' => 'Bureau of Service Welfare',
             'email' => 'bsw@bnsg.com',
             'phone' => '1234567890',
             'status' => 'active',
-            'tenant_id' => 2
+            'tenant_id' => 3
         ]);
         $tenant = TenantDepartment::create([
             'name' => 'Bureau of Manpower Development and Training',
             'email' => 'bmdt@bnsg.com',
             'phone' => '1234567890',
             'status' => 'active',
-            'tenant_id' => 2
+            'tenant_id' => 3
 
         ]);
         // $tenant = TenantDepartment::create([

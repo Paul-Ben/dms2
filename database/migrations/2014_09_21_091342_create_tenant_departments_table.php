@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps(); 
 
             // Foreign key constraints
-            $table->foreign('tenant_id')->references('id')->on('tenant_departments')->onDelete('cascade');
+            $table->foreign('tenant_id')->references('id')->on('tenant_departments');
            
         });
     }

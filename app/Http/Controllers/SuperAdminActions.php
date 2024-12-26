@@ -46,10 +46,10 @@ class SuperAdminActions extends Controller
     public function user_create()
     {
         if (Auth::user()->default_role === 'superadmin') {
-           
-        list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
-    
-            
+
+            list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+
+
             return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations'));
         }
         if (Auth::user()->default_role === 'Admin') {
@@ -68,12 +68,11 @@ class SuperAdminActions extends Controller
 
     public function user_store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            
+
         ]);
 
         // Create a new user instance
@@ -81,29 +80,45 @@ class SuperAdminActions extends Controller
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-       // Assign the user a role
-       if ($request->filled('default_role'))
-       {
-           $user->assignRole($request->input('default_role'));
-       }else{
-           $user->assignRole('User');
-       }
+        // Assign the user a role
+        if ($request->filled('default_role')) {
+            $user->assignRole($request->input('default_role'));
+        } else {
+            $user->assignRole('User');
+        }
 
 
         $user->save();
-        
-        // poulate user details table
-        $user->userDetail()->create([
-            'user_id' => $user->id,
-            'department_id' => $request->input('department_id'),
-            'tenant_id' => $request->input('tenant_id'),
-            'phone_number' => $request->input('phone_number'),
-            'designation' => $request->input('designation'),
-            'avatar' => $request->input('avatar'),
-            'signature' => $request->input('signature'),
-            'nin_number' => $request->input('nin_number'),
-            
-        ]);
+        if ($request->default_role === 'User') {
+            $user->userDetail()->create([
+                'user_id' => $user->id,
+                'department_id' => null,
+                'tenant_id' => null,
+                'phone_number' => $request->input('phone_number'),
+                'designation' => $request->input('designation'),
+                'avatar' => $request->input('avatar'),
+                'signature' => $request->input('signature'),
+                'nin_number' => $request->input('nin_number'),
+
+            ]);
+        } else {
+            // poulate user details table
+            $user->userDetail()->create([
+                'user_id' => $user->id,
+                'department_id' => $request->input('department_id'),
+                'tenant_id' => $request->input('tenant_id'),
+                'phone_number' => $request->input('phone_number'),
+                'designation' => $request->input('designation'),
+                'avatar' => $request->input('avatar'),
+                'signature' => $request->input('signature'),
+                'nin_number' => $request->input('nin_number'),
+
+            ]);
+        }
+
+
+
+
 
         return redirect()->route('users.index')->with('success', 'User  created successfully.');
     }
@@ -112,14 +127,13 @@ class SuperAdminActions extends Controller
     {
         try {
             $user_details = UserDetails::where('user_id', $user->id)->first();
-            
-        list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
-        return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+            list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+
+            return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while fetching user details');
         }
-        
     }
 
     public function user_update(Request $request, User $user)
@@ -203,7 +217,7 @@ class SuperAdminActions extends Controller
     public function org_edit(Tenant $tenant)
     {
         if (Auth::user()->default_role === 'superadmin') {
-            
+
             return view('superadmin.organisations.edit', compact('tenant'));
         }
         return view('errors.404');
@@ -229,7 +243,6 @@ class SuperAdminActions extends Controller
             $tenant->status = $request->input('status');
             $tenant->save();
             return redirect()->route('organisation.index')->with('success', 'Organisation updated successfully.');
-
         }
         return view('errors.404');
     }
@@ -299,7 +312,7 @@ class SuperAdminActions extends Controller
     public function sent_documents()
     {
         if (Auth::user()->default_role === 'superadmin') {
-            
+
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
             return view('superadmin.documents.sent', compact('sent_documents', 'recipient'));
         }
@@ -396,5 +409,36 @@ class SuperAdminActions extends Controller
                 ->withInput();
         }
         return redirect()->route('document.index')->with('success', 'Document sent successfully');
+    }
+
+    /**Department Management */
+    public function department_index()
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $departments = TenantDepartment::orderBy('id', 'desc')->paginate(10);
+            return view('superadmin.departments.index', compact('departments'));
+        }
+        return view('errors.404');
+    }
+    public function department_create()
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $organisations = Tenant::all();
+            return view('superadmin.departments.create', compact('organisations'));
+        }
+        return view('errors.404');
+    }
+    public function department_store(Request $request)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'tenant_id' => 'required|exists:tenants,id',
+            ]);
+            $department = TenantDepartment::create($request->all());
+
+            return redirect()->route('superadmin.departments.index')->with('success', 'Department created successfully.');
+        }
+        return view('errors.404');
     }
 }

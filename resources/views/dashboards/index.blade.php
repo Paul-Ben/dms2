@@ -33,7 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-  
+
 
 </head>
 
@@ -58,8 +58,8 @@
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
                         <img class="rounded-circle" src="{{ asset('assets/demo-data/m1.jpg') }}" alt=""
-                            style="width: 40px; height: 40px;"> 
-                            {{-- {{ asset('dbf/img/user.jpg') }} --}}
+                            style="width: 40px; height: 40px;">
+                        {{-- {{ asset('dbf/img/user.jpg') }} --}}
                         <div
                             class="bg-success rounded-circle border-2 border-white position-absolute end-0 bottom-0 p-1">
                         </div>
@@ -87,13 +87,7 @@
                                     class="fa fa-paper-plane"></i>Sent</a>
                         </div>
                     </div>
-                    {{-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>Class Manager</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="class_list.html" class="dropdown-item">Class LIst</a>
-                            <a href="class_category.html" class="dropdown-item">Class Category</a>
-                        </div>
-                    </div> --}}
+
                     @role('Admin')
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
@@ -103,9 +97,18 @@
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
-                        <a href="{{ route('organisation.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('organisation.index') ? 'active' : '' }}"><i
-                                class="fa fa-building me-2"></i>Organisations</a>
+
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}" data-bs-toggle="dropdown"><i
+                                    class="fa fa-building me-2"></i>MDA Manager</a>
+                            <div class="dropdown-menu bg-transparent border-0">
+                                <a href="{{ route('organisation.index') }}"
+                                    class="nav-item nav-link"><i
+                                        class="fa fa-building me-2"></i>Organisations</a>
+                                <a href="{{route('department.index')}}" class="dropdown-item"><i class="fa fa-file me-2"></i>Departments
+                                    </a>
+                            </div>
+                        </div>
                     @endrole
 
                     {{-- <div class="nav-item dropdown">
@@ -205,8 +208,8 @@
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ asset('assets/demo-data/m1.jpg') }}" alt=""
-                                style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2" src="{{ asset('assets/demo-data/m1.jpg') }}"
+                                alt="" style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">{{ Auth::user()->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
