@@ -34,7 +34,7 @@ class UserDetailsSeeder extends Seeder
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
                 'department_id' => null,
-                'tenant_id' => 2,
+                'tenant_id' => 3,
             ],
             [
                 'user_id' => 3,
@@ -45,7 +45,7 @@ class UserDetailsSeeder extends Seeder
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
                 'department_id' => 2,
-                'tenant_id' => 2,
+                'tenant_id' => 3,
             ],
             [
                 'user_id' => 4,

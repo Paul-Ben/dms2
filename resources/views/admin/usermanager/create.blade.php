@@ -24,15 +24,16 @@
 
                         </div>
 
-                        <form method="POST" action="">
+                        <form method="POST" action="{{route('user.save')}}" enctype="multipart/form-data">
+                            @csrf
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Name</label>
-                                    <input type="text" class="form-control" required>
+                                    <input type="text" name="name" class="form-control" required>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1"
+                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1"
                                         aria-describedby="emailHelp" required>
                                 </div>
                             </div>
@@ -54,7 +55,7 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Phone</label>
-                                    <input type="text" name="phone" class="form-control">
+                                    <input type="text" name="phone_number" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
@@ -66,28 +67,44 @@
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
                                     <select name="default_role" class="form-select">
                                         <option selected>select menu</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="user">User</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Staff">Staff</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Organisation</label>
-                                    <select id="organisationSelect" name="tenant_id" onchange="getDepartment()"
-                                        class="form-select">
-                                        <option selected>select menu</option>
-                                        @foreach ($organisations as $organisation)
-                                            <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
-                                        @endforeach
+                                    <label for="genderSelect" class="form-label">Gender</label>
+                                    <select id="genderSelect" name="gender" class="form-select">
+                                        <option value=" ">select menu</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
                                     <select id="departmentSelect" name="department_id" class="form-select">
-                                        <option selected>select menu</option>
-
+                                        <option value="">select menu</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                        @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Designation</label>
+                                    <input type="text" name="tenant_id" class="form-control" value="{{Auth::user()->userDetail->tenant_id}}" hidden>
+                                    <select id="organisationSelect" name="designation" class="form-select">
+                                        <option selected>select menu</option>
+                                        @foreach ($designations as $designation)
+                                            <option value="{{ $designation->name }}">{{ $designation->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="departmentSelect" class="form-label">Signature</label>
+                                    <input type="text" name="signature" class="form-control">
                                 </div>
                             </div>
                             <div style="text-align: center;">
@@ -102,7 +119,7 @@
         </div>
         <!-- Form End -->
     </div>
-    <script>
+    {{-- <script>
         function getDepartment() {
             document.getElementById('organisationSelect').addEventListener('change', function() {
                 var organisationId = this.value;
@@ -127,5 +144,5 @@
                 }
             });
         }
-    </script>
+    </script> --}}
 @endsection
