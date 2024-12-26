@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -58,14 +59,15 @@ class DocumentStorage
             $file_path = $filePath->move(public_path('documents/' . $data->tenant_id . '/' . $data->department_id . '/'), $filename);
             $data->file_path = $filename;
         }
+        $user_details = UserDetails::where('user_id', Auth::user()->id)->first();
 
         Document::create([
             'title' => $data->title,
             'docuent_number' => $data->document_number,
             'file_path' => $data->file_path,
             'uploaded_by' => Auth::user()->id,
-            'department_id' => Auth::user()->department_id,
-            'tenant_id' => Auth::user()->tenant_id,
+            'department_id' => $user_details->department_id,
+            'tenant_id' => $user_details->tenant_id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,
             'metadata' => json_encode($data->metadata),
@@ -139,15 +141,17 @@ class DocumentStorage
                 ->where('sender_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
+           
+                // Fetch recipient details for each sent document
+                foreach ($sent_documents as $key => $value) {
+                    $recipient = User::where('id', $value->recipient_id)->get(['name', 'email']);
+                    // You can attach recipient details to the document if needed
+                    $value->recipient_details = $recipient; // Optional: Attach recipient details
+                }
+                
+                return [$sent_documents, $recipient];
 
-            // Fetch recipient details for each sent document
-            foreach ($sent_documents as $key => $value) {
-                $recipient = User::where('id', $value->recipient_id)->get(['name', 'email']);
-                // You can attach recipient details to the document if needed
-                $value->recipient_details = $recipient; // Optional: Attach recipient details
-            }
-
-            return [$sent_documents, $recipient];
+            // return [$sent_documents, $recipient];
         } catch (\Exception $e) {
             // Log the error message
             Log::error('Error retrieving received documents: ' . $e->getMessage());
