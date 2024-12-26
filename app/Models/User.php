@@ -59,7 +59,7 @@ class User extends Authenticatable
         return $this->hasMany(FileMovement::class);
     }
 
-    public function userDetails()
+    public function userDetail()
     {
         return $this->hasOne(UserDetails::class);
     }

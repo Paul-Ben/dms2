@@ -16,7 +16,7 @@ class TenantSeeder extends Seeder
     {
         DB::table('tenants')->insert([
             [
-                'name' => 'Citizens',
+                'name' => 'Government House',
                 'email' => 'mec@bnsg.com',
                 'phone' => '1234567890',
                 'category' => 'Ministry',

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Designation;
 use App\Models\Tenant;
 use App\Models\TenantDepartment;
 use App\Models\User;
@@ -64,11 +65,13 @@ class UserAction
         try {
             $organisations = Tenant::with('tenant_departments')->get();
             $roles = Role::where('name', '!=', Auth::user()->default_role)->get();
+            $designations = Designation::all();
             foreach ($organisations as $key => $value) {
                 $departments = TenantDepartment::where('tenant_id', $value->id)->get();
             }
+            // dd($departments);
 
-            return [$organisations, $roles, $departments];
+            return [$organisations, $roles, $departments, $designations];
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json([

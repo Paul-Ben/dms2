@@ -47,11 +47,19 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/superadmin/users', [SuperAdminActions::class, 'user_index'])->name('users.index');
     Route::get('/superadmin/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
     Route::post('/superadmin/users/create', [SuperAdminActions::class, 'user_store'])->name('user.save');
-    Route::get('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_store'])->name('user.edit');
+    Route::get('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_edit'])->name('user.edit');
     Route::put('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
 
+    
+    /**Organisation Management realated links */
     Route::get('/superadmin/organisations', [SuperAdminActions::class, 'org_index'])->name('organisation.index');
+    Route::get('/superadmin/organisations/create', [SuperAdminActions::class, 'org_create'])->name('organisation.create');
+    Route::post('/superadmin/organisations/create', [SuperAdminActions::class, 'org_store'])->name('organisation.store');
+    Route::get('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_edit'])->name('organisation.edit');
+    Route::put('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_update'])->name('organisation.update');
+    Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminActions::class, 'org_delete'])->name('organisation.delete');
+
 
     /**Document management related links */
     Route::get('/document', [SuperAdminActions::class, 'document_index'])->name('document.index');

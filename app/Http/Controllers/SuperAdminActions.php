@@ -10,6 +10,7 @@ use App\Models\FileMovement;
 use App\Models\Tenant;
 use App\Models\TenantDepartment;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -46,10 +47,10 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
            
-        list($organisations, $roles) = UserAction::getOrganisationDetails();
+        list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
     
             
-            return view('superadmin.usermanager.create', compact('organisations', 'roles'));
+            return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $organisations = Tenant::with('tenant_departments')->where('id', Auth::user()->tenant_id)->get();
@@ -67,11 +68,12 @@ class SuperAdminActions extends Controller
 
     public function user_store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role_id' => 'required|integer',
+            
         ]);
 
         // Create a new user instance
@@ -79,17 +81,45 @@ class SuperAdminActions extends Controller
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        $user->role_id = $request->input('role_id');
+       // Assign the user a role
+       if ($request->filled('default_role'))
+       {
+           $user->assignRole($request->input('default_role'));
+       }else{
+           $user->assignRole('User');
+       }
 
 
         $user->save();
+        
+        // poulate user details table
+        $user->userDetail()->create([
+            'user_id' => $user->id,
+            'department_id' => $request->input('department_id'),
+            'tenant_id' => $request->input('tenant_id'),
+            'phone_number' => $request->input('phone_number'),
+            'designation' => $request->input('designation'),
+            'avatar' => $request->input('avatar'),
+            'signature' => $request->input('signature'),
+            'nin_number' => $request->input('nin_number'),
+            
+        ]);
 
-        return redirect()->route('user.index')->with('success', 'User  created successfully.');
+        return redirect()->route('users.index')->with('success', 'User  created successfully.');
     }
 
     public function user_edit(User $user)
     {
-        return view('admin.usermanager.edit', compact('user'));
+        try {
+            $user_details = UserDetails::where('user_id', $user->id)->first();
+            
+        list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+
+        return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while fetching user details');
+        }
+        
     }
 
     public function user_update(Request $request, User $user)
@@ -128,10 +158,87 @@ class SuperAdminActions extends Controller
     public function org_index()
     {
         if (Auth::user()->default_role === 'superadmin') {
-            $organisations = Tenant::all();
+            $organisations = Tenant::orderBy('id', 'desc')->paginate(10);
             return view('superadmin.organisations.index', compact('organisations'));
         }
 
+        return view('errors.404');
+    }
+    public function org_create()
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.organisations.create');
+        }
+
+        return view('errors.404');
+    }
+    public function org_store(Request $request)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255|unique:tenants',
+                'email' => 'required|string|email|max:255|unique:tenants',
+                'phone' => 'nullable|string|max:255',
+                'category' => 'required|string',
+                'address' => 'nullable|string',
+                'status' => 'required|string',
+            ]);
+
+            $tenant = new Tenant();
+            $tenant->name = $request->input('name');
+            $tenant->code = $request->input('code');
+            $tenant->email = $request->input('email');
+            $tenant->phone = $request->input('phone');
+            $tenant->category = $request->input('category');
+            $tenant->address = $request->input('address');
+            $tenant->status = $request->input('status');
+
+            $tenant->save();
+
+            return redirect()->route('organisation.index')->with('success', 'Organisation created successfully.');
+        }
+        return view('errors.404');
+    }
+    public function org_edit(Tenant $tenant)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            
+            return view('superadmin.organisations.edit', compact('tenant'));
+        }
+        return view('errors.404');
+    }
+    public function org_update(Request $request, Tenant $tenant)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255|unique:tenants,code,' . $tenant->id,
+                'email' => 'required|string|email|max:255|unique:tenants,email,' . $tenant->id,
+                'phone' => 'nullable|string|max:255',
+                'category' => 'required|string',
+                'address' => 'nullable|string',
+                'status' => 'required|string',
+            ]);
+            $tenant->name = $request->input('name');
+            $tenant->code = $request->input('code');
+            $tenant->email = $request->input('email');
+            $tenant->phone = $request->input('phone');
+            $tenant->category = $request->input('category');
+            $tenant->address = $request->input('address');
+            $tenant->status = $request->input('status');
+            $tenant->save();
+            return redirect()->route('organisation.index')->with('success', 'Organisation updated successfully.');
+
+        }
+        return view('errors.404');
+    }
+    public function org_delete(Tenant $tenant)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $tenant->delete();
+            return redirect()->route('organisation.index')->with('success', 'Organisation deleted successfully.');
+        }
         return view('errors.404');
     }
 
