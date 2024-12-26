@@ -44,11 +44,11 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('dashboard')->middleware('auth')->group(function () {
     /**User managem related links */
-    Route::get('/superadmin/users', [SuperAdminActions::class, 'user_index'])->name('users.index');
-    Route::get('/superadmin/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
-    Route::post('/superadmin/users/create', [SuperAdminActions::class, 'user_store'])->name('user.save');
-    Route::get('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_edit'])->name('user.edit');
-    Route::put('/superadmin/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
+    Route::get('/users', [SuperAdminActions::class, 'user_index'])->name('users.index');
+    Route::get('/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
+    Route::post('/users/create', [SuperAdminActions::class, 'user_store'])->name('user.save');
+    Route::get('/users/{user}/edit', [SuperAdminActions::class, 'user_edit'])->name('user.edit');
+    Route::put('/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
 
     
@@ -61,9 +61,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminActions::class, 'org_delete'])->name('organisation.delete');
 
     /**Department Management related links */
-    Route::get('/superadmin/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
-    Route::get('/superadmin/departments/create', [SuperAdminActions::class, 'department_create'])->name('department.create');
-    Route::post('/superadmin/departments/create', [SuperAdminActions::class, 'department_store'])->name('department.store');
+    Route::get('/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
+    Route::get('/departments/create', [SuperAdminActions::class, 'department_create'])->name('department.create');
+    Route::post('/departments/create', [SuperAdminActions::class, 'department_store'])->name('department.store');
 
 
     /**Document management related links */

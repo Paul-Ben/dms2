@@ -36,7 +36,9 @@ class SuperAdminActions extends Controller
         }
 
         if (Auth::user()->default_role === 'Admin') {
-            $users = User::where('tenant_id', Auth::user()->tenant_id)->where('default_role', '!=', 'superadmin')->get();
+            // $users = User::where('tenant_id', Auth::user()->tenant_id)->where('default_role', '!=', 'superadmin')->get();
+                $users = User::with('userDetail')->where('tenant_id', Auth::user()->tenant_id)->get();
+                dd($users);
             return view('admin.usermanager.index', compact('users'));
         }
 
@@ -435,7 +437,7 @@ class SuperAdminActions extends Controller
             ]);
             $department = TenantDepartment::create($request->all());
 
-            return redirect()->route('superadmin.departments.index')->with('success', 'Department created successfully.');
+            return redirect()->route('department.index')->with('success', 'Department created successfully.');
         }
         return view('errors.404');
     }
