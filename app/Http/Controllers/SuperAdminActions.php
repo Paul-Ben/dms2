@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\List_;
 use Spatie\Permission\Models\Role;
@@ -308,39 +309,75 @@ class SuperAdminActions extends Controller
     }
     public function user_store_file_document(Request $request)
     {
+        // $data = $request;
+        // $user_email = Auth::user()->email;
+        // $transaction_ref = "ETRANZACT" . time();
+        // $transaction_amount = 3000;
+        
+        // try {
+        //     $response = Http::accept('application/json')->withHeaders([
+        //         'authorization' => env('CREDO_PUBLIC_KEY'),
+        //         'content_type' => "Content-Type: application/json",
+        //     ])->post(env("CREDO_URL") . "/transaction/initialize", [
+        //         "email" =>  $user_email,
+        //         "amount" => ($transaction_amount * 100),
+        //         "reference" => $transaction_ref,
+        //         "callbackUrl" => route("document.index"),
+        //         "bearer" => 0,
+        //     ]);
+        //     $responseData = $response->collect("data");
+        //     dd($responseData);
+
+        //     if (isset($responseData['authorizationUrl'])) {
+        //         return redirect($responseData['authorizationUrl']);
+        //     }
+
+        //     // toast("Credo E-Tranzact gateway service took too long to respond.", 'error');
+        //     return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
+        // } catch (\Exception $e) {
+        //     report($e);
+        //     // toast('Error initializing payment gateway. Please try again', 'error');
+        //     return back()->with('error', 'Error initializing payment gateway. Please try again');
+        // }
+
+        // $result = UserFileDocument::userFileDocument($data);
+
+        // return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
         $data = $request;
-        $user_email = Auth::user()->email;
-        $transaction_ref = "ETRANZACT" . time();
-        $transaction_amount = 3000;
-        // dd($user_email);
-        try {
-            $response = Http::accept('application/json')->withHeaders([
-                'authorization' => env('CREDO_PUBLIC_KEY'),
-                'content_type' => "Content-Type: application/json",
-            ])->post(env("CREDO_URL") . "/transaction/initialize", [
-                "email" => $ $user_email,
-                "amount" => ($$transaction_amount * 100),
-                "reference" => $$transaction_ref,
-                "callbackUrl" => route("etranzact.callBack"),
-                "bearer" => 0,
-            ]);
-            $responseData = $response->collect("data");
+    $user_email = Auth::user()->email;
+    $transaction_ref = "ETRANZACT" . time();
+    $transaction_amount = 3000;
 
-            if (isset($responseData['authorizationUrl'])) {
-                return redirect($responseData['authorizationUrl']);
-            }
+    try {
+        $response = Http::accept('application/json')->withHeaders([
+            'authorization' => env('CREDO_PUBLIC_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post(env("CREDO_URL") . "/transaction/initialize", [
+            "email" => $user_email,
+            "amount" => ($transaction_amount * 100),
+            "reference" => $transaction_ref,
+            "callbackUrl" => route("document.index"),
+            "bearer" => 0,
+        ]);
 
-            // toast("Credo E-Tranzact gateway service took too long to respond.", 'error');
-            return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
-        } catch (\Exception $e) {
-            report($e);
-            // toast('Error initializing payment gateway. Please try again', 'error');
-            return back()->with('error', 'Error initializing payment gateway. Please try again');
+        $responseData = $response->json();
+
+        // Log the response for debugging
+        Log::info('Payment Gateway Response: ', $responseData);
+
+        if (isset($responseData['data']['authorizationUrl'])) {
+            return redirect($responseData['data']['authorizationUrl']);
         }
 
-        $result = UserFileDocument::userFileDocument($data);
+        return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
+    } catch (\Exception $e) {
+        Log::error('Payment Gateway Initialization Error: ' . $e->getMessage());
+        return back()->with('error', 'Error initializing payment gateway. Please try again');
+    }
 
-        return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
+    $result = UserFileDocument::userFileDocument($data);
+
+    return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
     }
 
     public function document_store(Request $request)
