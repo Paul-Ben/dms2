@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DocumentStorage;
 use App\Helpers\UserAction;
+use App\Helpers\UserFileDocument;
 use App\Models\Designation;
 use App\Models\Document;
 use App\Models\DocumentRecipient;
@@ -32,7 +33,7 @@ class SuperAdminActions extends Controller
     public function user_index()
     {
         if (Auth::user()->default_role === 'superadmin') {
-            $users = User::all();
+            $users = User::orderBy('id', 'desc')->paginate(5);
             return view('superadmin.usermanager.index', compact('users'));
         }
 
@@ -292,6 +293,23 @@ class SuperAdminActions extends Controller
             return view('staff.documents.create');
         }
         return view('errors.404');
+    }
+    public function user_file_document()
+    {
+        if (Auth::user()->default_role === 'User') {
+            $recipients = DocumentStorage::getUserRecipients();
+           
+            return view('user.documents.filedocument', compact('recipients'));  
+        }
+        return view('errors.404');
+    }
+    public function user_store_file_document(Request $request)
+    {
+        $data = $request;
+        
+        $result = UserFileDocument::userFileDocument($data);
+
+        return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
     }
 
     public function document_store(Request $request)

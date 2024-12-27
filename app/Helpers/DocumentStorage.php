@@ -204,4 +204,23 @@ class DocumentStorage
             return [collect(), null];
         }
     }
+
+    public static function getUserRecipients()
+    {
+        $adminWithTenantDetails = User::where('default_role', 'Admin')
+            ->whereHas('userDetail', function ($query) {
+                $query->whereNotNull('tenant_id');
+            })
+            ->with(['userDetail.tenant'])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'admin_id' => $user->id,
+                    'tenant_id' => $user->userDetail->tenant->id ?? null,
+                    'tenant_name' => $user->userDetail->tenant->name ?? null,
+                ];
+            });
+
+        return $adminWithTenantDetails;
+    }
 }

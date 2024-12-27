@@ -60,6 +60,11 @@
 
                     </tbody>
                 </table>
+                <div class="mt-4">
+                    @if ($users->count() > 0)
+                        {{ $users->links('pagination::bootstrap-5') }}
+                    @endif
+                </div>
             </div>
         </div>
     </div>
