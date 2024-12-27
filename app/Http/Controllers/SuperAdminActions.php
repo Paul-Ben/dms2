@@ -380,9 +380,19 @@ class SuperAdminActions extends Controller
             return view('superadmin.documents.send', compact('recipients', 'document'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            $recipients = User::where('tenant_id', Auth::user()->tenant_id)->get();
+            $authUser = Auth::user();
 
-            return view('admin.documents.send', compact('recipients', 'document'));
+            if ($authUser && $authUser->userDetail) {
+                $tenantId = $authUser->userDetail->tenant_id;
+            
+                $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
+                    $query->where('tenant_id', $tenantId);
+                })->get();
+            
+                return view('admin.documents.send', compact('recipients', 'document'));
+            } else {
+                return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
+            }  
         }
         if (Auth::user()->default_role === 'User') {
             $recipients = User::where('default_role', 'Admin')->get();
@@ -390,8 +400,19 @@ class SuperAdminActions extends Controller
             return view('user.documents.send', compact('recipients', 'document'));
         }
         if (Auth::user()->default_role === 'Staff') {
-            $recipients = User::where('tenant_id', Auth::user()->tenant_id)->get();
-            return view('staff.documents.send', compact('recipients', 'document'));
+            $authUser = Auth::user();
+
+            if ($authUser && $authUser->userDetail) {
+                $tenantId = $authUser->userDetail->tenant_id;
+            
+                $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
+                    $query->where('tenant_id', $tenantId);
+                })->where('id', '!=', $authUser->id)->get();
+            
+                return view('admin.documents.send', compact('recipients', 'document'));
+            } else {
+                return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
+            }
         }
         return view('errors.404');
     }

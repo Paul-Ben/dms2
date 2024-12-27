@@ -67,8 +67,6 @@ class DocumentStorage
             'docuent_number' => $data->document_number,
             'file_path' => $data->file_path,
             'uploaded_by' => Auth::user()->id,
-            // 'department_id' => $user_details->department_id,
-            // 'tenant_id' => $user_details->tenant_id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,
             'metadata' => json_encode($data->metadata),

@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
 
          UserDetails::create([
             'user_id' => $user->id,
-            'phone' => $request->phone,
+            'phone_number' => $request->phone_number,
             'nin_number' => $request->nin_number,
             'designation' => $request->designation,
             'gender' => $request->gender,

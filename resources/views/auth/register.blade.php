@@ -51,8 +51,8 @@
                                 </div>
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingInput"
-                                        placeholder="08065433456" name="phone_number" value="{{ old('phone') }}" required
-                                         autocomplete="phone">
+                                        placeholder="08065433456" name="phone_number" value="{{ old('phone_number') }}" required
+                                         autocomplete="phone_number">
                                     <label for="floatingInput">Phone Number</label>
                                 </div>
                                 <div class="form-floating mb-4">
