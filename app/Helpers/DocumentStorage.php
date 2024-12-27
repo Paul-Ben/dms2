@@ -192,17 +192,21 @@ class DocumentStorage
 
             // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
-                $sender = User::where('id', $value->sender_id)->get(['name', 'email']);
+                $value->sender_details = User::select('name', 'email')->find($value->sender_id);
                 // You can attach sender details to the document if needed
-                $value->sender_details = $sender; // Optional: Attach sender details
+                //  = $sender; // Optional: Attach sender details
+                // dd($value->sender_details);
             }
-            return [$received_documents, $sender];
+            
+            
+            return [$received_documents];
         } catch (\Exception $e) {
             // Log the error message
             Log::error('Error retrieving received documents: ' . $e->getMessage());
             // Return an empty collection and null sender details
             return [collect(), null];
         }
+       
     }
 
     public static function getUserRecipients()

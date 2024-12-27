@@ -36,10 +36,11 @@
                     <tbody>
                         @forelse ($received_documents as $key => $received)
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                {{-- <td>{{ $key+1 }}</td> --}}
+                                <td>{{ '#' }}</td>
                                 <td>{{$received->document->docuent_number}}</td>
                                 <td>{{$received->document->title}}</td>
-                                <td>{{$sender[0]->name}}</td>
+                                <td>{{$received->sender_details->name}}</td>
                                 <td>{{$received->document->status}}</td>
                                 <td>
                                     <div class="nav-item dropdown">

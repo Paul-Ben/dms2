@@ -16,6 +16,7 @@ use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\List_;
 use Spatie\Permission\Models\Role;
@@ -294,6 +295,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function user_file_document()
     {
         if (Auth::user()->default_role === 'User') {
@@ -306,7 +309,35 @@ class SuperAdminActions extends Controller
     public function user_store_file_document(Request $request)
     {
         $data = $request;
-        
+        $user_email = Auth::user()->email;
+        $transaction_ref = "ETRANZACT" . time();
+        $transaction_amount = 3000;
+        // dd($user_email);
+        try {
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => env('CREDO_PUBLIC_KEY'),
+                'content_type' => "Content-Type: application/json",
+            ])->post(env("CREDO_URL") . "/transaction/initialize", [
+                "email" => $ $user_email,
+                "amount" => ($$transaction_amount * 100),
+                "reference" => $$transaction_ref,
+                "callbackUrl" => route("etranzact.callBack"),
+                "bearer" => 0,
+            ]);
+            $responseData = $response->collect("data");
+
+            if (isset($responseData['authorizationUrl'])) {
+                return redirect($responseData['authorizationUrl']);
+            }
+
+            // toast("Credo E-Tranzact gateway service took too long to respond.", 'error');
+            return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
+        } catch (\Exception $e) {
+            report($e);
+            // toast('Error initializing payment gateway. Please try again', 'error');
+            return back()->with('error', 'Error initializing payment gateway. Please try again');
+        }
+
         $result = UserFileDocument::userFileDocument($data);
 
         return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
@@ -358,13 +389,13 @@ class SuperAdminActions extends Controller
             return view('superadmin.documents.received', compact('received_documents', 'sender'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            list($received_documents, $sender) = DocumentStorage::getReceivedDocuments();
-            return view('admin.documents.received', compact('received_documents', 'sender'));
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+            return view('admin.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'User') {
-            list($received_documents, $sender) = DocumentStorage::getReceivedDocuments();
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('user.documents.received', compact('received_documents', 'sender'));
+            return view('user.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents, $sender) = DocumentStorage::getReceivedDocuments();
