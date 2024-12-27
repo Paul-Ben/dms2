@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('docuent_number');
             $table->string('file_path');
             $table->foreignId('uploaded_by')->constrained('users');
-            $table->foreignId('department_id')->constrained('tenant_departments')->nullable();
-            $table->foreignId('tenant_id')->constrained('tenants')->nullable();
+            // $table->foreignId('department_id')->constrained('tenant_departments')->nullable();
+            // $table->foreignId('tenant_id')->constrained('tenants')->nullable();
             $table->enum('status', ['pending', 'processing', 'approved', 'rejected', 'kiv', 'completed'])->default('pending'); // pending, approved, rejected
             $table->text('description')->nullable();
             $table->timestamps();

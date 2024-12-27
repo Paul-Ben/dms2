@@ -73,7 +73,6 @@ class SuperAdminActions extends Controller
 
     public function user_store(Request $request)
     {
-        // dd($request->default_role);
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -117,21 +116,7 @@ class SuperAdminActions extends Controller
                 'nin_number' => $request->input('nin_number'),
 
             ]);
-        // } else {
-        //     // poulate user details table
-        //     $user->userDetail()->create([
-        //         'user_id' => $user->id,
-        //         'department_id' => $request->input('department_id'),
-        //         'tenant_id' => $request->input('tenant_id'),
-        //         'phone_number' => $request->input('phone_number'),
-        //         'designation' => $request->input('designation'),
-        //         'avatar' => $request->input('avatar'),
-        //         'signature' => $request->input('signature'),
-        //         'nin_number' => $request->input('nin_number'),
-
-        //     ]);
-        // }
-
+        
         return redirect()->route('users.index')->with('success', 'User  created successfully.');
     }
 
@@ -139,7 +124,7 @@ class SuperAdminActions extends Controller
     {
         try {
             $user_details = User::with('userDetail')->where('id', $user->id)->first();
-            // dd($user_details->userDetail);
+            
 
             list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
@@ -154,7 +139,7 @@ class SuperAdminActions extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8', // If you decide to use confirmation
+            'password' => 'nullable|string|min:8', 
         ]);
 
         if ($validator->fails()) {

@@ -61,4 +61,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserDetails::class);
     }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 }
