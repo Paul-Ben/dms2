@@ -13,7 +13,7 @@ class UserFileDocument
 {
     public static function userFileDocument($data)
     {
-        
+
         $documentId = self::store($data);
 
         self::sendDocument($data, $documentId);
@@ -92,5 +92,59 @@ class UserFileDocument
             'status' => 'success',
             'message' => 'Document sent successfully!',
         ];
+    }
+
+    public static function undoDocumentActions($documentId)
+    {
+        try {
+            // Retrieve the document
+            $document = Document::find($documentId);
+
+            if (!$document) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Document not found.',
+                ];
+            }
+
+            // Delete associated file movements
+            $fileMovements = FileMovement::where('document_id', $documentId)->get();
+            foreach ($fileMovements as $movement) {
+                // Delete associated document recipients
+                DocumentRecipient::where('file_movement_id', $movement->id)->delete();
+                $movement->delete();
+            }
+
+            // Delete activities related to the document
+            Activity::where('user_id', $document->uploaded_by)
+                ->where('action', 'You uploaded a document')
+                ->delete();
+
+            Activity::where('action', 'Sent Document')
+                ->orWhere('action', 'Document Received')
+                ->where(function ($query) use ($documentId) {
+                    $query->where('user_id', Auth::user()->id)
+                        ->orWhere('document_id', $documentId);
+                })
+                ->delete();
+
+            // Delete the document file if it exists
+            if ($document->file_path && file_exists(public_path('documents/' . $document->file_path))) {
+                unlink(public_path('documents/' . $document->file_path));
+            }
+
+            // Delete the document itself
+            $document->delete();
+
+            return [
+                'status' => 'success',
+                'message' => 'Document and related actions have been undone successfully.',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'An error occurred while undoing the document actions: ' . $e->getMessage(),
+            ];
+        }
     }
 }

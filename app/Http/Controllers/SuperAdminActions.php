@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\DocumentStorage;
+use App\Helpers\FileService;
 use App\Helpers\UserAction;
 use App\Helpers\UserFileDocument;
 use App\Models\Designation;
@@ -27,7 +28,11 @@ class SuperAdminActions extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
     }
+    
+
+   
 
     /**
      * User management Actions Index/create/edit/show/delete
@@ -307,80 +312,50 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
     public function user_store_file_document(Request $request)
     {
+        // Store the initial data in the session or temporary storage
         $data = $request;
-        // $user_email = Auth::user()->email;
-        // $transaction_ref = "ETRANZACT" . time();
-        // $transaction_amount = 300000;
-
-        // try {
-        //     $response = Http::accept('application/json')->withHeaders([
-        //         'Authorization' => env('CREDO_PUBLIC_KEY'),
-        //         'Content-Type' => "Content-Type: application/json",
-        //     ])->post(env("CREDO_URL") . "/transaction/initialize", [
-        //         "email" =>  $user_email,
-        //         "amount" => ($transaction_amount * 100),
-        //         "reference" => $transaction_ref,
-        //         "callbackUrl" => route("payment.callback"),
-        //         "bearer" => 0,
-        //     ]);
-        //     // $responseData = $response->collect("data");
-        //     $responseData = $response->json();
-
-        //     // Log the response for debugging
-        //     Log::info('Payment Gateway Response: ', $responseData);
-
-        //     if (isset($responseData['authorizationUrl'])) {
-        //         return redirect($responseData['authorizationUrl']);
-        //     }
-
-        //     // toast("Credo E-Tranzact gateway service took too long to respond.", 'error');
-        //     return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
-        // } catch (\Exception $e) {
-        //     Log::error('Payment Gateway Initialization Error: ' . $e->getMessage());
-        //     // report($e);
-        //     // toast('Error initializing payment gateway. Please try again', 'error');
-        //     return back()->with('error', 'Error initializing payment gateway. Please try again');
-        // }
-
-
         $result = UserFileDocument::userFileDocument($data);
-
-        return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
+       
+        // Define the payment link
+        $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
+        
+        // Append a callback URL to the payment link
+        $callbackUrl = route('payment.callback');
+        $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
+       
+        // Redirect to the payment link
+        return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     }
-
     public function paymentCallback(Request $request)
     {
-        $reference = $request->query('reference'); // Retrieve the reference from the callback
+        // Retrieve the necessary data from the request or session
+        $data = session()->get('document_data'); 
+    
+        // Verify payment status (if needed)
+        $paymentStatus = $request->query('status'); 
 
-        try {
-            $response = Http::accept('application/json')->withHeaders([
-                'authorization' => env('CREDO_PUBLIC_KEY'),
-            ])->get(env("CREDO_URL") . "/transaction/verify/" . $reference);
-
-            $responseData = $response->json();
-
-            if (isset($responseData['data']['status']) && $responseData['data']['status'] === 'success') {
-                // Mark the transaction as successful and process the document
-                $this->storeDocument($responseData['data']);
-                return redirect()->route('document.index')->with('success', 'Payment successful and document submitted.');
-            }
-
-            return back()->with('error', 'Payment verification failed.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred during payment verification: ' . $e->getMessage());
+        if ($paymentStatus === 'success') {
+            // Process the document upload or related logic
+            
+            // Redirect to the document index with a success message
+            return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
         }
+        // $response = UserFileDocument::undoDocumentActions();
+        // Handle failed payment
+        return redirect()->route('document.index')->with('error', 'Payment failed. Please try again.');
     }
-
+    
     public function document_show($received)
     {
         if (Auth::user()->default_role === 'superadmin') {
             return view('superadmin.documents.show', compact('document'));
         }
         if (Auth::user()->default_role === 'Admin') {
-           $document_received =  FileMovement::with(['sender', 'recipient','document'])->where('id', $received)->first();
-        //    dd($document_received);
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+            //    dd($document_received);
             return view('admin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'User') {

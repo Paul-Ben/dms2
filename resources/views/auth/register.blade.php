@@ -22,7 +22,7 @@
                             <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
                                 <div class="text-center">
                                     <img class="mb-3" src="{{asset('dbf/img/logos.png')}}" alt="">
-                                    <h3>Sign In</h3>
+                                    <h3>Register</h3>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     @if (session('errors'))

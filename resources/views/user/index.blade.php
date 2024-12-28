@@ -44,8 +44,8 @@
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                         </a>
                         <div class="ms-3">
-                            <p class="mb-2">Total Revenue</p>
-                            <h6 class="mb-0">$1234</h6>
+                            <p class="mb-2">Total Feedback</p>
+                            <h6 class="mb-0">0</h6>
                         </div>
                     </div>
                 </div>
