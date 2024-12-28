@@ -160,22 +160,18 @@
         <div class="bg-light rounded p-4">
             <div class="email-container">
                 <div class="toolbar">
-                    <a href="{{route('document.reply', $document_received->document_id)}}">
-                        <button class="btn" onclick="replyEmail()">
+                    <button class="btn" onclick="replyEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
                         </svg>
                         Reply
                     </button>
-                    </a>
-                    <a href="{{route('document.send', $document_received->document_id)}}">
-                        <button class="btn" onclick="forwardEmail()">
+                    <button class="btn" onclick="forwardEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
                         </svg>
                         Forward
                     </button>
-                    </a>
                     <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />

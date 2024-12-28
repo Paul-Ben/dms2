@@ -168,6 +168,7 @@
                         Reply
                     </button>
                     </a>
+                    
                     <a href="{{route('document.send', $document_received->document_id)}}">
                         <button class="btn" onclick="forwardEmail()">
                         <svg viewBox="0 0 24 24">
@@ -176,16 +177,29 @@
                         Forward
                     </button>
                     </a>
+                    
                     <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
                         Process
                     </button>
+                    <button class="btn" onclick="processEmail()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="btn" onclick="processEmail()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M18.3 5.7c-.4-.4-1-.4-1.4 0L12 10.6 7.1 5.7c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4L10.6 12l-4.9 4.9c-.4.4-.4 1 0 1.4s1 .4 1.4 0L12 13.4l4.9 4.9c.4.4 1 .4 1.4 0s.4-1 0-1.4L13.4 12l4.9-4.9c.4-.4.4-1 0-1.4z" />
+                        </svg>
+                        Reject
+                    </button>
                 </div>
 
                 <div class="email-header">
-                    <div class="subject">Q4 Financial Report Review</div>
+                    <div class="subject">Subject: {{$document_received->document->title}}</div>
                     <div class="email-meta">
                         <div>From:</div>
                         <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>
@@ -198,7 +212,7 @@
                 </div>
 
                 <div class="email-body ml-8">
-                    Hi John,<br><br>
+                    Dear {{$document_received->recipient->name}},<br><br><br>
 
                     {{ $document_received->message }}.<br><br>
                     Best regards,<br>

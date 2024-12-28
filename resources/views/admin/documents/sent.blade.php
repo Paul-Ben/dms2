@@ -37,7 +37,10 @@
                         @forelse ($sent_documents as $key => $sent)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{$sent->document->docuent_number}}</td>
+                                <td><a href="{{ route('document.view', $sent) }}">
+                                    {{ $sent->document->docuent_number }}
+                                </a>
+                            </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
                                     {{$recipient[0]->name}}
@@ -48,8 +51,8 @@
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
-                                            <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a>
+                                            <a href="{{route('document.view_sent', $sent)}}" class="dropdown-item">View</a>
+                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
                                 </td>

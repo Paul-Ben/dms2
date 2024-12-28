@@ -81,12 +81,14 @@ class SuperAdminActions extends Controller
 
     public function user_store(Request $request)
     {
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
 
         ]);
+       
 
         // Create a new user instance
         $user = new User();
@@ -351,18 +353,48 @@ class SuperAdminActions extends Controller
     public function document_show($received)
     {
         if (Auth::user()->default_role === 'superadmin') {
-            return view('superadmin.documents.show', compact('document'));
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+
+            return view('superadmin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-            //    dd($document_received);
+         
             return view('admin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'User') {
-            return view('user.documents.show', compact('document'));
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+
+            return view('user.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'Staff') {
-            return view('staff.documents.show', compact('document'));
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+           
+            return view('staff.documents.show', compact('document_received'));
+        }
+        return view('errors.404');
+    }
+    public function document_show_sent($sent)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
+
+            return view('superadmin.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
+            
+            return view('admin.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'User') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
+
+            return view('user.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
+           
+            return view('staff.documents.show', compact('document_received'));
         }
         return view('errors.404');
     }
@@ -423,8 +455,8 @@ class SuperAdminActions extends Controller
             return view('user.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'Staff') {
-            list($received_documents, $sender) = DocumentStorage::getReceivedDocuments();
-            return view('staff.documents.received', compact('received_documents', 'sender'));
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+            return view('staff.documents.received', compact('received_documents'));
         }
         return view('errors.404');
     }
@@ -445,6 +477,31 @@ class SuperAdminActions extends Controller
         }
 
         abort(404);
+    }
+
+    public function getReplyform(Request $request, Document $document)
+    {
+        if (Auth::user()->default_role === 'Admin') {
+            $authUser = Auth::user();
+            
+            $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
+            $recipients = User::where('id', $getter[0]->sender_id)->get();
+            
+
+                return view('staff.documents.reply', compact('recipients', 'document'));
+           
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            $authUser = Auth::user();
+            
+            $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
+            $recipients = User::where('id', $getter[0]->sender_id)->get();
+            
+
+                return view('staff.documents.reply', compact('recipients', 'document'));
+           
+        }
+        return view('errors.404');
     }
 
     public function getSendform(Request $request, Document $document)
@@ -494,6 +551,7 @@ class SuperAdminActions extends Controller
     public function sendDocument(Request $request)
     {
         $data = $request;
+        
         $result = DocumentStorage::sendDocument($data);
 
         if ($result['status'] === 'error') {

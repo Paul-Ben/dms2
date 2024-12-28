@@ -4,7 +4,7 @@
     <div class="container-fluid pt-4 px-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-               
+
             </div>
         </div>
     </div>
@@ -17,7 +17,8 @@
                 <h6 class="mb-0">Sent Documents</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i
+                            class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 
             </div>
@@ -37,26 +38,31 @@
                         @forelse ($sent_documents as $key => $sent)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{$sent->document->docuent_number}}</td>
-                                <td>{{$sent->document->title}}</td>
-                                <td>
-                                   <p class="text-sm">{{$recipient[0]->name}}</p>
+                                <td><a href="{{ route('document.view', $sent) }}">
+                                        {{ $sent->document->docuent_number }}
+                                    </a>
                                 </td>
-                                <td>{{$sent->message}}</td>
+                                <td>{{ $sent->document->title }}</td>
+                                <td>
+                                    <p class="text-sm">{{ $recipient[0]->name }}</p>
+                                </td>
+                                <td>{{ $sent->message }}</td>
                                 <td>
                                     <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
+                                        <a href="#" class="nav-link dropdown-toggle"
+                                            data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
-                                            <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a>
+                                            <a href="{{ route('document.view_sent', $sent) }}"
+                                                class="dropdown-item">View</a>
+                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                            @empty
+                        @empty
                             <tr class="text-center">
                                 <td colspan="6">No Data Found</td>
-                                </tr>
+                            </tr>
                         @endforelse
 
                     </tbody>
@@ -64,10 +70,10 @@
             </div>
             @if ($sent_documents->count() > 0)
                 <div class="mt-3">
-                {{$sent_documents->links('pagination::bootstrap-5')}}
-            </div>
+                    {{ $sent_documents->links('pagination::bootstrap-5') }}
+                </div>
             @endif
-            
+
         </div>
     </div>
     <!-- Table End -->
