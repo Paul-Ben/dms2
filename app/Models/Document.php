@@ -17,7 +17,7 @@ class Document extends Model
 
     public function fileMovements()
     {
-        return $this->hasMany(FileMovement::class);
+        return $this->hasMany(FileMovement::class, 'document_id');
     }
 
     public function documentRecipients()

@@ -42,7 +42,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
             $users = UserDetails::with('user')->where('tenant_id', $id)->get();
-            
+
             return view('admin.usermanager.index', compact('users'));
         }
 
@@ -90,36 +90,36 @@ class SuperAdminActions extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->default_role = $request->input('default_role');
         // Assign the user a role
-       if ($request->input('default_role') === 'Admin') {
+        if ($request->input('default_role') === 'Admin') {
             // dd($request->input('default_role'));
             $user->assignRole('Admin');
         }
         if ($request->input('default_role') === 'Staff') {
             // dd($request->input('default_role'));
             $user->assignRole('Staff');
-        } 
+        }
         if ($request->input('default_role') === 'User') {
             // dd($request->input('default_role'));
             $user->assignRole('User');
-        } 
+        }
 
 
         $user->save();
-        
+
 
         // if ($request->default_role === 'User') {
-            $user->userDetail()->create([
-                'user_id' => $user->id,
-                'department_id' => $request->input('department_id'),
-                'tenant_id' => $request->input('tenant_id'),
-                'phone_number' => $request->input('phone_number'),
-                'designation' => $request->input('designation'),
-                'avatar' => $request->input('avatar'),
-                'signature' => $request->input('signature'),
-                'nin_number' => $request->input('nin_number'),
+        $user->userDetail()->create([
+            'user_id' => $user->id,
+            'department_id' => $request->input('department_id'),
+            'tenant_id' => $request->input('tenant_id'),
+            'phone_number' => $request->input('phone_number'),
+            'designation' => $request->input('designation'),
+            'avatar' => $request->input('avatar'),
+            'signature' => $request->input('signature'),
+            'nin_number' => $request->input('nin_number'),
 
-            ]);
-        
+        ]);
+
         return redirect()->route('users.index')->with('success', 'User  created successfully.');
     }
 
@@ -127,7 +127,7 @@ class SuperAdminActions extends Controller
     {
         try {
             $user_details = User::with('userDetail')->where('id', $user->id)->first();
-            
+
 
             list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
@@ -142,7 +142,7 @@ class SuperAdminActions extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8', 
+            'password' => 'nullable|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -302,31 +302,34 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'User') {
             $recipients = DocumentStorage::getUserRecipients();
-           
-            return view('user.documents.filedocument', compact('recipients'));  
+
+            return view('user.documents.filedocument', compact('recipients'));
         }
         return view('errors.404');
     }
     public function user_store_file_document(Request $request)
     {
-        // $data = $request;
+        $data = $request;
         // $user_email = Auth::user()->email;
         // $transaction_ref = "ETRANZACT" . time();
-        // $transaction_amount = 3000;
-        
+        // $transaction_amount = 300000;
+
         // try {
         //     $response = Http::accept('application/json')->withHeaders([
-        //         'authorization' => env('CREDO_PUBLIC_KEY'),
-        //         'content_type' => "Content-Type: application/json",
+        //         'Authorization' => env('CREDO_PUBLIC_KEY'),
+        //         'Content-Type' => "Content-Type: application/json",
         //     ])->post(env("CREDO_URL") . "/transaction/initialize", [
         //         "email" =>  $user_email,
         //         "amount" => ($transaction_amount * 100),
         //         "reference" => $transaction_ref,
-        //         "callbackUrl" => route("document.index"),
+        //         "callbackUrl" => route("payment.callback"),
         //         "bearer" => 0,
         //     ]);
-        //     $responseData = $response->collect("data");
-        //     dd($responseData);
+        //     // $responseData = $response->collect("data");
+        //     $responseData = $response->json();
+
+        //     // Log the response for debugging
+        //     Log::info('Payment Gateway Response: ', $responseData);
 
         //     if (isset($responseData['authorizationUrl'])) {
         //         return redirect($responseData['authorizationUrl']);
@@ -335,50 +338,60 @@ class SuperAdminActions extends Controller
         //     // toast("Credo E-Tranzact gateway service took too long to respond.", 'error');
         //     return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
         // } catch (\Exception $e) {
-        //     report($e);
+        //     Log::error('Payment Gateway Initialization Error: ' . $e->getMessage());
+        //     // report($e);
         //     // toast('Error initializing payment gateway. Please try again', 'error');
         //     return back()->with('error', 'Error initializing payment gateway. Please try again');
         // }
 
-        // $result = UserFileDocument::userFileDocument($data);
 
-        // return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
-        $data = $request;
-    $user_email = Auth::user()->email;
-    $transaction_ref = "ETRANZACT" . time();
-    $transaction_amount = 3000;
+        $result = UserFileDocument::userFileDocument($data);
 
-    try {
-        $response = Http::accept('application/json')->withHeaders([
-            'authorization' => env('CREDO_PUBLIC_KEY'),
-            'Content-Type' => 'application/json',
-        ])->post(env("CREDO_URL") . "/transaction/initialize", [
-            "email" => $user_email,
-            "amount" => ($transaction_amount * 100),
-            "reference" => $transaction_ref,
-            "callbackUrl" => route("document.index"),
-            "bearer" => 0,
-        ]);
+        return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
+    }
 
-        $responseData = $response->json();
+    public function paymentCallback(Request $request)
+    {
+        $reference = $request->query('reference'); // Retrieve the reference from the callback
 
-        // Log the response for debugging
-        Log::info('Payment Gateway Response: ', $responseData);
+        try {
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => env('CREDO_PUBLIC_KEY'),
+            ])->get(env("CREDO_URL") . "/transaction/verify/" . $reference);
 
-        if (isset($responseData['data']['authorizationUrl'])) {
-            return redirect($responseData['data']['authorizationUrl']);
+            $responseData = $response->json();
+
+            if (isset($responseData['data']['status']) && $responseData['data']['status'] === 'success') {
+                // Mark the transaction as successful and process the document
+                $this->storeDocument($responseData['data']);
+                return redirect()->route('document.index')->with('success', 'Payment successful and document submitted.');
+            }
+
+            return back()->with('error', 'Payment verification failed.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred during payment verification: ' . $e->getMessage());
         }
-
-        return back()->with('error', 'Credo E-Tranzact gateway service took too long to respond.');
-    } catch (\Exception $e) {
-        Log::error('Payment Gateway Initialization Error: ' . $e->getMessage());
-        return back()->with('error', 'Error initializing payment gateway. Please try again');
     }
 
-    $result = UserFileDocument::userFileDocument($data);
-
-    return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
+    public function document_show($received)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.documents.show', compact('document'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+           $document_received =  FileMovement::with(['sender', 'recipient','document'])->where('id', $received)->first();
+        //    dd($document_received);
+            return view('admin.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'User') {
+            return view('user.documents.show', compact('document'));
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            return view('staff.documents.show', compact('document'));
+        }
+        return view('errors.404');
     }
+
 
     public function document_store(Request $request)
     {
@@ -470,15 +483,15 @@ class SuperAdminActions extends Controller
 
             if ($authUser && $authUser->userDetail) {
                 $tenantId = $authUser->userDetail->tenant_id;
-            
+
                 $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
                     $query->where('tenant_id', $tenantId);
                 })->get();
-            
+
                 return view('admin.documents.send', compact('recipients', 'document'));
             } else {
                 return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
-            }  
+            }
         }
         if (Auth::user()->default_role === 'User') {
             $recipients = User::where('default_role', 'Admin')->get();
@@ -490,11 +503,11 @@ class SuperAdminActions extends Controller
 
             if ($authUser && $authUser->userDetail) {
                 $tenantId = $authUser->userDetail->tenant_id;
-            
+
                 $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
                     $query->where('tenant_id', $tenantId);
                 })->where('id', '!=', $authUser->id)->get();
-            
+
                 return view('admin.documents.send', compact('recipients', 'document'));
             } else {
                 return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
