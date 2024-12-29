@@ -549,12 +549,21 @@ class SuperAdminActions extends Controller
                 return redirect()->back()->with('error', 'Tenant information is missing.');
             }
 
-            $recipients = User::with('userDetail')
-                ->whereHas('userDetail', function ($query) use ($tenantId) {
-                    $query->where('tenant_id', $tenantId);
-                })
-                ->where('id', '!=', $authUser->id)
-                ->get();
+            // $recipients = User::with('userDetail')
+            //     ->whereHas('userDetail', function ($query) use ($tenantId) {
+            //         $query->where('tenant_id', $tenantId);
+            //     })
+            //     ->where('id', '!=', $authUser->id)
+            //     ->get();
+            $recipients = User::with(['userDetail' => function ($query) {
+                $query->select('id', 'user_id', 'designation', 'tenant_id');
+            }])
+            ->whereHas('userDetail', function ($query) use ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            })
+            ->where('id', '!=', $authUser->id)
+            ->get();
+    
 
             if ($recipients->isEmpty()) {
                 return redirect()->back()->with('error', 'No recipients found.');

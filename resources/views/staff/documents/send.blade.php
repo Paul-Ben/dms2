@@ -20,10 +20,10 @@
                     @csrf
                     <div class="form-group mb-3">
                         <label for="recipient_email">Recipient Email</label>
-                        <select class="form-control" name="recipient_id" id="recipients" multiple="multiple" aria-multiselectable="true" required>
+                        <select class="form-control" name="recipient_id" id="recipients" required>
                             <option value=" ">Select recipients</option>
                             @foreach ($recipients as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                <option value="{{ $user->id }}">{{ $user->name }}- {{ $user->userDetail->designation ?? 'No Designation' }}</option>
                             @endforeach
                         </select>
                     </div>
