@@ -65,4 +65,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class);
+    }
 }

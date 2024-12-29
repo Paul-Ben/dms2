@@ -160,42 +160,6 @@
         <div class="bg-light rounded p-4">
             <div class="email-container">
                 <div class="toolbar">
-                    <a href="{{route('document.reply', $document_received->document_id)}}">
-                        <button class="btn" onclick="replyEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                        </svg>
-                        Reply
-                    </button>
-                    </a>
-                    
-                    <a href="{{route('document.send', $document_received->document_id)}}">
-                        <button class="btn" onclick="forwardEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                        </svg>
-                        Forward
-                    </button>
-                    </a>
-                    
-                    <button class="btn" onclick="processEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                        </svg>
-                        Process
-                    </button>
-                    <button class="btn" onclick="processEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                        </svg>
-                        Approve
-                    </button>
-                    <button class="btn" onclick="processEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M18.3 5.7c-.4-.4-1-.4-1.4 0L12 10.6 7.1 5.7c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4L10.6 12l-4.9 4.9c-.4.4-.4 1 0 1.4s1 .4 1.4 0L12 13.4l4.9 4.9c.4.4 1 .4 1.4 0s.4-1 0-1.4L13.4 12l4.9-4.9c.4-.4.4-1 0-1.4z" />
-                        </svg>
-                        Reject
-                    </button>
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
                         <svg viewBox="0 0 24 24">
@@ -204,15 +168,29 @@
                         Back
                     </button>
                     </a>
+                    {{-- <a href="{{route('document.send', $document_received->document_id)}}">
+                        <button class="btn" onclick="forwardEmail()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+                        </svg>
+                        Forward
+                    </button>
+                    </a>
+                    <button class="btn" onclick="processEmail()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                        </svg>
+                        Process
+                    </button> --}}
                 </div>
 
                 <div class="email-header">
                     <div class="subject">Subject: {{$document_received->document->title}}</div>
                     <div class="email-meta">
                         <div>From:</div>
-                        <div>{{ $document_received->sender->name }} </div>
+                        <div>{{ $document_received->sender->name }}</div>
                         <div>To:</div>
-                        <div>{{ $document_received->recipient->name }}
+                        <div>{{ $document_received->recipient->name }} 
                         </div>
                         <div>Date:</div>
                         <div>{{ $document_received->created_at->format('M j, Y') }}</div>
@@ -220,7 +198,7 @@
                 </div>
 
                 <div class="email-body ml-8">
-                    Dear {{$document_received->recipient->name}},<br><br><br>
+                    Dear {{ $document_received->recipient->name }},<br><br>
 
                     {{ $document_received->message }}.<br><br>
                     Best regards,<br>

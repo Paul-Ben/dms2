@@ -22,4 +22,5 @@ class UserDetails extends Model
     {
         return $this->belongsTo(TenantDepartment::class, 'department_id');
     }
+  
 }

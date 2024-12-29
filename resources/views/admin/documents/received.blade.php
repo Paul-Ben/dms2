@@ -44,13 +44,7 @@
                                 <td>{{$received->sender_details->name}}</td>
                                 <td>{{$received->document->status}}</td>
                                 <td>
-                                    <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
-                                        <div class="dropdown-menu">
-                                            <a href="{{route('document.view', $received)}}" class="dropdown-item">View</a>
-                                            <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Forward</a>
-                                        </div>
-                                    </div>
+                                    <a href="{{route('document.view', $received)}}" class="nav-item">View</a>
                                 </td>
                             </tr>
                             @empty

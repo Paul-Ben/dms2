@@ -44,12 +44,17 @@ Body Content
             <p style="color: rgb(26, 164, 38);"></p>
             <nav>
                 
-            <ul class="pull-right pt-5">
+            <ul class="pull-right pt-5 justify-between">
                 <li><a href="/">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="{{route('login')}}">Login</a></li>
+               @if (auth()->user())
+               <li><a href="{{route('dashboard')}}">Dashboard</a></li>
+               @else
+                    <li><a href="{{route('login')}}">Login</a></li>
+               @endif
+               
             </ul>
         </nav>
            

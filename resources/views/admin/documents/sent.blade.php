@@ -25,12 +25,12 @@
                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
-                            <th scope="col">#</th>
-                            <th scope="col">Document No</th>
-                            <th scope="col">Title</th>
+                            <th scope="col" >#</th>
+                            <th scope="col" >Document No</th>
+                            <th scope="col" >Title</th>
                             <th scope="col">Sent To</th>
-                            <th scope="col">Comment</th>
-                            <th scope="col">Action</th>
+                            {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
+                            <th scope="col" >Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,18 +43,12 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$recipient[0]->name}}
-                                    <span>{{$recipient[0]->email}}</span>
+                                    {{$mda[0]->designation}}, <br>
+                                    <span>{{$mda[0]->tenant->name}}</span>
                                 </td>
-                                <td>{{$sent->message}}</td>
+                                {{-- <td>{{$sent->message}}</td> --}}
                                 <td>
-                                    <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
-                                        <div class="dropdown-menu">
-                                            <a href="{{route('document.view_sent', $sent)}}" class="dropdown-item">View</a>
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
-                                        </div>
-                                    </div>
+                                    <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
                                 </td>
                             </tr>
                             @empty

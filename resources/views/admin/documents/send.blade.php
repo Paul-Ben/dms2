@@ -23,7 +23,7 @@
                         <select class="form-control" name="recipient_id" id="recipients" required>
                             <option value=" ">Select recipients</option>
                             @foreach ($recipients as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                <option value="{{ $user->id }}">{{ $user->userDetail->tenant->name ?? 'Citizen User'  }} | {{$user->userDetail->designation ?? $user->name}}</option>
                             @endforeach
                         </select>
                     </div>

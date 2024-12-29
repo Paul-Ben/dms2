@@ -28,11 +28,8 @@ class SuperAdminActions extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        
     }
-    
 
-   
 
     /**
      * User management Actions Index/create/edit/show/delete
@@ -81,14 +78,14 @@ class SuperAdminActions extends Controller
 
     public function user_store(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
 
         ]);
-       
+
 
         // Create a new user instance
         $user = new User();
@@ -281,6 +278,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             $documents = DocumentStorage::myDocuments();
+
             return view('staff.documents.index', compact('documents'));
         }
 
@@ -320,28 +318,28 @@ class SuperAdminActions extends Controller
         // Store the initial data in the session or temporary storage
         $data = $request;
         $result = UserFileDocument::userFileDocument($data);
-       
+
         // Define the payment link
         $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
-        
+
         // Append a callback URL to the payment link
         $callbackUrl = route('payment.callback');
         $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
-       
+
         // Redirect to the payment link
         return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     }
     public function paymentCallback(Request $request)
     {
         // Retrieve the necessary data from the request or session
-        $data = session()->get('document_data'); 
-    
+        $data = session()->get('document_data');
+
         // Verify payment status (if needed)
-        $paymentStatus = $request->query('status'); 
+        $paymentStatus = $request->query('status');
 
         if ($paymentStatus === 'success') {
             // Process the document upload or related logic
-            
+
             // Redirect to the document index with a success message
             return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
         }
@@ -349,7 +347,7 @@ class SuperAdminActions extends Controller
         // Handle failed payment
         return redirect()->route('document.index')->with('error', 'Payment failed. Please try again.');
     }
-    
+
     public function document_show($received)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -359,7 +357,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-         
+
             return view('admin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -369,7 +367,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-           
+
             return view('staff.documents.show', compact('document_received'));
         }
         return view('errors.404');
@@ -383,7 +381,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
-            
+
             return view('admin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -393,7 +391,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
-           
+
             return view('staff.documents.show', compact('document_received'));
         }
         return view('errors.404');
@@ -418,23 +416,28 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'superadmin') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            return view('superadmin.documents.sent', compact('sent_documents', 'recipient'));
+            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+
+            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
 
-            return view('admin.documents.sent', compact('sent_documents', 'recipient'));
+            return view('admin.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'User') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
 
-            return view('user.documents.sent', compact('sent_documents', 'recipient'));
+            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
 
-            return view('staff.documents.sent', compact('sent_documents', 'recipient'));
+            return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         return view('errors.404');
     }
@@ -447,6 +450,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
+            // dd($received_documents);
             return view('admin.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -483,75 +487,92 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'Admin') {
             $authUser = Auth::user();
-            
+
             $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
             $recipients = User::where('id', $getter[0]->sender_id)->get();
-            
 
-                return view('staff.documents.reply', compact('recipients', 'document'));
-           
+
+            return view('staff.documents.reply', compact('recipients', 'document'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $authUser = Auth::user();
-            
+
             $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
             $recipients = User::where('id', $getter[0]->sender_id)->get();
-            
 
-                return view('staff.documents.reply', compact('recipients', 'document'));
-           
+
+            return view('staff.documents.reply', compact('recipients', 'document'));
         }
         return view('errors.404');
     }
 
     public function getSendform(Request $request, Document $document)
     {
+            
         if (Auth::user()->default_role === 'superadmin') {
             $recipients = User::all();
             return view('superadmin.documents.send', compact('recipients', 'document'));
         }
+
         if (Auth::user()->default_role === 'Admin') {
             $authUser = Auth::user();
+            $tenants = Tenant::all();
+            $tenantId = $authUser->userDetail->tenant_id;
 
-            if ($authUser && $authUser->userDetail) {
-                $tenantId = $authUser->userDetail->tenant_id;
+            $recipients = User::with(['userDetail.tenant' => function ($query) {
+                $query->select('id', 'name'); // Include only relevant columns
+            }])
+                ->whereHas('userDetail', function ($query) use ($tenantId) {
+                    $query->where('tenant_id', $tenantId); // Users in the same tenant
+                })
+                ->orWhere('default_role', 'Admin') // Admins in other tenants
+                ->get();
+            foreach ($recipients as $key => $recipient) {
+                $tenantName = $recipient->userDetail->tenant->name ?? 'No Tenant'; // Access tenant name directly
 
-                $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
-                    $query->where('tenant_id', $tenantId);
-                })->get();
-
-                return view('admin.documents.send', compact('recipients', 'document'));
-            } else {
-                return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
             }
+
+            if ($recipients->isEmpty()) {
+                return redirect()->back()->with('error', 'No recipients found.');
+            }
+
+            return view('admin.documents.send', compact('recipients', 'document', 'tenantName'));
+        } else {
+            return redirect()->route('dashboard')->with('error', 'User details not found.');
         }
+
         if (Auth::user()->default_role === 'User') {
             $recipients = User::where('default_role', 'Admin')->get();
             // dd($recipients);
             return view('user.documents.send', compact('recipients', 'document'));
         }
+        
         if (Auth::user()->default_role === 'Staff') {
             $authUser = Auth::user();
-
-            if ($authUser && $authUser->userDetail) {
-                $tenantId = $authUser->userDetail->tenant_id;
-
-                $recipients = User::whereHas('userDetail', function ($query) use ($tenantId) {
-                    $query->where('tenant_id', $tenantId);
-                })->where('id', '!=', $authUser->id)->get();
-
-                return view('admin.documents.send', compact('recipients', 'document'));
-            } else {
-                return response()->json(['message' => 'No tenant ID found for the authenticated user.'], 404);
+            $tenantId = $authUser->userDetail->tenant_id ?? null;
+        
+            if (!$tenantId) {
+                return redirect()->back()->with('error', 'Tenant information is missing.');
             }
+        
+            $recipients = User::with('userDetail')
+                ->whereHas('userDetail', function ($query) use ($tenantId) {
+                    $query->where('tenant_id', $tenantId);
+                })
+                ->where('id', '!=', $authUser->id)
+                ->get();
+        
+            return view('staff.documents.send', compact('recipients', 'document'));
         }
+        
         return view('errors.404');
     }
+
 
     public function sendDocument(Request $request)
     {
         $data = $request;
-        
+
         $result = DocumentStorage::sendDocument($data);
 
         if ($result['status'] === 'error') {

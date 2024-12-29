@@ -25,33 +25,30 @@
                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
-                            <th scope="col">#</th>
-                            <th scope="col">Document No</th>
-                            <th scope="col">Title</th>
+                            <th scope="col" >#</th>
+                            <th scope="col" style="width: 18.66%;" >Document No</th>
+                            <th scope="col" style="width: 25.66%;" >Title</th>
                             <th scope="col">Sent To</th>
-                            <th scope="col">Comment</th>
-                            <th scope="col">Action</th>
+                            {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
+                            <th scope="col" >Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($sent_documents as $key => $sent)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{$sent->document->docuent_number}}</td>
+                                <td><a href="{{ route('document.view', $sent) }}">
+                                    {{ $sent->document->docuent_number }}
+                                </a>
+                            </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$recipient[0]->name}}
-                                    <span>{{$recipient[0]->email}}</span>
+                                    {{$mda[0]->designation}}, <br>
+                                    <span>{{$mda[0]->tenant->name}}</span>
                                 </td>
-                                <td>{{$sent->message}}</td>
+                                {{-- <td>{{$sent->message}}</td> --}}
                                 <td>
-                                    <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
-                                        <div class="dropdown-menu">
-                                            <a href="#" class="dropdown-item">Edit</a>
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
-                                        </div>
-                                    </div>
+                                    <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
                                 </td>
                             </tr>
                             @empty
@@ -63,9 +60,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($sent_documents->count() > 0)
             <div class="mt-3">
                 {{$sent_documents->links('pagination::bootstrap-5')}}
             </div>
+            @endif
         </div>
     </div>
     <!-- Table End -->

@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Document;
 use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
+use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class DocumentStorage
         $documents = Document::with('user')->where('uploaded_by', Auth::user()->id)
             ->orderBy('id', 'desc')
             ->paginate($perpage);
+         
 
         return $documents;
     }
@@ -162,11 +164,11 @@ class DocumentStorage
 
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
-                $recipient = User::where('id', $value->recipient_id)->get(['name', 'email']);
+                $recipient = User::where('id', $value->recipient_id)->get(['id', 'name', 'email']);
                 // You can attach recipient details to the document if needed
                 $value->recipient_details = $recipient; // Optional: Attach recipient details
             }
-
+       
             return [$sent_documents, $recipient];
 
             // return [$sent_documents, $recipient];

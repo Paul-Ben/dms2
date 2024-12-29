@@ -22,7 +22,7 @@
                 <h6 class="mb-0">Document Management</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.file') }}">File New Document</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
             </div>
@@ -42,18 +42,14 @@
                         @forelse ($documents as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank" href="{{asset('documents'.'/'.$document->tenant_id.'/'.$document->department_id.'/'.$document->file_path)}}">{{$document->docuent_number}}</a></td>
+                                <td><a target="_blank" href="{{asset('documents'.'/'.$document->file_path)}}">{{$document->docuent_number}}</a></td>
                                 <td>{{$document->title}}</td>
                                 {{-- <td></td> --}}
                                 <td>Processing</td>
                                 <td>
-                                    <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
-                                        <div class="dropdown-menu">
-                                            <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a>
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
-                                        </div>
+                                    <div class="nav-item">
+                                        <a target="_blank" href="{{asset('documents'.'/'.$document->file_path)}}" class="nav-link">View</a>
+                        
                                     </div>
                                 </td>
                             </tr>
