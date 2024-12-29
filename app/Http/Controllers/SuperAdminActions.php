@@ -507,17 +507,21 @@ class SuperAdminActions extends Controller
     }
 
     public function getSendform(Request $request, Document $document)
-    {
-            
-        if (Auth::user()->default_role === 'superadmin') {
+{
+    $authUser = Auth::user();
+    $role = $authUser->default_role;
+
+    switch ($role) {
+        case 'superadmin':
             $recipients = User::all();
             return view('superadmin.documents.send', compact('recipients', 'document'));
-        }
 
-        if (Auth::user()->default_role === 'Admin') {
-            $authUser = Auth::user();
-            $tenants = Tenant::all();
-            $tenantId = $authUser->userDetail->tenant_id;
+        case 'Admin':
+            $tenantId = $authUser->userDetail->tenant_id ?? null;
+
+            if (!$tenantId) {
+                return redirect()->back()->with('error', 'Tenant information is missing.');
+            }
 
             $recipients = User::with(['userDetail.tenant' => function ($query) {
                 $query->select('id', 'name'); // Include only relevant columns
@@ -527,47 +531,41 @@ class SuperAdminActions extends Controller
                 })
                 ->orWhere('default_role', 'Admin') // Admins in other tenants
                 ->get();
-            foreach ($recipients as $key => $recipient) {
-                $tenantName = $recipient->userDetail->tenant->name ?? 'No Tenant'; // Access tenant name directly
-
-            }
 
             if ($recipients->isEmpty()) {
                 return redirect()->back()->with('error', 'No recipients found.');
             }
 
-            return view('admin.documents.send', compact('recipients', 'document', 'tenantName'));
-        } else {
-            return redirect()->route('dashboard')->with('error', 'User details not found.');
-        }
+            return view('admin.documents.send', compact('recipients', 'document'));
 
-        if (Auth::user()->default_role === 'User') {
+        case 'User':
             $recipients = User::where('default_role', 'Admin')->get();
-            // dd($recipients);
             return view('user.documents.send', compact('recipients', 'document'));
-        }
-        
-        if (Auth::user()->default_role === 'Staff') {
-            $authUser = Auth::user();
+
+        case 'Staff':
             $tenantId = $authUser->userDetail->tenant_id ?? null;
-        
+
             if (!$tenantId) {
                 return redirect()->back()->with('error', 'Tenant information is missing.');
             }
-        
+
             $recipients = User::with('userDetail')
                 ->whereHas('userDetail', function ($query) use ($tenantId) {
                     $query->where('tenant_id', $tenantId);
                 })
                 ->where('id', '!=', $authUser->id)
                 ->get();
-        
-            return view('staff.documents.send', compact('recipients', 'document'));
-        }
-        
-        return view('errors.404');
-    }
 
+            if ($recipients->isEmpty()) {
+                return redirect()->back()->with('error', 'No recipients found.');
+            }
+
+            return view('staff.documents.send', compact('recipients', 'document'));
+
+        default:
+            return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
+    }
+}
 
     public function sendDocument(Request $request)
     {
