@@ -2,9 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\Activity;
 use App\Models\Document;
 use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
+use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +38,7 @@ class DocumentStorage
         $documents = Document::with('user')->where('uploaded_by', Auth::user()->id)
             ->orderBy('id', 'desc')
             ->paginate($perpage);
+         
 
         return $documents;
     }
@@ -56,7 +59,7 @@ class DocumentStorage
         if ($data->hasFile('file_path')) {
             $filePath = $data->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $file_path = $filePath->move(public_path('documents/' . $data->tenant_id . '/' . $data->department_id . '/'), $filename);
+            $file_path = $filePath->move(public_path('documents/'), $filename);
             $data->file_path = $filename;
         }
         $user_details = UserDetails::where('user_id', Auth::user()->id)->first();
@@ -66,11 +69,14 @@ class DocumentStorage
             'docuent_number' => $data->document_number,
             'file_path' => $data->file_path,
             'uploaded_by' => Auth::user()->id,
-            'department_id' => $user_details->department_id,
-            'tenant_id' => $user_details->tenant_id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,
             'metadata' => json_encode($data->metadata),
+        ]);
+
+        Activity::create([
+            'action' => 'You uploaded a document',
+            'user_id' => Auth::user()->id,
         ]);
 
         return [
@@ -88,7 +94,7 @@ class DocumentStorage
         $departmentId = $document->department_id;
         $filePath = $document->file_path;
 
-        $path = public_path('documents/' . $tenantId . '/' . $departmentId . '/' . $filePath);
+        $path = public_path('documents/' . $filePath);
 
         if (file_exists($path)) {
             return response()->file($path);
@@ -118,10 +124,24 @@ class DocumentStorage
             'document_id' => $data->document_id,
         ]);
 
-        $document_action->document_recipients()->attach($data->recipient_id, [
+        DocumentRecipient::create([
+            'file_movement_id' => $document_action->id,
             'recipient_id' => $data->recipient_id,
             'user_id' => Auth::user()->id,
             'created_at' => now(),
+        ]);
+
+        Activity::insert([
+            [
+                'action' => 'Sent Document',
+                'user_id' => Auth::user()->id,
+                'created_at' => now(),
+            ],
+            [
+                'action' => 'Document Received',
+                'user_id' => $data->recipient_id,
+                'created_at' => now(),
+            ],
         ]);
 
         return [
@@ -141,15 +161,15 @@ class DocumentStorage
                 ->where('sender_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
-           
-                // Fetch recipient details for each sent document
-                foreach ($sent_documents as $key => $value) {
-                    $recipient = User::where('id', $value->recipient_id)->get(['name', 'email']);
-                    // You can attach recipient details to the document if needed
-                    $value->recipient_details = $recipient; // Optional: Attach recipient details
-                }
-                
-                return [$sent_documents, $recipient];
+
+            // Fetch recipient details for each sent document
+            foreach ($sent_documents as $key => $value) {
+                $recipient = User::where('id', $value->recipient_id)->get(['id', 'name', 'email']);
+                // You can attach recipient details to the document if needed
+                $value->recipient_details = $recipient; // Optional: Attach recipient details
+            }
+       
+            return [$sent_documents, $recipient];
 
             // return [$sent_documents, $recipient];
         } catch (\Exception $e) {
@@ -172,18 +192,51 @@ class DocumentStorage
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
 
-            // Fetch sender details for each received document
+                // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
-                $sender = User::where('id', $value->sender_id)->get(['name', 'email']);
+                $value->sender_details = User::select('name', 'email')->find($value->sender_id);
                 // You can attach sender details to the document if needed
-                $value->sender_details = $sender; // Optional: Attach sender details
+                //  = $sender; // Optional: Attach sender details
+                // dd($value->sender_details);
             }
-            return [$received_documents, $sender];
+            // dd($received_documents);
+            
+            return [$received_documents];
         } catch (\Exception $e) {
             // Log the error message
             Log::error('Error retrieving received documents: ' . $e->getMessage());
             // Return an empty collection and null sender details
             return [collect(), null];
         }
+       
+    }
+
+    /**
+     * Get single document details
+     */
+    public static function getDocumentDetails($received)
+    {
+        $document = Document::with('user')->find($received);
+        dd($document);
+        return $document;
+    }
+
+    public static function getUserRecipients()
+    {
+        $adminWithTenantDetails = User::where('default_role', 'Admin')
+            ->whereHas('userDetail', function ($query) {
+                $query->whereNotNull('tenant_id');
+            })
+            ->with(['userDetail.tenant'])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'admin_id' => $user->id,
+                    'tenant_id' => $user->userDetail->tenant->id ?? null,
+                    'tenant_name' => $user->userDetail->tenant->name ?? null,
+                ];
+            });
+
+        return $adminWithTenantDetails;
     }
 }

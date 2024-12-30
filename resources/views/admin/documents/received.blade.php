@@ -34,28 +34,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @forelse ($organisations as $key => $organisation)
+                        @forelse ($received_documents as $key => $received)
                             <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>Doc-1234</td>
-                                <td>Title</td>
-                                <td>Jon Doe</td>
-                                <td>Processing</td>
+                                <td>{{ $key+1}}</td>
+                                <td><a href="{{route('document.view', $received)}}">
+                                    {{$received->document->docuent_number}}
+                                </a></td>
+                                <td>{{$received->document->title}}</td>
+                                <td>{{$received->sender_details->name}}</td>
+                                <td>{{$received->document->status}}</td>
                                 <td>
-                                    <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
-                                        <div class="dropdown-menu">
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
-                                            <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a>
-                                        </div>
-                                    </div>
+                                    <a href="{{route('document.view', $received)}}" class="nav-item">View</a>
                                 </td>
                             </tr>
-                            @empty --}}
+                            @empty
                             <tr class="text-center">
                                 <td colspan="6">No Data Found</td>
                                 </tr>
-                        {{-- @endforeach --}}
+                        @endforelse
 
                     </tbody>
                 </table>

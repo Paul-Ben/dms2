@@ -18,4 +18,12 @@ class FileMovement extends Model
     {
         return $this->belongsToMany(User::class, 'document_recipients', 'recipient_id', 'file_movement_id');
     }
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
 }

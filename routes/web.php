@@ -74,8 +74,13 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/received', [SuperAdminActions::class, 'received_documents'])->name('document.received');
     // Route::get('/document/{document}/view', [SuperAdminActions::class, 'viewDocument'])->name('document.view');
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');
+    Route::get('/document/{document}/reply', [SuperAdminActions::class, 'getReplyform'])->name('document.reply');
     Route::post('/document/{document}/send', [SuperAdminActions::class, 'sendDocument'])->name('document.senddoc');
-
+    Route::get('/document/file/document', [SuperAdminActions::class, 'user_file_document'])->name('document.file');
+    Route::get('/document/document/{received}/view', [SuperAdminActions::class, 'document_show'])->name('document.view');
+    Route::get('/document/document/{sent}/view', [SuperAdminActions::class, 'document_show_sent'])->name('document.view_sent');
+    Route::post('/document/file/document', [SuperAdminActions::class, 'user_store_file_document'])->name('document.storefile');
+    Route::get('/payment/callback', [SuperAdminActions::class, 'paymentCallback'])->name('payment.callback');
 
 
 
