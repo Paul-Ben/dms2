@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-lg-5 col-md-4 col-sm-6 animated fadeInLeft" data-id="2">
                     <figure>
-                        <img src="{{ asset('assets/demo-data/gov_alia.jpg') }}" alt="/" style="height: 296px" />
+                        <img src="{{ asset('assets/demo-data/gov_alia.jpeg') }}" alt="/" style="height: 296px" />
                     </figure>
                 </div>
             </div>
