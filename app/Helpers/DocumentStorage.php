@@ -38,7 +38,7 @@ class DocumentStorage
         $documents = Document::with('user')->where('uploaded_by', Auth::user()->id)
             ->orderBy('id', 'desc')
             ->paginate($perpage);
-         
+
 
         return $documents;
     }
@@ -168,7 +168,7 @@ class DocumentStorage
                 // You can attach recipient details to the document if needed
                 $value->recipient_details = $recipient; // Optional: Attach recipient details
             }
-       
+
             return [$sent_documents, $recipient];
 
             // return [$sent_documents, $recipient];
@@ -195,12 +195,9 @@ class DocumentStorage
                 // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
                 $value->sender_details = User::select('name', 'email')->find($value->sender_id);
-                // You can attach sender details to the document if needed
-                //  = $sender; // Optional: Attach sender details
-                // dd($value->sender_details);
+                
             }
-            // dd($received_documents);
-            
+
             return [$received_documents];
         } catch (\Exception $e) {
             // Log the error message
@@ -208,7 +205,7 @@ class DocumentStorage
             // Return an empty collection and null sender details
             return [collect(), null];
         }
-       
+
     }
 
     /**
@@ -217,7 +214,7 @@ class DocumentStorage
     public static function getDocumentDetails($received)
     {
         $document = Document::with('user')->find($received);
-        dd($document);
+        // dd($document);
         return $document;
     }
 

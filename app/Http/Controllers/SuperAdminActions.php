@@ -445,8 +445,9 @@ class SuperAdminActions extends Controller
     public function received_documents()
     {
         if (Auth::user()->default_role === 'superadmin') {
-            list($received_documents, $sender) = DocumentStorage::getReceivedDocuments();
-            return view('superadmin.documents.received', compact('received_documents', 'sender'));
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+            // dd($received_documents);
+            return view('superadmin.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
