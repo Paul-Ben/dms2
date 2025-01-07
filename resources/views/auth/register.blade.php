@@ -2,7 +2,7 @@
 @section('content')
     <div>
         @include('layouts.nav')
-        <!-- <form action="{{ route('register') }}" method="POST">
+     <form action="{{ route('register') }}" method="POST">
             @csrf -->
             <div class="container-xxl position-relative bg-white d-flex p-0">
                 <!-- Spinner Start -->
@@ -115,9 +115,6 @@
                                         </div>
                                     </div>
                                 
-                              
-
-
                                      <div class="m-2 d-flex justify-content-center">
                                             {!!htmlFormSnippet()!!}
 
