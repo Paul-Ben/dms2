@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
             'g-recaptcha-response' => 'recaptcha',
 
         ]);
-
+        dd($request);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
