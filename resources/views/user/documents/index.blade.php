@@ -10,6 +10,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
                @endif
+               <script>
+                @if(session()->has('toastr'))
+                    {!! session('toastr') !!}
+                @endif
+            </script>
             </div>
         </div>
     </div>

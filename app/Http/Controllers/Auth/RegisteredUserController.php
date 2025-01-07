@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => 'recaptcha',
 
@@ -45,9 +45,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'default_role' => $request->default_role,
         ]);
-        
 
-         UserDetails::create([
+
+        UserDetails::create([
             'user_id' => $user->id,
             'phone_number' => $request->phone_number,
             'nin_number' => $request->nin_number,
@@ -63,6 +63,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         $user->assignRole($request->default_role);
         Auth::login($user);
+        
 
         return redirect(RouteServiceProvider::HOME);
     }

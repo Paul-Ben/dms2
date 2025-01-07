@@ -1,6 +1,11 @@
 @extends('dashboards.index')
 @section('content')
 <div>
+    {{-- <script>
+        @if(session()->has('toastr'))
+            {!! session('toastr') !!}
+        @endif
+    </script> --}}
     <div>
         <!-- Sale & Revenue Start -->
         <div class="container-fluid pt-4 px-4">

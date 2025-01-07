@@ -266,10 +266,12 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
             $documents = DocumentStorage::myDocuments();
+            toastr('success', 'Document sent.');
             return view('superadmin.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
+            toastr('success', 'Document sent.');
             return view('admin.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -341,6 +343,7 @@ class SuperAdminActions extends Controller
             // Process the document upload or related logic
 
             // Redirect to the document index with a success message
+            toastr('success', 'Document uploaded and sent successfully' );
             return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
         }
         // $response = UserFileDocument::undoDocumentActions();
@@ -408,6 +411,7 @@ class SuperAdminActions extends Controller
                 ->withErrors($result['errors'])
                 ->withInput();
         }
+        toastr('success', 'Document Uploaded!!');
         return redirect()->route('document.index')->with('success', 'Document uploaded successfully');
     }
 
@@ -422,15 +426,16 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
-
+            // $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->firstOrFail();
+            // dd($mda);
             return view('admin.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'User') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
             $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
-
+           
             return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'Staff') {
@@ -588,6 +593,7 @@ class SuperAdminActions extends Controller
                 ->withErrors($result['errors'])
                 ->withInput();
         }
+        toastr('success', 'Document sent successfully.');
         return redirect()->route('document.index')->with('success', 'Document sent successfully');
     }
 
