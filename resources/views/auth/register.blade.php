@@ -2,8 +2,7 @@
 @section('content')
     <div>
         @include('layouts.nav')
-     <form action="{{ route('register') }}" method="POST">
-            @csrf -->
+    
             <div class="container-xxl position-relative bg-white d-flex p-0">
                 <!-- Spinner Start -->
                 <div id="spinner"
@@ -137,8 +136,8 @@
                                             href="{{ route('login') }}">Sign In</a></p>
                                             <a href="#" class="text-center mt-3">Forgot Password</a>
                                     </div>
-                                    
                                 </form>
+                               
                             </div>
                         </div>
                     </div>
