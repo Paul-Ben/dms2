@@ -22,7 +22,8 @@ class UserDetails extends Model
     'tenant_id', 
     'account_type',
     'company_name',
-    'rc_number'  
+    'rc_number',
+    'company_address',
 ];
 
     public function user()

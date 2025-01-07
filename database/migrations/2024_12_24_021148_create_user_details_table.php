@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('account_type')->nullable(); 
             $table->string('company_name')->nullable(); 
             $table->string('rc_number')->nullable();
+             $table->string('company_address')->nullable();
             $table->timestamps();
         });
     }

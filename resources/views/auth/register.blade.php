@@ -55,13 +55,13 @@
                                     <div class="row">
                                         <div class="col-md-6 col-12">
                                              <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="floatingPhone" placeholder="08065433456" name="phone_number" value="{{ old('phone_number') }}" required autocomplete="phone_number">
+                                                <input type="text" class="form-control" id="floatingPhone" placeholder="08065433456" name="phone_number" value="{{ old('phone_number') }}" required autocomplete="phone_number" pattern="0[0-9]{10}">
                                                 <label for="floatingPhone">Phone Number</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-12">
                                              <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="floatingNIN" placeholder="3455656677888" name="nin_number" value="{{ old('nin_number') }}" required autocomplete="nin_number">
+                                                <input type="text" class="form-control" id="floatingNIN" placeholder="3455656677888" name="nin_number" value="{{ old('nin_number') }}" required autocomplete="nin_number" pattern="[0-9]{11}">
                                                 <label for="floatingNIN">NIN Number</label>
                                                 <input type="text" name="default_role" value="User" hidden>
                                                 <input type="text" name="designation" value="User" hidden>
@@ -108,7 +108,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="floatingName" placeholder="Terver Ameh" name="company_address" value="{{ old('company_address') }}" required autofocus autocomplete="company_address">
+                                                    <input type="text" class="form-control" id="floatingName" placeholder="Company Address" name="company_address" value="{{ old('company_address') }}" required autofocus autocomplete="company_address">
                                                     <label for="floatingName">Company Address</label>
                                                 </div>
                                             </div>

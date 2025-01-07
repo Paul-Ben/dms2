@@ -56,6 +56,7 @@ class RegisteredUserController extends Controller
             'account_type' => $request->account_type,
             'company_name' => $request->company_name,
             'rc_number' => $request->rc_number,
+            'company_address' => $request->company_address,
 
         ]);
 
