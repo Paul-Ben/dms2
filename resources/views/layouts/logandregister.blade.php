@@ -29,6 +29,11 @@
 
     <!-- Template Stylesheet -->
     <link href="{{asset('dbf/css/style.css')}}" rel="stylesheet">
+
+
+    <!---- ReCaptcha ------>
+    {!!htmlScriptTagJsApi()!!}
+    
 </head>
 
 <body>
