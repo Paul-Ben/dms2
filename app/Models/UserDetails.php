@@ -10,6 +10,21 @@ class UserDetails extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected $fillable = [ 
+    'user_id', 
+    'nin_number', 
+    'gender', 
+    'phone_number', 
+    'designation', 
+    'avatar', 
+    'signature', 
+    'department_id', 
+    'tenant_id', 
+    'account_type',
+    'company_name',
+    'rc_number'  
+];
+
     public function user()
     {
         return $this->belongsTo(User::class);
