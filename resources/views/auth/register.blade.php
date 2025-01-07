@@ -11,7 +11,11 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-              
+              @if (session('errors'))
+              <div class="alert alert-danger" role="alert">
+                {{ session('errors') }}
+                </div>
+              @endif
                 <div class="container-fluid">
                     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                         <div class="col-12 col-sm-10 ">
@@ -26,7 +30,7 @@
                                     <div class="row">
                                         <div class="col-md-6 col-12">
                                               <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="floatingName" placeholder="Terver Ameh" name="name" value="{{ old('name') }}" required autofocus autocomplete="name">
+                                                <input type="text"  class="form-control" id="floatingName" placeholder="Terver Ameh" name="name" value="{{ old('name') }}" required autofocus autocomplete="name">
                                                 <label for="floatingName">Name</label>
                                             </div>
                                         </div>
@@ -107,7 +111,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="floatingName" placeholder="Company Address" name="company_address" value="{{ old('company_address') }}" required autofocus autocomplete="company_address">
+                                                    <input type="text" class="form-control" id="floatingName" placeholder="Company Address" name="company_address" value="{{ old('company_address') }}"  autofocus autocomplete="company_address">
                                                     <label for="floatingName">Company Address</label>
                                                 </div>
                                             </div>
@@ -137,13 +141,12 @@
                                             <a href="#" class="text-center mt-3">Forgot Password</a>
                                     </div>
                                 </form>
-                               
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        {{-- </form> --}}
         <!-- Sign In End -->
     </div>
     </div>
