@@ -33,7 +33,7 @@
 
     <!---- ReCaptcha ------>
     {!!htmlScriptTagJsApi()!!}
-    
+
 </head>
 
 <body>
@@ -54,6 +54,18 @@
 
     <!-- Template Javascript -->
     <script src="{{asset('dbf/js/main.js')}}"></script>
+
+    <script>
+    function toggleCorporateFields() {
+        var accountType = document.getElementById('accountTypeSelect').value;
+        var corporateFields = document.getElementById('corporateFields');
+        if (accountType === 'corporate') {
+            corporateFields.style.display = 'block';
+        } else {
+            corporateFields.style.display = 'none';
+        }
+    }
+</script>
 </body>
 
 </html>
