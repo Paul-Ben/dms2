@@ -177,8 +177,6 @@
                                              <button type="submit" class="btn btn-primary py-3 w-50 mb-4">Sign Up</button>
                                         </div>
 
-                                       
-                                       
                                     <p class="text-center mb-0">Already have an Account? <a
                                             href="{{ route('login') }}">Sign In</a></p>
                                             <a href="#" class="text-center mt-3">Forgot Password</a>

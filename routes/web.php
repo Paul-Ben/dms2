@@ -34,7 +34,16 @@ Route::get('/agencies', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/test-verify', function () { 
+    return view('test-verify');
+});
+// Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::middleware(['auth','verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -82,7 +91,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::post('/document/file/document', [SuperAdminActions::class, 'user_store_file_document'])->name('document.storefile');
     Route::get('/payment/callback', [SuperAdminActions::class, 'paymentCallback'])->name('payment.callback');
 
-
+ 
 
 });
 
