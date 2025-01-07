@@ -160,10 +160,24 @@
                                             </div>
                                         </div>
                                     </div>
+                                     <div class="m-2">
+                                            {!!htmlFormSnippet()!!}
+
+                                            @if ($errors->has('g-recaptcha-response'))
+                                            <div>
+                                                <small class="text-danger">
+                                                    {{$errors->first('g-recaptcha-response')}}
+                                                </small>
+                                            </div>
+                                            
+                                            @endif
+                                        </div>
                                     <div class="row text-center ">
                                         <div class="col-9">
                                              <button type="submit" class="btn btn-primary py-3 w-50 mb-4">Sign Up</button>
                                         </div>
+
+                                       
                                        
                                     <p class="text-center mb-0">Already have an Account? <a
                                             href="{{ route('login') }}">Sign In</a></p>
