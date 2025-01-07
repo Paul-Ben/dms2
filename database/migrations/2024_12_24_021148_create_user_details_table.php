@@ -22,6 +22,10 @@ return new class extends Migration
             $table->string('signature')->nullable();
             $table->integer('department_id')->nullable();
             $table->integer('tenant_id')->nullable();
+            $table->string('account_type')->nullable(); 
+            $table->string('company_name')->nullable(); 
+            $table->string('rc_number')->nullable();
+             $table->string('company_address')->nullable();
             $table->timestamps();
         });
     }
