@@ -12,6 +12,7 @@
                     </div>
                 </div>
               
+              
                 <div class="container-fluid">
                     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                         <div class="col-12 col-sm-10 ">
@@ -24,6 +25,9 @@
                                 <form method="POST" action="{{ route('register') }}">
                                     @csrf
                                     <div class="row">
+                                    <div class="mb-4">
+                                        <h3 class="text-center text-primary">Register</h3>
+                                    </div>
                                         <div class="col-md-6 col-12">
                                               <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="floatingName" placeholder="Terver Ameh" name="name" value="{{ old('name') }}" required autofocus autocomplete="name">
@@ -107,7 +111,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="floatingName" placeholder="Company Address" name="company_address" value="{{ old('company_address') }}" required autofocus autocomplete="company_address">
+                                                    <input type="text" class="form-control" id="floatingName" placeholder="Company Address" name="company_address" value="{{ old('company_address') }}" autofocus autocomplete="company_address">
                                                     <label for="floatingName">Company Address</label>
                                                 </div>
                                             </div>
@@ -125,17 +129,19 @@
                                             </div>
 
                                             @endif
-                                    </div>                         
+                                       </div>                         
                                      
-                                    <div class="d-flex justify-content-center">
+                                    <div class="d-flex justify-content-center mb-4">
                                         <button type="submit" class="btn btn-primary py-3 w-50">Register</button>
-                                    </div>                                                                      
+                                    </div> 
+                                        <div>                                                                
+                                       <p class="text-center mb-0">Already have an Account?
+                                        <a href="{{ route('login') }}">Sign In</a>
+                                        <br>
+                                        <a href="#" class="text-center mt-3">Forgot Password</a>
+                                        </p>
                                        
-                                            <p class="text-center mb-0">Already have an Account? <a
-
-                                            href="{{ route('login') }}">Sign In</a></p>
-                                            <a href="#" class="text-center mt-3">Forgot Password</a>
-                                    </div>
+                                        </div>
                                 </form>
                                
                             </div>
@@ -143,7 +149,7 @@
                     </div>
                 </div>
             </div>
-        </form>
+     
         <!-- Sign In End -->
     </div>
     </div>
