@@ -52,8 +52,8 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <img src="{{ asset('dbf/img/logos.jpeg') }}" alt="logo" style="width: 80px; height: 80px;">
+                <a href="/" class="navbar-brand mx-4 mb-3">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">

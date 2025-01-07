@@ -44,8 +44,8 @@
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                         </a>
                         <div class="ms-3">
-                            <p class="mb-2">Total Revenue</p>
-                            <h6 class="mb-0">$1234</h6>
+                            <p class="mb-2">Total Feedback</p>
+                            <h6 class="mb-0">0</h6>
                         </div>
                     </div>
                 </div>
@@ -61,52 +61,38 @@
                             <h6 class="mb-0">Recent Activity</h6>
                             <a href="">Show All</a>
                         </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
+                        @forelse ($activities as $activity)
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt=""
+                                    style="width: 40px; height: 40px;">
+                                <div class="w-100 ms-3">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-0">{{ $activity->user->name }}</h6>
+                                        <small>{{ $activity->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    <span>{{ $activity->action }}</span>
                                 </div>
-                                <span>Short message goes here...</span>
                             </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
+
+                        @empty
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <div class="w-100 ms-3">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-0">No Recent Activity</h6>
+                                    </div>
                                 </div>
-                                <span>Short message goes here...</span>
                             </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center pt-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
         <!-- Widgets End -->
-    
+        @if ($activities->count() >0)
+        <div class="mt-4">
+            {{ $activities->links('pagination::bootstrap-5') }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection

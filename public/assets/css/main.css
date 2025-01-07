@@ -169,7 +169,7 @@ parallax
 	padding-bottom: 50px;
 	min-height:250px;
 }
-.parallax_one { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url(../demo-data/banner.png); }
+.parallax_one { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),url(../demo-data/banner.png); }
 .parallax_two { background-image: url(../demo-data/bg2.png); }
 /*=======MAin=======*/
 .color-white{color: #fff;}
