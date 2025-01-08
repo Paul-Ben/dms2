@@ -43,8 +43,8 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$mda[0]->designation}}, <br>
-                                    <span>{{$mda[0]->tenant->name}}</span>
+                                    {{$sent->recipient_details[0]->userDetail->designation}}, <br>
+                                    <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
                                 </td>
                                 {{-- <td>{{$sent->message}}</td> --}}
                                 <td>

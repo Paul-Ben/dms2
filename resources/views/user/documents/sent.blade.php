@@ -16,7 +16,7 @@
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Sent Documents</h6>
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('document.file') }}">File New Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 
@@ -43,8 +43,13 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$mda[0]->designation}}, <br>
+                                    @if ($mda)
+                                        {{$mda[0]->designation}}, <br>
                                     <span>{{$mda[0]->tenant->name}}</span>
+                                    @else
+                                    <span>Not Found</span>
+                                    @endif
+                                    
                                 </td>
                                 {{-- <td>{{$sent->message}}</td> --}}
                                 <td>

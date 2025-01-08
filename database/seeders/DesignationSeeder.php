@@ -35,6 +35,18 @@ class DesignationSeeder extends Seeder
             [
                 'name' => 'System Admin',
             ],
+            [
+                'name' => 'Director General',
+            ],
+            [
+                'name' => 'Managing Director',
+            ],
+            [
+                'name' => 'Board Secretary',
+            ],
+            [
+                'name' => 'Chairman',
+            ],
             
         ]);
         // $designations = [

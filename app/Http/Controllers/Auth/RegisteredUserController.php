@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
             'g-recaptcha-response' => 'recaptcha',
 
         ]);
-        dd($request);
+       
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -70,8 +70,11 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         $user->assignRole($request->default_role);
         Auth::login($user);
+        $notification = [
+            'message' => 'Registration successful',
+            'alert-type' => 'success'
+        ];
 
-
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::HOME)->with($notification);
     }
 }
