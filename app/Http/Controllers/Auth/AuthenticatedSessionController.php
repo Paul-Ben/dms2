@@ -26,10 +26,14 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
+        
         $request->session()->regenerate();
-        toastr()->success('Login Successful');
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $notification = [
+            'message' => 'Successfully Logged in.',
+            'alert-type' => 'success'
+        ];
+
+        return redirect()->intended(RouteServiceProvider::HOME)->with($notification);
     }
 
     /**
@@ -42,7 +46,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        toastr()->info('You have been logged out.');
-        return redirect('/');
+        $notification = array(
+            'message' => 'Successfully Logged out.',
+            'alert-type' => 'info'
+        );
+        
+        return redirect('/')->with($notification);
     }
 }

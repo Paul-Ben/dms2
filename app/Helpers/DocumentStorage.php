@@ -164,7 +164,7 @@ class DocumentStorage
 
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
-                $recipient = User::where('id', $value->recipient_id)->get(['id', 'name', 'email']);
+                $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);
                 // You can attach recipient details to the document if needed
                 $value->recipient_details = $recipient; // Optional: Attach recipient details
             }
@@ -179,6 +179,24 @@ class DocumentStorage
             return [collect(), null];
         }
     }
+//     public static function getSentDocuments($perPage = 5)
+// {
+//     try {
+//         // Eager load recipient details and other relationships
+//         $sent_documents = FileMovement::with(['document_recipients', 'document', 'recipientDetails'])
+//             ->where('sender_id', Auth::id())
+//             ->orderBy('id', 'desc')
+//             ->paginate($perPage);
+
+//         return $sent_documents;
+//     } catch (\Exception $e) {
+//         // Log the error message
+//         Log::error('Error retrieving sent documents: ' . $e->getMessage());
+//         // Return an empty collection
+//         return collect();
+//     }
+// }
+
 
     /**
      * Get all received documents

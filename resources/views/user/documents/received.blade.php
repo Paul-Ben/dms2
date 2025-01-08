@@ -16,7 +16,7 @@
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Received Documents</h6>
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('document.file') }}">File New Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 

@@ -124,7 +124,12 @@ class SuperAdminActions extends Controller
 
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User  created successfully.');
+        $notification = [
+            'message' => 'User created successfully',
+            'alert-type' => 'success'
+        ];
+
+        return redirect()->route('users.index')->with($notification);
     }
 
     public function user_edit(User $user)
@@ -137,7 +142,11 @@ class SuperAdminActions extends Controller
 
             return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while fetching user details');
+            $notification = [
+                'message' => 'Error while fetching user details',
+                'alert-type' => 'error'
+            ];
+            return redirect()->back()->with($notification);
         }
     }
 
@@ -163,8 +172,12 @@ class SuperAdminActions extends Controller
         }
 
         $user->save();
+        $notification = [
+            'message' => 'User updated successfully',
+            'alert-type' => 'success'
+        ];
 
-        return redirect()->route('user.index')->with('success', 'User  updated successfully.');
+        return redirect()->route('user.index')->with($notification);
     }
 
     public function user_delete(User $user)
@@ -214,8 +227,11 @@ class SuperAdminActions extends Controller
             $tenant->status = $request->input('status');
 
             $tenant->save();
-
-            return redirect()->route('organisation.index')->with('success', 'Organisation created successfully.');
+            $notification = [
+                'message' => 'Organisation created successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('organisation.index')->with($notification);
         }
         return view('errors.404');
     }
@@ -247,7 +263,11 @@ class SuperAdminActions extends Controller
             $tenant->address = $request->input('address');
             $tenant->status = $request->input('status');
             $tenant->save();
-            return redirect()->route('organisation.index')->with('success', 'Organisation updated successfully.');
+            $notification = [
+                'message' => 'Organisation updated successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('organisation.index')->with($notification);
         }
         return view('errors.404');
     }
@@ -255,7 +275,11 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
             $tenant->delete();
-            return redirect()->route('organisation.index')->with('success', 'Organisation deleted successfully.');
+            $notification = [
+                'message' => 'Organisation deleted successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('organisation.index')->with($notification);
         }
         return view('errors.404');
     }
@@ -266,12 +290,12 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
             $documents = DocumentStorage::myDocuments();
-            toastr('success', 'Document sent.');
+
             return view('superadmin.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
-            toastr('success', 'Document sent.');
+
             return view('admin.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -343,12 +367,19 @@ class SuperAdminActions extends Controller
             // Process the document upload or related logic
 
             // Redirect to the document index with a success message
-            toastr('success', 'Document uploaded and sent successfully' );
-            return redirect()->route('document.index')->with('success', 'Document uploaded and sent successfully');
+            $notification = array(
+                'message' => 'Document uploaded and sent successfully.',
+                'alert-type' => 'success'
+            );
+            return redirect()->route('document.index')->with($notification);
         }
         // $response = UserFileDocument::undoDocumentActions();
         // Handle failed payment
-        return redirect()->route('document.index')->with('error', 'Payment failed. Please try again.');
+        $notification = array(
+            'message' => 'Payment failed. Please try again.',
+            'alert-type' => 'error'
+        );
+        return redirect()->route('document.index')->with($notification);
     }
 
     public function document_show($received)
@@ -411,8 +442,11 @@ class SuperAdminActions extends Controller
                 ->withErrors($result['errors'])
                 ->withInput();
         }
-        toastr('success', 'Document Uploaded!!');
-        return redirect()->route('document.index')->with('success', 'Document uploaded successfully');
+        $notification = array(
+            'message' => 'Document uploaded successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('document.index')->with($notification);
     }
 
     public function sent_documents()
@@ -420,27 +454,43 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'superadmin') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
 
             return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            // $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
-            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->firstOrFail();
-            // dd($mda);
-            return view('admin.documents.sent', compact('sent_documents', 'recipient', 'mda'));
+
+            return view('admin.documents.sent', compact('sent_documents', 'recipient'));
         }
         if (Auth::user()->default_role === 'User') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
-           
+
+            // Check if $recipient is null or empty
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
+
             return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
 
             return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
@@ -513,74 +563,74 @@ class SuperAdminActions extends Controller
     }
 
     public function getSendform(Request $request, Document $document)
-{
-    $authUser = Auth::user();
-    $role = $authUser->default_role;
+    {
+        $authUser = Auth::user();
+        $role = $authUser->default_role;
 
-    switch ($role) {
-        case 'superadmin':
-            $recipients = User::all();
-            return view('superadmin.documents.send', compact('recipients', 'document'));
+        switch ($role) {
+            case 'superadmin':
+                $recipients = User::all();
+                return view('superadmin.documents.send', compact('recipients', 'document'));
 
-        case 'Admin':
-            $tenantId = $authUser->userDetail->tenant_id ?? null;
+            case 'Admin':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
 
-            if (!$tenantId) {
-                return redirect()->back()->with('error', 'Tenant information is missing.');
-            }
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
 
-            $recipients = User::with(['userDetail.tenant' => function ($query) {
-                $query->select('id', 'name'); // Include only relevant columns
-            }])
-                ->whereHas('userDetail', function ($query) use ($tenantId) {
-                    $query->where('tenant_id', $tenantId); // Users in the same tenant
-                })
-                ->orWhere('default_role', 'Admin') // Admins in other tenants
-                ->get();
+                $recipients = User::with(['userDetail.tenant' => function ($query) {
+                    $query->select('id', 'name'); // Include only relevant columns
+                }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId); // Users in the same tenant
+                    })
+                    ->orWhere('default_role', 'Admin') // Admins in other tenants
+                    ->get();
 
-            if ($recipients->isEmpty()) {
-                return redirect()->back()->with('error', 'No recipients found.');
-            }
+                if ($recipients->isEmpty()) {
+                    return redirect()->back()->with('error', 'No recipients found.');
+                }
 
-            return view('admin.documents.send', compact('recipients', 'document'));
+                return view('admin.documents.send', compact('recipients', 'document'));
 
-        case 'User':
-            $recipients = User::where('default_role', 'Admin')->get();
-            return view('user.documents.send', compact('recipients', 'document'));
+            case 'User':
+                $recipients = User::where('default_role', 'Admin')->get();
+                return view('user.documents.send', compact('recipients', 'document'));
 
-        case 'Staff':
-            $tenantId = $authUser->userDetail->tenant_id ?? null;
+            case 'Staff':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
 
-            if (!$tenantId) {
-                return redirect()->back()->with('error', 'Tenant information is missing.');
-            }
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
 
-            // $recipients = User::with('userDetail')
-            //     ->whereHas('userDetail', function ($query) use ($tenantId) {
-            //         $query->where('tenant_id', $tenantId);
-            //     })
-            //     ->where('id', '!=', $authUser->id)
-            //     ->get();
-            $recipients = User::with(['userDetail' => function ($query) {
-                $query->select('id', 'user_id', 'designation', 'tenant_id');
-            }])
-            ->whereHas('userDetail', function ($query) use ($tenantId) {
-                $query->where('tenant_id', $tenantId);
-            })
-            ->where('id', '!=', $authUser->id)
-            ->get();
-    
+                // $recipients = User::with('userDetail')
+                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
+                //         $query->where('tenant_id', $tenantId);
+                //     })
+                //     ->where('id', '!=', $authUser->id)
+                //     ->get();
+                $recipients = User::with(['userDetail' => function ($query) {
+                    $query->select('id', 'user_id', 'designation', 'tenant_id');
+                }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
 
-            if ($recipients->isEmpty()) {
-                return redirect()->back()->with('error', 'No recipients found.');
-            }
 
-            return view('staff.documents.send', compact('recipients', 'document'));
+                if ($recipients->isEmpty()) {
+                    return redirect()->back()->with('error', 'No recipients found.');
+                }
 
-        default:
-            return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
+                return view('staff.documents.send', compact('recipients', 'document'));
+
+            default:
+                return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
+        }
     }
-}
 
     public function sendDocument(Request $request)
     {
@@ -593,8 +643,11 @@ class SuperAdminActions extends Controller
                 ->withErrors($result['errors'])
                 ->withInput();
         }
-        toastr('success', 'Document sent successfully.');
-        return redirect()->route('document.index')->with('success', 'Document sent successfully');
+        $notification = array(
+            'message' => 'Document sent successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('document.index')->with($notification);
     }
 
     /**Department Management */
@@ -604,6 +657,16 @@ class SuperAdminActions extends Controller
             $departments = TenantDepartment::orderBy('id', 'desc')->paginate(10);
             return view('superadmin.departments.index', compact('departments'));
         }
+        if (Auth::user()->default_role === 'Admin') {
+            // Retrieve the tenant_id of the authenticated user
+            $tenantId = Auth::user()->userdetail->tenant_id;
+
+            // Filter TenantDepartment by tenant_id and paginate the results
+            $departments = TenantDepartment::where('tenant_id', $tenantId)
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+            return view('admin.departments.index', compact('departments'));
+        }
         return view('errors.404');
     }
     public function department_create()
@@ -611,6 +674,12 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'superadmin') {
             $organisations = Tenant::all();
             return view('superadmin.departments.create', compact('organisations'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            // Retrieve the tenant_id of the authenticated user
+            $tenantId = Auth::user()->userdetail->tenant_id;
+            $organisations = Tenant::where('id', $tenantId)->first();
+            return view('admin.departments.create', compact('organisations', 'tenantId'));
         }
         return view('errors.404');
     }
@@ -623,6 +692,14 @@ class SuperAdminActions extends Controller
             ]);
             $department = TenantDepartment::create($request->all());
 
+            return redirect()->route('department.index')->with('success', 'Department created successfully.');
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'tenant_id' => 'required|exists:tenants,id',
+            ]);
+            $department = TenantDepartment::create($request->all());
             return redirect()->route('department.index')->with('success', 'Department created successfully.');
         }
         return view('errors.404');

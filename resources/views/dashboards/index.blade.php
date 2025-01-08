@@ -33,7 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
 </head>
 
@@ -92,6 +92,8 @@
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
+                                <a href="{{route('department.index')}}" class="nav-item nav-link"><i class="fa fa-file me-2"></i>Departments
+                                </a>
                     @endrole
                     @role('superadmin')
                         <a href="{{ route('users.index') }}"
@@ -110,6 +112,7 @@
                             </div>
                         </div>
                     @endrole
+
 
                     {{-- <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
@@ -271,6 +274,53 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('dbf/js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        @if (Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
+                case 'info':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.info("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+                    break;
+                case 'success':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.success("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+                case 'warning':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.warning("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+                case 'error':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.error("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+            }
+        @endif
+    </script>
 </body>
 
 </html>

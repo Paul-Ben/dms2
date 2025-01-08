@@ -35,10 +35,17 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone_number' => 'required|regex:/^0[0-9]{10}$/',
+            'nin_number' => 'required|digits:11',
+            'gender' => 'required|in:male,female',
+            'account_type' => 'required|in:individual,corporate',
+            'company_name' => 'required_if:account_type,corporate|max:255',
+            'rc_number' => 'required_if:account_type,corporate|max:255',
+            'company_address' => 'required_if:account_type,corporate|max:255',
             'g-recaptcha-response' => 'recaptcha',
 
         ]);
-        dd($request);
+       
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -63,8 +70,11 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         $user->assignRole($request->default_role);
         Auth::login($user);
-        
+        $notification = [
+            'message' => 'Registration successful',
+            'alert-type' => 'success'
+        ];
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::HOME)->with($notification);
     }
 }
