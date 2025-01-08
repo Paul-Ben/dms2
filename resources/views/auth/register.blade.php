@@ -118,7 +118,7 @@
                                         </div>
                                     </div>
                                 
-                                     {{-- <div class="m-2 d-flex justify-content-center">
+                                     <div class="m-2 d-flex justify-content-center">
                                             {!!htmlFormSnippet()!!}
 
                                             @if ($errors->has('g-recaptcha-response'))
@@ -129,7 +129,7 @@
                                             </div>
 
                                             @endif
-                                       </div>                          --}}
+                                       </div>                         
                                      
                                     <div class="d-flex justify-content-center mb-4">
                                         <button type="submit" class="btn btn-primary py-3 w-50">Register</button>

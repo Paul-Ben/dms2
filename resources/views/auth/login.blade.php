@@ -42,7 +42,7 @@
                                         required autocomplete="current-password" name="password">
                                     <label for="floatingPassword">Password</label>
                                 </div>
-                                 {{-- <div class="m-2">
+                                 <div class="m-2">
                                             {!!htmlFormSnippet()!!}
 
                                             @if ($errors->has('g-recaptcha-response'))
@@ -53,7 +53,7 @@
                                             </div>
                                             
                                             @endif
-                                        </div> --}}
+                                        </div>
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
