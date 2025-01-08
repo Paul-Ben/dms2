@@ -49,13 +49,13 @@
         .button a {
             text-decoration: none;
             color: #ffffff;
-            background-color: #19b15d;
+            background-color: #009CFF !important;
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
         }
         .footer {
-            background-color: #19b15d;
+            background-color: #009CFF !important;
             padding: 10px;
             text-align: center;
             color:rgb(255, 255, 255);
@@ -71,7 +71,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('backend/assets/login/images/logo-black.svg')}}" alt="Govt-Logo">
+            <img src="{{ asset('backend/assets/login/images/logo-black.svg')}}" alt="Logo">
         </div>
         <div class="content">
             <p>Dear {{ $recipientName }},</p>

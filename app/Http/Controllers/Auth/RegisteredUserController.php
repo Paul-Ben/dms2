@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
             'company_name' => 'required_if:account_type,corporate|max:255',
             'rc_number' => 'required_if:account_type,corporate|max:255',
             'company_address' => 'required_if:account_type,corporate|max:255',
-            'g-recaptcha-response' => 'recaptcha',
+            // 'g-recaptcha-response' => 'recaptcha',
 
         ]);
        
