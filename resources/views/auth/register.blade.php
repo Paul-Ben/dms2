@@ -26,7 +26,7 @@
                                     @csrf
                                     <div class="row">
                                     <div class="mb-4">
-                                        <h3 class="text-center text-primary">Register</h3>
+                                        <h4 class="text-center text-primary">E-Filing Registration</h4>
                                     </div>
                                         <div class="col-md-6 col-12">
                                               <div class="form-floating mb-3">

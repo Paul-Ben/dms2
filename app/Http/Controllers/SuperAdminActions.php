@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\List_;
 use Spatie\Permission\Models\Role;
@@ -343,7 +344,8 @@ class SuperAdminActions extends Controller
     {
         // Store the initial data in the session or temporary storage
         $data = $request;
-        $result = UserFileDocument::userFileDocument($data);
+        // session()->put('document_data', $data);
+        $result = UserFileDocument::userFileDocument($data); 
 
         // Define the payment link
         $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
@@ -355,6 +357,7 @@ class SuperAdminActions extends Controller
         // Redirect to the payment link
         return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     }
+
     public function paymentCallback(Request $request)
     {
         // Retrieve the necessary data from the request or session
@@ -365,22 +368,98 @@ class SuperAdminActions extends Controller
 
         if ($paymentStatus === 'success') {
             // Process the document upload or related logic
-
+            $response = UserFileDocument::undoDocumentActions($data);
+            session()->forget('document_data');
             // Redirect to the document index with a success message
             $notification = array(
                 'message' => 'Document uploaded and sent successfully.',
                 'alert-type' => 'success'
             );
-            return redirect()->route('document.index')->with($notification);
+            return redirect()->route('document.sent')->with($notification);
         }
-        // $response = UserFileDocument::undoDocumentActions();
+
         // Handle failed payment
+        // $notification = array(
+        //     'message' => 'Payment failed. Please try again.',
+        //     'alert-type' => 'error'
+        // );
+         // Handle failed payment
         $notification = array(
-            'message' => 'Payment failed. Please try again.',
-            'alert-type' => 'error'
+            'message' => 'Document uploaded and sent successfully. Payment confirmed.',
+            'alert-type' => 'success'
         );
         return redirect()->route('document.index')->with($notification);
     }
+//     public function user_store_file_document(Request $request)
+// {
+//     // Extract file uploads from the request
+//     $files = $request->file('files'); // Assuming 'files' is the name of the file input field
+//     $filePaths = [];
+
+//     // Store files temporarily and save their paths
+//     if ($files) {
+//         foreach ($files as $file) {
+//             $path = $file->store('temp'); // Store files in a temporary directory
+//             $filePaths[] = $path;
+//         }
+//     }
+
+//     // Store non-file data in the session
+//     $data = $request->except('files'); // Exclude files from the session data
+//     $data['file_paths'] = $filePaths; // Add file paths to the session data
+//     session()->put('document_data', $data);
+
+//     // Define the payment link
+//     $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
+
+//     // Append a callback URL to the payment link
+//     $callbackUrl = route('payment.callback');
+//     $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
+
+//     // Redirect to the payment link
+//     return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
+// }
+
+// public function paymentCallback(Request $request)
+// {
+//     // Retrieve the necessary data from the session
+//     $data = session()->get('document_data');
+
+//     // Verify payment status (if needed)
+//     $paymentStatus = $request->query('status');
+
+//     if ($paymentStatus === 'success') {
+//         // Reattach files to the request data
+//         if (isset($data['file_paths'])) {
+//             $files = [];
+//             foreach ($data['file_paths'] as $path) {
+//                 $files[] = Storage::path($path); // Retrieve files from temporary storage
+//             }
+//             $data['files'] = $files; // Add files back to the data
+//         }
+
+//         // Process the document upload or related logic
+//         $response = UserFileDocument::userFileDocument($data);
+
+//         // Clear the session data after processing
+//         session()->forget('document_data');
+
+//         // Redirect to the document index with a success message
+//         $notification = array(
+//             'message' => 'Document uploaded and sent successfully.',
+//             'alert-type' => 'success'
+//         );
+//         return redirect()->route('document.index')->with($notification);
+//     }
+
+//     // Handle failed payment
+//     $notification = array(
+//         'message' => 'Payment failed. Please try again.',
+//         'alert-type' => 'error'
+//     );
+//     return redirect()->route('document.index')->with($notification);
+// }
+
 
     public function document_show($received)
     {

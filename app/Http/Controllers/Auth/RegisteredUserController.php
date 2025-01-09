@@ -59,6 +59,7 @@ class RegisteredUserController extends Controller
             'phone_number' => $request->phone_number,
             'nin_number' => $request->nin_number,
             'designation' => $request->designation,
+            'tenant_id' => 1,
             'gender' => $request->gender,
             'account_type' => $request->account_type,
             'company_name' => $request->company_name,

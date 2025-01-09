@@ -44,7 +44,9 @@
                                 <td>{{$sent->document->title}}</td>
                                 <td>
                                     {{$sent->recipient_details[0]->userDetail->designation}}, <br>
-                                    <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
+                                    @if ($sent->recipient_details[0]->userDetail->tenant->name)
+                                         <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
+                                    @endif
                                 </td>
                                 {{-- <td>{{$sent->message}}</td> --}}
                                 <td>
