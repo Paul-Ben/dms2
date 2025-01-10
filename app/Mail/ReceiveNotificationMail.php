@@ -13,12 +13,27 @@ class ReceiveNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $senderName;
+
+    public $receiverName;
+
+    public  $documentName;
+
+    Public $documentId;
+
+    public $appName;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($senderName, $receiverName, $documentName, $documentId, $appName)
     {
         //
+        $this->senderName = $senderName;
+        $this->receiverName = $receiverName;
+        $this->documentName = $documentName;
+        $this->appName = $appName;
+        $this->documentId = $documentId;
     }
 
     /**
@@ -27,7 +42,7 @@ class ReceiveNotificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Receive Notification Mail',
+            subject: 'Document Received Notification',
         );
     }
 
@@ -37,7 +52,14 @@ class ReceiveNotificationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.receive_notification',
+            with: [
+                'senderName' => $this->senderName,
+                'receiverName' => $this->receiverName,
+                'documentName' => $this->documentName,
+                'documentId' => $this->documentId,
+                'appName' => $this->appName
+            ]
         );
     }
 

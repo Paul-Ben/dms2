@@ -13,12 +13,24 @@ class SendNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $senderName;
+
+    public $receiverName;
+
+    public  $documentName;
+
+    public $appName;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($senderName, $receiverName, $documentName, $appName)
     {
         //
+        $this->senderName = $senderName;
+        $this->receiverName = $receiverName;
+        $this->documentName = $documentName;
+        $this->appName = $appName;
     }
 
     /**
@@ -27,7 +39,7 @@ class SendNotificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Notification Mail',
+            subject: 'Document Sent Notification',
         );
     }
 
@@ -37,7 +49,13 @@ class SendNotificationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.send_notification',
+            with: [
+                'senderName' => $this->senderName,
+                'receiverName' => $this->receiverName,
+                'documentName' => $this->documentName,
+                'appName' => $this->appName
+            ]
         );
     }
 

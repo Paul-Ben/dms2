@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\List_;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendNotificationMail;
+use App\Mail\ReceiveNotificationMail;
 
 class SuperAdminActions extends Controller
 {
@@ -347,6 +350,15 @@ class SuperAdminActions extends Controller
         // session()->put('document_data', $data);
         $result = UserFileDocument::userFileDocument($data); 
 
+        $senderName = Auth::user()->name;
+        $receiverName = User::find($data->recipient_id)?->name;
+        $documentName = $request->title;
+        $documentId = $request->document_number;
+        $appName = config('app.name');
+
+        Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+        Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+        
         // Define the payment link
         $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
 
