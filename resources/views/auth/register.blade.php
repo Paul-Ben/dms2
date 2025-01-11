@@ -2,7 +2,31 @@
 @section('content')
     <div>
         @include('layouts.nav')
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <style>
+        .iti {
+        width: 100%; /* Ensure it takes full width */
+        
+    }
     
+    .iti__flag-container {
+        margin-right: 10px; /* Adjust spacing */
+    }
+    
+    .iti__selected-flag {
+        padding: 0 20px; /* Adjust padding */
+    }
+    
+    .iti__arrow {
+        border-top-color: #000; /* Match arrow color */
+    }
+    
+    .iti__country-list {
+        border-radius: 4px; /* Match border radius */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow */
+    }
+    </style>
             <div class="container-xxl position-relative bg-white d-flex p-0">
                 <!-- Spinner Start -->
                 <div id="spinner"
@@ -38,6 +62,13 @@
                                              <div class="form-floating mb-3">
                                                 <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
                                                 <label for="floatingEmail">Email address</label>
+                                                @if ($errors->has('email'))
+                                            <div>
+                                                <small class="text-danger">
+                                                    {{$errors->first('email')}}
+                                                </small>
+                                            </div>
+                                            @endif
                                             </div>
                                         </div>  
                                     </div>
@@ -47,6 +78,13 @@
                                                 <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required autocomplete="new-password" name="password">
                                                 <label for="floatingPassword">Password</label>
                                             </div>
+                                            @if ($errors->has('password'))
+                                            <div>
+                                                <small class="text-danger">
+                                                    {{$errors->first('password')}}
+                                                </small>
+                                            </div>
+                                            @endif
                                         </div>
                                         <div class="col-md-6 col-12">
                                             <div class="form-floating mb-4">
@@ -57,9 +95,10 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 col-12">
-                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="floatingPhone" placeholder="08065433456" name="phone_number" value="{{ old('phone_number') }}" required autocomplete="phone_number" pattern="0[0-9]{10}">
+                                            <div class="form-floating mb-3">
+                                                <input type="tel" class="form-control" id="floatingPhone" placeholder="+1234567890" name="phone_number" value="{{ old('phone_number') }}" required autocomplete="phone_number" pattern="^\+?[0-9\s\-()]{6,}$">
                                                 <label for="floatingPhone">Phone Number</label>
+                                                <small id="phoneError" class="text-danger" style="display: none;">Invalid phone number for the selected country.</small>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-12">
@@ -91,6 +130,13 @@
                                                 </select>
                                                 <label for="accountTypeSelect">Account Type</label>
                                             </div> 
+                                            @if ($errors->has('account_type'))
+                                            <div>
+                                                <small class="text-danger">
+                                                    {{$errors->first('account_type')}}
+                                                </small>
+                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div id="corporateFields" style="display: none;">
@@ -152,4 +198,7 @@
         <!-- Sign In End -->
     </div>
     </div>
+    <!-- Include the intl-tel-input library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="{{asset('dbf/js/custom.js')}}"></script>
 @endsection
