@@ -23,6 +23,13 @@
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('dbf/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dbf/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
+    {{-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"> --}}
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('dbf/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -30,9 +37,6 @@
     <!-- Template Stylesheet -->
     <link href="{{ asset('dbf/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('dbf/css/custom.css') }}" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
 </head>
@@ -53,7 +57,8 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="/" class="navbar-brand mx-4 mb-3">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        style="width: 80px; height: 80px;">
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -66,7 +71,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">{{ Auth::user()->name }}</h6>
-                        <span>{{Auth::user()->userDetail->designation}}</span>
+                        <span>{{ Auth::user()->userDetail->designation }}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -92,8 +97,9 @@
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
-                                <a href="{{route('department.index')}}" class="nav-item nav-link"><i class="fa fa-file me-2"></i>Departments
-                                </a>
+                        <a href="{{ route('department.index') }}" class="nav-item nav-link"><i
+                                class="fa fa-file me-2"></i>Departments
+                        </a>
                     @endrole
                     @role('superadmin')
                         <a href="{{ route('users.index') }}"
@@ -101,14 +107,15 @@
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}" data-bs-toggle="dropdown"><i
-                                    class="fa fa-building me-2"></i>MDA Manager</a>
+                            <a href="#"
+                                class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}"
+                                data-bs-toggle="dropdown"><i class="fa fa-building me-2"></i>MDA Manager</a>
                             <div class="dropdown-menu bg-transparent border-0">
-                                <a href="{{ route('organisation.index') }}"
-                                    class="nav-item nav-link"><i
+                                <a href="{{ route('organisation.index') }}" class="nav-item nav-link"><i
                                         class="fa fa-building me-2"></i>Organisations</a>
-                                <a href="{{route('department.index')}}" class="dropdown-item"><i class="fa fa-file me-2"></i>Departments
-                                    </a>
+                                <a href="{{ route('department.index') }}" class="dropdown-item"><i
+                                        class="fa fa-file me-2"></i>Departments
+                                </a>
                             </div>
                         </div>
                     @endrole
@@ -260,6 +267,7 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

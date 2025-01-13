@@ -23,3 +23,31 @@
             document.getElementById('phoneError').style.display = 'none'; // Hide error message
         }
     });
+
+    function toggleAccountFields() {
+        const accountType = document.getElementById('accountTypeSelect').value;
+        const corporateFields = document.getElementById('corporateFields');
+
+        if (accountType === 'corporate') {
+            corporateFields.style.display = 'block';
+        } else {
+            corporateFields.style.display = 'none';
+        }
+    }
+
+    function toggleRegionFields() {
+        const region = document.getElementById('regionSelect').value;
+        const nigeriaFields = document.getElementById('nigeriaFields');
+        const internationalFields = document.getElementById('internationalFields');
+
+        if (region === 'nigeria') {
+            nigeriaFields.style.display = 'block';
+            internationalFields.style.display = 'none';
+        } else if (region === 'international') {
+            nigeriaFields.style.display = 'none';
+            internationalFields.style.display = 'block';
+        } else {
+            nigeriaFields.style.display = 'none';
+            internationalFields.style.display = 'none';
+        }
+    }

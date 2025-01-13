@@ -112,42 +112,50 @@ class DocumentStorage
     public static function sendDocument($data)
     {
         $data->validate([
-            'recipient_id' => 'required|exists:users,id',
+            'recipient_id' => 'required|array', // Validate that it's an array
+            'recipient_id.*' => 'exists:users,id',
+            // 'recipient_id' => 'required|exists:users,id',
             'message' => 'nullable|string',
         ]);
 
+        foreach ($data->recipient_id as $recipient) {
+            $document_action = FileMovement::create([
+                'recipient_id' => $recipient,
+                'sender_id' => Auth::user()->id,
+                'message' => $data->message,
+                'document_id' => $data->document_id,
+            ]);
 
-        $document_action = FileMovement::create([
-            'recipient_id' => $data->recipient_id,
-            'sender_id' => Auth::user()->id,
-            'message' => $data->message,
-            'document_id' => $data->document_id,
-        ]);
-
-        DocumentRecipient::create([
-            'file_movement_id' => $document_action->id,
-            'recipient_id' => $data->recipient_id,
-            'user_id' => Auth::user()->id,
-            'created_at' => now(),
-        ]);
-
-        Activity::insert([
-            [
-                'action' => 'Sent Document',
+            DocumentRecipient::create([
+                'file_movement_id' => $document_action->id,
+                'recipient_id' => $recipient,
                 'user_id' => Auth::user()->id,
                 'created_at' => now(),
-            ],
-            [
-                'action' => 'Document Received',
-                'user_id' => $data->recipient_id,
-                'created_at' => now(),
-            ],
-        ]);
-
+            ]);
+            Activity::insert([
+                [
+                    'action' => 'Sent Document',
+                    'user_id' => Auth::user()->id,
+                    'created_at' => now(),
+                ],
+                [
+                    'action' => 'Document Received',
+                    'user_id' => $recipient,
+                    'created_at' => now(),
+                ],
+            ]);
+        }
         return [
             'status' => 'success',
             'message' => 'Document sent successfully!',
         ];
+    }
+
+    protected function send_mails()
+    {
+        // Send email to recipient
+        // $this->send_email($data->recipient_id, $data->document_id);
+        
     }
 
     /**
@@ -179,23 +187,23 @@ class DocumentStorage
             return [collect(), null];
         }
     }
-//     public static function getSentDocuments($perPage = 5)
-// {
-//     try {
-//         // Eager load recipient details and other relationships
-//         $sent_documents = FileMovement::with(['document_recipients', 'document', 'recipientDetails'])
-//             ->where('sender_id', Auth::id())
-//             ->orderBy('id', 'desc')
-//             ->paginate($perPage);
+    //     public static function getSentDocuments($perPage = 5)
+    // {
+    //     try {
+    //         // Eager load recipient details and other relationships
+    //         $sent_documents = FileMovement::with(['document_recipients', 'document', 'recipientDetails'])
+    //             ->where('sender_id', Auth::id())
+    //             ->orderBy('id', 'desc')
+    //             ->paginate($perPage);
 
-//         return $sent_documents;
-//     } catch (\Exception $e) {
-//         // Log the error message
-//         Log::error('Error retrieving sent documents: ' . $e->getMessage());
-//         // Return an empty collection
-//         return collect();
-//     }
-// }
+    //         return $sent_documents;
+    //     } catch (\Exception $e) {
+    //         // Log the error message
+    //         Log::error('Error retrieving sent documents: ' . $e->getMessage());
+    //         // Return an empty collection
+    //         return collect();
+    //     }
+    // }
 
 
     /**
@@ -210,10 +218,9 @@ class DocumentStorage
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
 
-                // Fetch sender details for each received document
+            // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
                 $value->sender_details = User::select('name', 'email')->find($value->sender_id);
-                
             }
 
             return [$received_documents];
@@ -223,7 +230,6 @@ class DocumentStorage
             // Return an empty collection and null sender details
             return [collect(), null];
         }
-
     }
 
     /**

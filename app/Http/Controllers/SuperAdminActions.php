@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DocumentStorage;
 use App\Helpers\FileService;
+use App\Helpers\SendMailHelper;
 use App\Helpers\UserAction;
 use App\Helpers\UserFileDocument;
 use App\Models\Designation;
@@ -726,14 +727,13 @@ class SuperAdminActions extends Controller
     public function sendDocument(Request $request)
     {
         $data = $request;
-
         $result = DocumentStorage::sendDocument($data);
-
         if ($result['status'] === 'error') {
             return redirect()->back()
                 ->withErrors($result['errors'])
                 ->withInput();
         }
+        SendMailHelper::sendNotificationMail($data, $request);
         $notification = array(
             'message' => 'Document sent successfully',
             'alert-type' => 'success'

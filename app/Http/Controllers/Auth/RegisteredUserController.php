@@ -31,6 +31,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $corporate_user = "Corporate User";
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
@@ -43,9 +44,12 @@ class RegisteredUserController extends Controller
             'rc_number' => 'required_if:account_type,corporate|max:255',
             'company_address' => 'required_if:account_type,corporate|max:255',
             'g-recaptcha-response' => 'recaptcha',
-
+            'region' => 'required|in:nigeria,international',
+            'state' => 'nullable|required_if:region,nigeria',
+            'lga' => 'nullable|required_if:region,nigeria',
+            'country' => 'nullable|required_if:region,international|max:255',
         ]);
-       
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -53,20 +57,25 @@ class RegisteredUserController extends Controller
             'default_role' => $request->default_role,
         ]);
 
-
-        UserDetails::create([
+        $userDetailsData = [
             'user_id' => $user->id,
             'phone_number' => $request->phone_number,
-            'nin_number' => $request->nin_number,
-            'designation' => $request->designation,
-            'tenant_id' => 1,
+            'nin_number' => $request->nin_number ?? null,
+            'designation' => $request->account_type === 'corporate' ? $corporate_user : $request->designation,
+            'tenant_id' => 1, 
             'gender' => $request->gender,
             'account_type' => $request->account_type,
-            'company_name' => $request->company_name,
-            'rc_number' => $request->rc_number,
-            'company_address' => $request->company_address,
-
-        ]);
+            'company_name' => $request->company_name ?? null,
+            'rc_number' => $request->rc_number ?? null,
+            'company_address' => $request->company_address ?? null,
+            'region' => $request->region,
+            'state' => $request->state ?? null,
+            'lga' => $request->lga ?? null,
+            'country' => $request->country ?? null,
+        ];
+    
+        UserDetails::create($userDetailsData);
+    
 
         event(new Registered($user));
         $user->assignRole($request->default_role);

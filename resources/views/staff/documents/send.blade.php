@@ -19,13 +19,17 @@
                 <form action="{{ route('document.senddoc', $document) }}" method="POST">
                     @csrf
                     <div class="form-group mb-3">
-                        <label for="recipient_email">Recipient Email</label>
-                        <select class="form-control" name="recipient_id" id="recipients" required>
-                            <option value=" ">Select recipients</option>
+                        <label for="recipient_email">Recipient</label>
+                       
+                        <select class="form-control selectpicker" name="recipient_id[]" id="recipients" multiple="multiple">
+                            <option value="" disabled>Select recipients</option>
                             @foreach ($recipients as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}- {{ $user->userDetail->designation ?? 'No Designation' }}</option>
+                                <option value="{{ $user->id }}">
+                                    {{ $user->userDetail->tenant->name ?? 'Citizen User' }} | {{ $user->userDetail->designation ?? $user->name }}
+                                </option>
                             @endforeach
                         </select>
+                        <div class="selected-items" id="selectedItems"></div>
                     </div>
                     <div class="form-group" hidden>
                         <label for="subject">Subject</label>
@@ -44,9 +48,11 @@
 
     <script>
         $(document).ready(function() {
-            $('#recipients').select2({
+            $('#recipients').selectpicker({
+                theme: 'bootstrap4',
                 placeholder: "Select recipients",
-                allowClear: true
+                allowClear: true,
+                tags: false,
             });
         });
     </script>

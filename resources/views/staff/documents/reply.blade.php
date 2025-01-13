@@ -4,9 +4,9 @@
         <div class="bg-light rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Send Document</h6>
-                @if (session('errors'))
+                {{-- @if (session('errors'))
                     <span class="alert alert-danger" role="alert">{{ $errors->all() }}</span>
-                @endif
+                @endif --}}
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i
@@ -20,7 +20,7 @@
                     @csrf
                     <div class="form-group mb-3">
                         <label for="recipient_email">Recipient Email</label>
-                        <select class="form-control" name="recipient_id" id="recipients"required>
+                        <select class="form-control" name="recipient_id[]" id="recipients"required>
                             <option value=" ">Select recipients</option>
                             @foreach ($recipients as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
