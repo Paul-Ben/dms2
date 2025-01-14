@@ -87,9 +87,9 @@
                             data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="{{ route('document.received') }}" class="dropdown-item"><i
-                                    class="fa fa-inbox"></i>Received </a>
+                                    class="fa fa-inbox"></i>Incoming Mails </a>
                             <a href="{{ route('document.sent') }}" class="dropdown-item"><i
-                                    class="fa fa-paper-plane"></i>Sent</a>
+                                    class="fa fa-paper-plane"></i>Outgoing Mails</a>
                         </div>
                     </div>
 

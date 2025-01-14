@@ -6,11 +6,14 @@ use App\Models\Activity;
 use App\Models\Document;
 use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
+use App\Helpers\PDF;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use setasign\Fpdf\Fpdf;
+use setasign\Fpdi\Fpdi;
 
 class DocumentStorage
 {
@@ -59,10 +62,54 @@ class DocumentStorage
         if ($data->hasFile('file_path')) {
             $filePath = $data->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $file_path = $filePath->move(public_path('documents/'), $filename);
-            $data->file_path = $filename;
+            $tempFilePath = $filePath->getPathname();
+
+            if ($filePath->getMimeType() === 'application/pdf') {
+                $pdf = new PDF();
+
+                $pageCount = $pdf->setSourceFile($tempFilePath);
+
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    $templateId = $pdf->importPage($pageNo);
+                    $size = $pdf->getTemplateSize($templateId);
+
+                    $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                    $pdf->useTemplate($templateId);
+
+                   
+                    $pdf->SetFont('Arial', 'B', 14); 
+                    $pdf->SetTextColor(0, 128, 0); // Green text color
+                    $pdf->SetDrawColor(0, 128, 0); // Green border color
+                    $pdf->SetFillColor(255, 255, 255); // White background
+
+                    // Calculate box width and height
+                    $boxWidth = 100;
+                    $boxHeight = 20; // Adjust height to fit both lines
+
+                    // Position the box
+                    $pdf->SetXY(55, 140); // Center position (adjust coordinates as needed)
+
+                    // Add the combined text in a single box
+                    $pdf->MultiCell(
+                        $boxWidth,
+                        $boxHeight / 2, // Line height for each line
+                        "RECEIVED\n" . date('Y-m-d H:i:s'), // Text with newline
+                        1, // Border
+                        'C', // Center alignment
+                        true // Fill background
+                    );
+                    $pdf->SetAlpha(0.5); // Semi-transparent
+                }
+
+                $watermarkedFilePath = public_path('documents/' . $filename);
+                $pdf->Output($watermarkedFilePath, 'F');
+
+                $data->file_path = $filename;
+            } else {
+                $file_path = $filePath->move(public_path('documents/'), $filename);
+                $data->file_path = $filename;
+            }
         }
-        $user_details = UserDetails::where('user_id', Auth::user()->id)->first();
 
         Document::create([
             'title' => $data->title,
@@ -155,7 +202,7 @@ class DocumentStorage
     {
         // Send email to recipient
         // $this->send_email($data->recipient_id, $data->document_id);
-        
+
     }
 
     /**
@@ -187,24 +234,6 @@ class DocumentStorage
             return [collect(), null];
         }
     }
-    //     public static function getSentDocuments($perPage = 5)
-    // {
-    //     try {
-    //         // Eager load recipient details and other relationships
-    //         $sent_documents = FileMovement::with(['document_recipients', 'document', 'recipientDetails'])
-    //             ->where('sender_id', Auth::id())
-    //             ->orderBy('id', 'desc')
-    //             ->paginate($perPage);
-
-    //         return $sent_documents;
-    //     } catch (\Exception $e) {
-    //         // Log the error message
-    //         Log::error('Error retrieving sent documents: ' . $e->getMessage());
-    //         // Return an empty collection
-    //         return collect();
-    //     }
-    // }
-
 
     /**
      * Get all received documents

@@ -172,16 +172,16 @@
                         </svg>
                         Forward
                     </button>
-                    <button class="btn" onclick="processEmail()">
+                    {{-- <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
                         Process
-                    </button>
+                    </button> --}}
                 </div>
 
                 <div class="email-header">
-                    <div class="subject">Q4 Financial Report Review</div>
+                    <div class="subject">Subject: {{$document_received->document->title}}</div>
                     <div class="email-meta">
                         <div>From:</div>
                         <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>

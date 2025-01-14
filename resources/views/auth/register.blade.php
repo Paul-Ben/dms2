@@ -16,7 +16,7 @@
                 <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                     <div class="col-12 col-sm-10 ">
                         <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
-                           
+
                             <form method="POST" action="{{ route('register') }}">
                                 @csrf
                                 <div class="row">
@@ -163,6 +163,14 @@
                                             <label for="regionSelect">Region</label>
                                         </div>
                                     </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-floating mb-4" id="internationalFields" style="display: none;">
+                                            <select class="form-control" name="country" id="country">
+                                                <option value="" selected='selected'>Select Country</option>
+                                            </select>
+                                            <label for="countryInput">Country</label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Nigeria Fields -->
@@ -170,24 +178,17 @@
                                     <div class="row">
                                         <div class="col-md-6 col-12">
                                             <div class="form-floating mb-4">
-                                                <select class="form-control" name="state" id="stateSelect">
-                                                    <option value="">Select State</option>
-                                                    <option value="lagos">Lagos</option>
-                                                    <option value="abuja">Abuja</option>
-                                                    <option value="rivers">Rivers</option>
-                                                    <!-- Add more states -->
+                                                <select class="form-control" name="state" onchange="selectLGA(this)"
+                                                    id="state">
+                                                    <option value="" selected="selected">Select State</option>
                                                 </select>
                                                 <label for="stateSelect">State</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-12">
                                             <div class="form-floating mb-4">
-                                                <select class="form-control" name="lga" id="lgaSelect">
+                                                <select class="form-control" name="lga" id="lga">
                                                     <option value="">Select Local Government Area</option>
-                                                    <!-- Populate dynamically based on the state -->
-                                                    <option value="Ikeja">Ikeja</option>
-                                                    <option value="Lagos Island">Lagos Island</option>
-                                                    <option value="Epe">Epe</option>
                                                 </select>
                                                 <label for="lgaSelect">Local Government Area</label>
                                             </div>
@@ -196,13 +197,7 @@
                                 </div>
 
                                 <!-- International Fields -->
-                                <div id="internationalFields" style="display: none;">
-                                    <div class="form-floating mb-4">
-                                        <input type="text" class="form-control" id="countryInput"
-                                            placeholder="Enter Country" name="country">
-                                        <label for="countryInput">Country</label>
-                                    </div>
-                                </div>
+
                                 <div class="m-2 d-flex justify-content-center">
                                     {!! htmlFormSnippet() !!}
 
@@ -233,6 +228,4 @@
 
         <!-- Sign In End -->
     </div>
-    </div>
-   
 @endsection

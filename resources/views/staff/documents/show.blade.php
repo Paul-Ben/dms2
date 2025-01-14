@@ -178,13 +178,13 @@
                     </button>
                     </a>
                     
-                    <button class="btn" onclick="processEmail()">
+                    {{-- <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
                         Process
-                    </button>
-                    <button class="btn" onclick="processEmail()">
+                    </button> --}}
+                    {{-- <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
@@ -195,7 +195,7 @@
                             <path fill="currentColor" d="M18.3 5.7c-.4-.4-1-.4-1.4 0L12 10.6 7.1 5.7c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4L10.6 12l-4.9 4.9c-.4.4-.4 1 0 1.4s1 .4 1.4 0L12 13.4l4.9 4.9c.4.4 1 .4 1.4 0s.4-1 0-1.4L13.4 12l4.9-4.9c.4-.4.4-1 0-1.4z" />
                         </svg>
                         Reject
-                    </button>
+                    </button> --}}
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
                         <svg viewBox="0 0 24 24">

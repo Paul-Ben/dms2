@@ -14,7 +14,7 @@
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Sent Documents</h6>
+                <h6 class="mb-0">Outgoing Mails</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
