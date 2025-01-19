@@ -21,7 +21,15 @@
                                 @csrf
                                 <div class="row">
                                     <div class="mb-4">
-                                        <h4 class="text-center text-primary">E-Filing Registration</h4>
+                                        <div class="text-center">
+                                            <div class="justify-content-center d-flex align-items-center mb-3">
+                                                <img class="me-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="80px" height="80px" alt="">
+                                                <div>
+                                                    <h3 class="text-success">BNSEFS</h3>
+                                                    <h4 class="text-muted">E-Filing System</h4>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Name Field -->
@@ -218,6 +226,8 @@
                                 <p class="text-center mb-0">Already have an Account?
                                     <a href="{{ route('login') }}">Sign In</a>
                                 </p>
+                                <p class="text-center"><small class="text-center text-muted">E-Filing System Powered by
+                                        BDIC</small></p>
                             </form>
 
                         </div>

@@ -30,7 +30,7 @@
                             <th scope="col" style="width: 25.66%;" >Title</th>
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
-                            <th scope="col" >Action</th>
+                            <th scope="col" >Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,12 +43,14 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$mda[0]->designation}}, <br>
-                                    <span>{{$mda[0]->tenant->name}}</span>
+                                    {{$mda[0]->designation}}, {{$mda[0]->tenant_department->name}} <br>
+                                    <span>{{$mda[0]->tenant->code}}</span>
+                                    <span></span>
                                 </td>
-                                {{-- <td>{{$sent->message}}</td> --}}
+                                {{-- <td>{{$sent->sender->userDetail->designation}}</td> --}}
                                 <td>
-                                    <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
+                                    {{ $sent->document->updated_at->format('M j, Y g:i A') }}
+                                    {{-- <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a> --}}
                                 </td>
                             </tr>
                             @empty
@@ -56,7 +58,6 @@
                                 <td colspan="6">No Data Found</td>
                                 </tr>
                         @endforelse
-
                     </tbody>
                 </table>
             </div>

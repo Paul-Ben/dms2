@@ -30,28 +30,34 @@
                             <th scope="col">Title</th>
                             <th scope="col">Sent By</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($received_documents as $key => $received)
                             <tr>
-                                <td>{{ $key+1}}</td>
+                                <td>{{ $key + 1}}</td>
                                 <td><a href="{{route('document.view', $received)}}">
                                     {{$received->document->docuent_number}}
                                 </a></td>
                                 <td>{{$received->document->title}}</td>
-                                <td>{{$received->sender_details->name}}</td>
+                                {{-- <td>{{$received->sender_details->name}}</td> --}}
+                                <td>{{$received->sender->userDetail->designation}} <br>
+                                    @if ($received->sender->userDetail->tenant_department)
+                                    {{$received->sender->userDetail->tenant_department->name}} 
+                                    @endif
+                                </td>
                                 <td>{{$received->document->status}}</td>
-                                <td>
+                                <td>{{$received->document->updated_at->format('M j, Y g:i A')}}</td>
+                                {{-- <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
                                             <a href="{{route('document.view', $received)}}" class="dropdown-item">View</a>
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Forward</a> --}}
+                                    
                                         </div>
                                     </div>
-                                </td>
+                                </td> --}}
                             </tr>
                             @empty
                             <tr class="text-center">

@@ -27,10 +27,10 @@
                         <tr class="text-dark">
                             <th scope="col">#</th>
                             <th scope="col">Document No</th>
-                            <th scope="col">Title</th>
+                            <th scope="col">Subject</th>
                             <th scope="col">Sent By</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,7 +44,8 @@
                                 <td>{{$received->sender_details->name}}</td>
                                 <td>{{$received->document->status}}</td>
                                 <td>
-                                    <a href="{{route('document.view', $received)}}" class="nav-item">View</a>
+                                    {{$received->document->updated_at->format('M j, Y g:i A')}}
+                                    {{-- <a href="{{route('document.view', $received)}}" class="nav-item">View</a> --}}
                                 </td>
                             </tr>
                             @empty

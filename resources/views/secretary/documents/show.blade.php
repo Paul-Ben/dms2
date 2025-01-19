@@ -156,44 +156,48 @@
         </div>
     </div>
     <!-- Button End -->
-    <div class="container-fluid pt-4 px-4">
+    {{-- <div class="container-fluid pt-4 px-4">
         <div class="bg-light rounded p-4">
             <div class="email-container">
                 <div class="toolbar">
-                    <a href="{{route('document.reply', $document_received->document_id)}}">
+                    <a href="{{ route('document.reply', $document_received->document_id) }}">
                         <button class="btn" onclick="replyEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                        </svg>
-                        Reply
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Reply
+                        </button>
                     </a>
-                    <a href="{{route('document.send', $document_received->document_id)}}">
+                    <a href="{{ route('document.send', $document_received->document_id) }}">
                         <button class="btn" onclick="forwardEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                        </svg>
-                        Forward
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+                            </svg>
+                            Forward
+                        </button>
                     </a>
-                    {{-- <button class="btn" onclick="processEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                        </svg>
-                        Process
-                    </button> --}}
+                        <form action="{{route('document.senddoc2admin', $document_received)}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn" onclick="forwardEmail()">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="#34C759"
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>
+                            Reviewed
+                        </button>
+                        </form>
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                        </svg>
-                        Back
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Back
+                        </button>
                     </a>
                 </div>
 
                 <div class="email-header">
-                    <div class="subject">Subject: {{$document_received->document->title}}</div>
+                    <div class="subject">Subject: {{ $document_received->document->title }}</div>
                     <div class="email-meta">
                         <div>From:</div>
                         <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>
@@ -206,7 +210,7 @@
                 </div>
 
                 <div class="email-body ml-8">
-                    Hi John,<br><br>
+                    Hi {{ $document_received->recipient->name }},<br><br>
 
                     {{ $document_received->message }}.<br><br>
                     Best regards,<br>
@@ -221,7 +225,8 @@
                         </svg>
                     </div>
                     <div class="file-details">
-                        <div class="file-name"><a href="{{asset('documents/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
+                        <div class="file-name"><a href="{{ asset('documents/' . $document_received->document->file_path) }}"
+                                target="__blank">{{ $document_received->document->file_path }}</a></div>
                         <div class="file-meta">PDF Document • 2.4 MB • Added Mar 15</div>
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
@@ -247,12 +252,93 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light rounded p-4">
+            <div class="email-container">
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <a href="{{ route('document.reply', $document_received->document_id) }}">
+                        <button class="btn" onclick="replyEmail()">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Reply
+                        </button>
+                    </a>
+                    <a href="{{ route('document.send', $document_received->document_id) }}">
+                        <button class="btn" onclick="forwardEmail()">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+                            </svg>
+                            Forward
+                        </button>
+                    </a>
+                    <form action="{{ route('document.senddoc2admin') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="document_data" value="{{ json_encode($document_received) }}">
+                        <button type="submit" class="btn" onclick="forwardEmail()">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="#34C759"
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>
+                            Reviewed
+                        </button>
+                    </form>
+                    <a href="{{ url()->previous() }}">
+                        <button class="btn" onclick="replyEmail()">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Back
+                        </button>
+                    </a>
+                </div>
+
+                <!-- Email Header -->
+                <div class="email-header mb-3">
+                    <div class="subject"><strong>Subject:</strong> {{ e($document_received->document->title) }}</div>
+                    <div class="email-meta text-muted">
+                        <strong>From:</strong> {{ e($document_received->sender->name) }}
+                        &lt;{{ e($document_received->sender->email) }}&gt;<br>
+                        <strong>To:</strong> {{ e($document_received->recipient->name) }}
+                        &lt;{{ e($document_received->recipient->email) }}&gt;<br>
+                        <strong>Date:</strong> {{ $document_received->created_at->format('M j, Y') }}
+                    </div>
+                </div>
+
+                <!-- Email Body -->
+                <div class="email-body">
+                    <p>Hi {{ e($document_received->recipient->name) }},</p>
+                    <p>{{ e($document_received->message) }}</p>
+                    <p>Best regards,<br>{{ e($document_received->sender->name) }}</p>
+                </div>
+
+                <!-- Attachment -->
+                <div class="attachment mt-4">
+                    <div class="file-details">
+                        <strong>Attachment:</strong>
+                        <div class="file-name">
+                            <a href="{{ asset('documents/' . $document_received->document->file_path) }}" target="_blank">
+                                {{ e($document_received->document->file_path) }}
+                            </a>
+                        </div>
+                        
+                        <div id="previewContainer">
+                            <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0"
+                                src="{{ asset('documents/' . $document_received->document->file_path) }}"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <script>
         function showPreview() {
             document.getElementById('previewModal').style.display = 'block';
-           
-            
+
+
         }
 
         function closePreview() {
@@ -285,5 +371,19 @@
             }
         }
     </script>
-  
+    <script>
+        function previewDocument(fileUrl, fileType) {
+            if (fileType === 'pdf') {
+                document.getElementById('imagePreview').style.display = 'none';
+                const pdfPreview = document.getElementById('pdfPreview');
+                pdfPreview.style.display = 'block';
+                pdfPreview.src = fileUrl;
+            } else if (fileType.match(/(jpg|jpeg|png)/)) {
+                document.getElementById('pdfPreview').style.display = 'none';
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.style.display = 'block';
+                imagePreview.src = fileUrl;
+            }
+        }
+    </script>
 @endsection

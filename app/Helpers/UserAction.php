@@ -70,7 +70,6 @@ class UserAction
             foreach ($organisations as $key => $value) {
                 $departments = TenantDepartment::where('tenant_id', $value->id)->get();
             }
-            // dd($departments);
 
             return [$organisations, $roles, $departments, $designations];
         } catch (\Exception $e) {

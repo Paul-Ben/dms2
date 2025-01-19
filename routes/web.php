@@ -85,6 +85,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');
     Route::get('/document/{document}/reply', [SuperAdminActions::class, 'getReplyform'])->name('document.reply');
     Route::post('/document/{document}/send', [SuperAdminActions::class, 'sendDocument'])->name('document.senddoc');
+    Route::post('/document/send2admin', [SuperAdminActions::class, 'secSendToAdmin'])->name('document.senddoc2admin');
     Route::get('/document/file/document', [SuperAdminActions::class, 'user_file_document'])->name('document.file');
     Route::get('/document/document/{received}/view', [SuperAdminActions::class, 'document_show'])->name('document.view');
     Route::get('/document/document/{sent}/view', [SuperAdminActions::class, 'document_show_sent'])->name('document.view_sent');

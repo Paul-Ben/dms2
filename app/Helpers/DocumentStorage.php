@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use setasign\Fpdf\Fpdf;
 use setasign\Fpdi\Fpdi;
 
@@ -76,8 +77,8 @@ class DocumentStorage
                     $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
                     $pdf->useTemplate($templateId);
 
-                   
-                    $pdf->SetFont('Arial', 'B', 14); 
+
+                    $pdf->SetFont('Arial', 'B', 14);
                     $pdf->SetTextColor(0, 128, 0); // Green text color
                     $pdf->SetDrawColor(0, 128, 0); // Green border color
                     $pdf->SetFillColor(255, 255, 255); // White background
@@ -197,13 +198,228 @@ class DocumentStorage
             'message' => 'Document sent successfully!',
         ];
     }
+    // public static function reviewedDocument($data)
+    // {
+    //     $getsender = $data['sender'];
+    //     $sender = $getsender['id'];
+    //     $getrecipient = $data['recipient'];
+    //     $recipient = $getrecipient['id'];
+    //     $validator = Validator::make($data, [
+    //         'recipient_id' => 'required|array', 
+    //         'recipient_id.*' => 'exists:users,id', 
+    //         'document_id' => 'required|exists:documents,id',
+    //         'message' => 'nullable|string',
+    //     ]);
+    //     if ($validator->fails()) {
+    //         return [
+    //             'status' => 'error',
+    //             'message' => 'Validation failed',
+    //             'errors' => $validator->errors(),
+    //         ];
+    //     }
+    //     $validated = $validator->validated();
+    //     $authUserId = Auth::user()->id; // Current user ID
+    //     $currentTime = now(); // Current timestamp for reuse
 
-    protected function send_mails()
+    //     foreach ($validated['recipient_id'] as $recipientId) {
+    //         // Create a file movement record
+    //         $documentAction = FileMovement::create([
+    //             'recipient_id' => $recipientId,
+    //             'sender_id' => $sender,
+    //             'message' => $validated['message'] ?? null,
+    //             'document_id' => $validated['document_id'],
+    //         ]);
+
+    //         // Create a document recipient record
+    //         DocumentRecipient::create([
+    //             'file_movement_id' => $documentAction->id,
+    //             'recipient_id' => $recipient,
+    //             'user_id' => $authUserId,
+    //             'created_at' => $currentTime,
+    //         ]);
+
+    //         // Log activities
+    //         Activity::insert([
+    //             [
+    //                 'action' => 'Reviewed Document',
+    //                 'user_id' => $authUserId,
+    //                 'created_at' => $currentTime,
+    //             ],
+    //             [
+    //                 'action' => 'Sent Document',
+    //                 'user_id' => $authUserId,
+    //                 'created_at' => $currentTime,
+    //             ],
+    //             [
+    //                 'action' => 'Document Received',
+    //                 'user_id' => $recipient,
+    //                 'created_at' => $currentTime,
+    //             ],
+    //         ]);
+    //     }
+
+    //     return [
+    //         'status' => 'success',
+    //         'message' => 'Document sent successfully!',
+    //     ];
+    // }
+    // public static function reviewedDocument(array $data)
+    // {
+    //     dd($data);
+    //     // Extract sender and recipient IDs
+    //     $sender = $data['sender']['id'] ?? null;
+    //     $recipient = $data['recipient']['id'] ?? null;
+
+    //     // Validate the input data
+    //     $validator = Validator::make($data, [
+    //         'recipient_id' => 'required|array', // Ensure recipient_id is an array
+    //         'recipient_id.*' => 'exists:users,id', // Validate each recipient ID
+    //         'document_id' => 'required|exists:documents,id', // Ensure the document exists
+    //         'message' => 'nullable|string',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return [
+    //             'status' => 'error',
+    //             'message' => 'Validation failed',
+    //             'errors' => $validator->errors(),
+    //         ];
+    //     }
+
+    //     $validated = $validator->validated();
+    //     $authUserId = Auth::id(); // Current user ID
+    //     $currentTime = now(); // Current timestamp for reuse
+
+    //     $activities = []; // Store activities for batch insertion
+    //     $documentRecipients = []; // Store document recipient records for batch insertion
+
+    //     foreach ($validated['recipient_id'] as $recipientId) {
+    //         // Create a file movement record
+    //         $documentAction = FileMovement::create([
+    //             'recipient_id' => $recipientId,
+    //             'sender_id' => $sender,
+    //             'message' => $validated['message'] ?? null,
+    //             'document_id' => $validated['document_id'],
+    //         ]);
+
+    //         // Prepare a document recipient record
+    //         $documentRecipients[] = [
+    //             'file_movement_id' => $documentAction->id,
+    //             'recipient_id' => $recipientId,
+    //             'user_id' => $authUserId,
+    //             'created_at' => $currentTime,
+    //         ];
+
+    //         // Prepare activity log entries
+    //         $activities[] = [
+    //             'action' => 'Reviewed Document',
+    //             'user_id' => $authUserId,
+    //             'created_at' => $currentTime,
+    //         ];
+    //         $activities[] = [
+    //             'action' => 'Sent Document',
+    //             'user_id' => $authUserId,
+    //             'created_at' => $currentTime,
+    //         ];
+    //         $activities[] = [
+    //             'action' => 'Document Received',
+    //             'user_id' => $recipientId,
+    //             'created_at' => $currentTime,
+    //         ];
+    //     }
+
+    //     // Insert all document recipient records in a single query
+    //     if (!empty($documentRecipients)) {
+    //         DocumentRecipient::insert($documentRecipients);
+    //     }
+
+    //     // Insert all activities in a single query
+    //     if (!empty($activities)) {
+    //         Activity::insert($activities);
+    //     }
+
+    //     return [
+    //         'status' => 'success',
+    //         'message' => 'Document sent successfully!',
+    //     ];
+    // }
+
+    public static function reviewedDocument(array $data, $recipient)
     {
-        // Send email to recipient
-        // $this->send_email($data->recipient_id, $data->document_id);
+        $recipientID = $recipient[0]->id;
+        // dd($recipientID);
+        // Validate input data
+        $validator = Validator::make($data, [
+            'sender.id' => 'required|exists:users,id',
+            // 'recipient_id' => 'required|array',
+            // 'recipient_id.*' => 'exists:users,id',
+            'recipient.id' => 'required|exists:users,id',
+            'document_id' => 'required|exists:documents,id',
+            'message' => 'nullable|string',
+        ]);
 
+        if ($validator->fails()) {
+            return [
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ];
+        }
+
+        $validated = $validator->validated();
+
+        $senderId = $validated['sender']['id'];
+        $authUserId = Auth::user()->id;
+        $currentTime = now();
+
+        // Process each recipient
+        // foreach ($validated['recipient_id'] as $recipientId) {
+        try {
+            // Create file movement record
+            $documentAction = FileMovement::create([
+                'recipient_id' => $recipientID,
+                'sender_id' => $senderId,
+                'message' => $validated['message'] ?? null,
+                'document_id' => $validated['document_id'],
+            ]);
+
+            // Create document recipient record
+            DocumentRecipient::create([
+                'file_movement_id' => $documentAction->id,
+                'recipient_id' => $recipientID,
+                'user_id' => $authUserId,
+                'created_at' => $currentTime,
+            ]);
+
+            // Log activities
+            Activity::insert([
+                [
+                    'action' => 'Reviewed Document',
+                    'user_id' => $authUserId,
+                    'created_at' => $currentTime,
+                ],
+                [
+                    'action' => 'Document Received',
+                    'user_id' => $recipientID,
+                    'created_at' => $currentTime,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Log and return error on failure
+            Log::error('Error processing recipient: ' . $e->getMessage());
+            return [
+                'status' => 'error',
+                'message' => 'An error occurred while processing the document.',
+            ];
+        }
+        // }
+
+        return [
+            'status' => 'success',
+            'message' => 'Document reviewed and sent successfully!',
+        ];
     }
+
 
     /**
      * Get all sent documents
@@ -242,14 +458,15 @@ class DocumentStorage
     {
         try {
             // Eager load both relationships and paginate the results
-            $received_documents = FileMovement::with(['document_recipients', 'document'])
+            $received_documents = FileMovement::with(['document_recipients', 'document', 'sender.userDetail.tenant_department'])
                 ->where('recipient_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
 
             // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
-                $value->sender_details = User::select('name', 'email')->find($value->sender_id);
+                // $value->sender_details = User::select('name', 'email')->find($value->sender_id);
+                $value->sender_details = User::with('userDetail')->find($value->sender_id);
             }
 
             return [$received_documents];
@@ -273,9 +490,9 @@ class DocumentStorage
 
     public static function getUserRecipients()
     {
-        $adminWithTenantDetails = User::where('default_role', 'Admin')
+        $adminWithTenantDetails = User::where('default_role', 'Secretary')
             ->whereHas('userDetail', function ($query) {
-                $query->whereNotNull('tenant_id');
+                $query->whereNotNull('tenant_id')->whereNull('department_id');
             })
             ->with(['userDetail.tenant'])
             ->get()

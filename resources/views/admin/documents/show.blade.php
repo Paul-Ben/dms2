@@ -206,7 +206,7 @@
                 </div>
 
                 <div class="email-body ml-8">
-                    Hi John,<br><br>
+                    Hi {{ $document_received->recipient->name }},<br><br>
 
                     {{ $document_received->message }}.<br><br>
                     Best regards,<br>
@@ -222,7 +222,7 @@
                     </div>
                     <div class="file-details">
                         <div class="file-name"><a href="{{asset('documents/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
-                        <div class="file-meta">PDF Document • 2.4 MB • Added Mar 15</div>
+                        <div class="file-meta">PDF Document • 2.4 MB • Added {{ $document_received->created_at->format('M j, Y') }}</div>
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
                             <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
@@ -231,18 +231,18 @@
                     </div>
                 </div>
             </div>
-
-            <div class="preview-modal" id="previewModal">
-                <div class="preview-content">
-                    <div class="close-preview" onclick="closePreview()">✕</div>
-                    <h2>Document Preview</h2>
-                    <div style="padding: 20px;">
-                        This is a sample preview of the Q4 Financial Report document content...
-                        <div id="previewContainer">
-                            <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
-                            <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
-                                frameborder="0"></iframe>
-                        </div>
+            <!-- Attachment -->
+            <div class="attachment mt-4">
+                <div class="file-details">
+                    <strong>Attachment:</strong>
+                    <div class="file-name">
+                        <a href="{{ asset('documents/' . $document_received->document->file_path) }}" target="_blank">
+                            {{ e($document_received->document->file_path) }}
+                        </a>
+                    </div>
+                    <div id="previewContainer">
+                        <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0" 
+                                src="{{ asset('documents/' . $document_received->document->file_path) }}"></iframe>
                     </div>
                 </div>
             </div>
@@ -285,5 +285,19 @@
             }
         }
     </script>
-  
+  <script>
+    function previewDocument(fileUrl, fileType) {
+        if (fileType === 'pdf') {
+            document.getElementById('imagePreview').style.display = 'none';
+            const pdfPreview = document.getElementById('pdfPreview');
+            pdfPreview.style.display = 'block';
+            pdfPreview.src = fileUrl;
+        } else if (fileType.match(/(jpg|jpeg|png)/)) {
+            document.getElementById('pdfPreview').style.display = 'none';
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.style.display = 'block';
+            imagePreview.src = fileUrl;
+        }
+    }
+</script>
 @endsection

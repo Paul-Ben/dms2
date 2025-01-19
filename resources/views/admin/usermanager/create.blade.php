@@ -67,8 +67,9 @@
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
                                     <select name="default_role" class="form-select">
                                         <option selected>select menu</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Staff">Staff</option>
+                                        @foreach ($roles as $role)
+                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

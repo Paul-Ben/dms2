@@ -56,9 +56,16 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
-                <a href="/" class="navbar-brand mx-4 mb-3">
+                {{-- <a href="/" class="navbar-brand mx-4 mb-3">
                     <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
                         style="width: 80px; height: 80px;">
+                </a> --}}
+                <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
+                    <div class="ms-3">
+                        <h5 class="mb-0" style="font-weight: bold;">BNSEFS</h5>
+                        <small class="text-muted">E-Filing System</small>
+                    </div>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -94,6 +101,9 @@
                     </div>
 
                     @role('Admin')
+                    <a href="{{ route('users.index') }}"
+                            class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                                class="fa fa-user-circle me-2"></i>Pending Incoming</a>
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
@@ -140,8 +150,15 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                {{-- <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a> --}}
+                <a href="/" class="navbar-brand d-flex d-lg-none me-4">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
+                    <div class="ms-3">
+                        <h5 class="mb-0" style="font-weight: bold;">BNSEFS</h5>
+                        <small class="text-muted">E-Filing System</small>
+                    </div>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>

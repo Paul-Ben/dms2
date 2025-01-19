@@ -27,10 +27,10 @@
                         <tr class="text-dark">
                             <th scope="col" >#</th>
                             <th scope="col" >Document No</th>
-                            <th scope="col" >Title</th>
+                            <th scope="col" >Subject</th>
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
-                            <th scope="col" >Action</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,7 +50,8 @@
                                 </td>
                                 {{-- <td>{{$sent->message}}</td> --}}
                                 <td>
-                                    <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
+                                    {{-- <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a> --}}
+                                    {{ $sent->document->updated_at->format('M j, Y g:i A') }}
                                 </td>
                             </tr>
                             @empty
