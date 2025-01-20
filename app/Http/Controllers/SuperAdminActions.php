@@ -309,7 +309,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
-
+            // dd($documents);
             return view('admin.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -527,6 +527,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function document_show_sent($sent)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -894,6 +896,15 @@ class SuperAdminActions extends Controller
             'message' => 'Document sent successfully.',
             'alert-type' => 'success',
         ]);
+    }
+
+    public function track_document(Request $request, Document $document)
+    {
+        // Fetch the document ID from the request
+        // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
+        $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+       
+        return view('staff.documents.filemovement', compact('document_locations', 'document'));
     }
 
     /**Department Management */
