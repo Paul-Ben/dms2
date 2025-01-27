@@ -47,6 +47,9 @@ class DesignationSeeder extends Seeder
             [
                 'name' => 'Chairman',
             ],
+            [
+                'name' => 'Confidential Secretary',
+            ],
             
         ]);
         // $designations = [

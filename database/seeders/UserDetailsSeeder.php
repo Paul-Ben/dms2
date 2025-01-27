@@ -223,6 +223,17 @@ class UserDetailsSeeder extends Seeder
                 'department_id' => null,
                 'tenant_id' => 18,
             ],
+            [
+                'user_id' => 20,
+                'nin_number' => '12345678912',
+                'gender' => 'female',
+                'phone_number' => '08067662536',
+                'designation' => 'Confidential Secretary',
+                'avatar' => 'avatar.png',
+                'signature' => 'signature.png',
+                'department_id' => null,
+                'tenant_id' => 3,
+            ],
         ]);
     }
 }

@@ -221,5 +221,16 @@ class UserSeeder extends Seeder
             'email_verified_at' => Carbon::now()
         ]);
         $admin->assignRole('Admin');
+
+         // Create an Secretary User
+         $admin = User::create([
+            'name' => 'Grace Shima',
+            'email' => 'sec@bdic.com',
+            'password' => bcrypt('123456'),
+            'default_role' => 'Secretary',
+            'status' => 'active',
+            'email_verified_at' => Carbon::now()
+        ]);
+        $admin->assignRole('Secretary');
     }
 }

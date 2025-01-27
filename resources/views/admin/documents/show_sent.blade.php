@@ -181,7 +181,7 @@
                 </div>
 
                 <div class="email-header">
-                    <div class="subject">Q4 Financial Report Review</div>
+                    <div class="subject">Subject: {{$document_received->document->title}}</div>
                     <div class="email-meta">
                         <div>From:</div>
                         <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>

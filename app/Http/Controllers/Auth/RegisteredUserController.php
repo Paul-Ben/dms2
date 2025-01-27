@@ -56,7 +56,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'default_role' => $request->default_role,
         ]);
-
+      
         $userDetailsData = [
             'user_id' => $user->id,
             'phone_number' => $request->phone_number,
@@ -71,7 +71,7 @@ class RegisteredUserController extends Controller
             'region' => $request->region,
             'state' => $request->state ?? null,
             'lga' => $request->lga ?? null,
-            'country' => $request->country ?? null,
+            'country' => $request->country ?? 'Nigeria',
         ];
     
         UserDetails::create($userDetailsData);

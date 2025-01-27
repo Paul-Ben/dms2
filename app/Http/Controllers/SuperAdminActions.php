@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\DocumentStorage;
 use App\Helpers\FileService;
 use App\Helpers\SendMailHelper;
+use App\Helpers\StampHelper;
 use App\Helpers\UserAction;
 use App\Helpers\UserFileDocument;
 use App\Models\Designation;
@@ -27,6 +28,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendNotificationMail;
 use App\Mail\ReceiveNotificationMail;
+use Exception;
 
 class SuperAdminActions extends Controller
 {
@@ -62,14 +64,15 @@ class SuperAdminActions extends Controller
 
             list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
-
             return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
             $departments = TenantDepartment::where('tenant_id', $id)->get();
             $designations = Designation::all();
-            return view('admin.usermanager.create', compact('departments', 'designations'));
+            $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
+         
+            return view('admin.usermanager.create', compact('departments', 'designations', 'roles'));
         }
         return view('errors.404');
     }
@@ -240,6 +243,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function org_edit(Tenant $tenant)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -248,6 +253,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function org_update(Request $request, Tenant $tenant)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -276,6 +283,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function org_delete(Tenant $tenant)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -300,8 +309,12 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
-
+            // dd($documents);
             return view('admin.documents.index', compact('documents'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            $documents = DocumentStorage::myDocuments();
+            return view('secretary.documents.index', compact('documents'));
         }
         if (Auth::user()->default_role === 'User') {
             $documents = DocumentStorage::myDocuments();
@@ -324,6 +337,9 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             return view('admin.documents.create');
         }
+        if (Auth::user()->default_role === 'Secretary') {
+            return view('admin.documents.create');
+        }
         if (Auth::user()->default_role === 'User') {
             return view('user.documents.create');
         }
@@ -338,7 +354,7 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'User') {
             $recipients = DocumentStorage::getUserRecipients();
-
+            // dd($recipients);
             return view('user.documents.filedocument', compact('recipients'));
         }
         return view('errors.404');
@@ -349,17 +365,23 @@ class SuperAdminActions extends Controller
         // Store the initial data in the session or temporary storage
         $data = $request;
         // session()->put('document_data', $data);
-        $result = UserFileDocument::userFileDocument($data); 
+        $result = UserFileDocument::userFileDocument($data);
 
         $senderName = Auth::user()->name;
+        // $receiverName = User::find($data->recipient_id)?->name;
         $receiverName = User::find($data->recipient_id)?->name;
         $documentName = $request->title;
         $documentId = $request->document_number;
         $appName = config('app.name');
 
-        Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+        try{
+             Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
         Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-        
+        } catch (\Exception $e){
+            Log::error('Failed to send Document notification');
+
+        } 
+
         // Define the payment link
         $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
 
@@ -370,6 +392,77 @@ class SuperAdminActions extends Controller
         // Redirect to the payment link
         return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     }
+    // public function user_store_file_document(Request $request)
+    // {
+    //     // Store the initial data in the session or temporary storage
+    //     $data = $request;
+
+    //     $result = UserFileDocument::userFileDocument($data);
+
+    //     $senderName = Auth::user()->name;
+    //     // $receiverName = User::find($data->recipient_id)?->name;
+    //     $receiverName = User::find($data->recipient_id)?->name;
+    //     $documentName = $request->title;
+    //     $documentId = $request->document_number;
+    //     $appName = config('app.name');
+    //     $amount = 3000;
+    //     // try {
+    //     //     Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+    //     //     Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+    //     // } catch (\Exception $e) {
+    //     //     Log::error('Failed to send Document notification');
+    //     // }
+
+    //     try {
+    //         $transactionReference = $documentId;
+    //         $response = Http::accept('application/json')
+    //             ->withHeaders([
+    //                 'Authorization' => env('CREDO_PUBLIC_KEY'),
+    //                 'Content-Type' => 'application/json',
+    //             ])
+    //             ->timeout(10) // Set a timeout to avoid waiting indefinitely
+    //             ->retry(3, 1000) // Retry the request up to 3 times with a 1-second delay
+    //             ->post(env('CREDO_URL') . '/transaction/initialize', [
+    //                 "email" => Auth::user()->email,
+    //                 "amount" => ($amount * 100),
+    //                 "callbackUrl" => route("payment.callback"),
+    //                 "bearer" => 0,
+    //             ]);
+
+
+    //         // Check if response is successful
+    //         if ($response->successful()) {
+    //             $responseData = $response->json('data'); // Use json() for direct access
+    //             if (isset($responseData['authorizationUrl'])) {
+    //                 return redirect($responseData['authorizationUrl']);
+    //             }
+    //         }
+    //         $notification = [
+    //             'message' => 'Credo E-Tranzact gateway service took too long to respond.',
+    //             'alert-type' => 'error'
+    //         ];
+    //         return redirect()->back()->with($notification);
+    //     } catch (Exception $e) {
+    //         //throw $th;
+    //         Log::error('Error initializing payment gateway. Please try again' . $e->getMessage());
+    //         $notification = [
+    //             'message' => 'Error initializing payment gateway. Please try again',
+    //             'alert-type' => 'error'
+    //         ];
+    //         return redirect()->back()->with($notification);
+    //     }
+
+    //     // Define the payment link
+    //     // $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
+
+    //     // Append a callback URL to the payment link
+    //     // $callbackUrl = route('payment.callback');
+    //     // $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
+
+    //     // Redirect to the payment link
+    //     // return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
+    // }
+    
 
     public function paymentCallback(Request $request)
     {
@@ -396,84 +489,15 @@ class SuperAdminActions extends Controller
         //     'message' => 'Payment failed. Please try again.',
         //     'alert-type' => 'error'
         // );
-         // Handle failed payment
+        // Handle failed payment
         $notification = array(
             'message' => 'Document uploaded and sent successfully. Payment confirmed.',
             'alert-type' => 'success'
         );
         return redirect()->route('document.index')->with($notification);
     }
-//     public function user_store_file_document(Request $request)
-// {
-//     // Extract file uploads from the request
-//     $files = $request->file('files'); // Assuming 'files' is the name of the file input field
-//     $filePaths = [];
 
-//     // Store files temporarily and save their paths
-//     if ($files) {
-//         foreach ($files as $file) {
-//             $path = $file->store('temp'); // Store files in a temporary directory
-//             $filePaths[] = $path;
-//         }
-//     }
-
-//     // Store non-file data in the session
-//     $data = $request->except('files'); // Exclude files from the session data
-//     $data['file_paths'] = $filePaths; // Add file paths to the session data
-//     session()->put('document_data', $data);
-
-//     // Define the payment link
-//     $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
-
-//     // Append a callback URL to the payment link
-//     $callbackUrl = route('payment.callback');
-//     $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
-
-//     // Redirect to the payment link
-//     return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
-// }
-
-// public function paymentCallback(Request $request)
-// {
-//     // Retrieve the necessary data from the session
-//     $data = session()->get('document_data');
-
-//     // Verify payment status (if needed)
-//     $paymentStatus = $request->query('status');
-
-//     if ($paymentStatus === 'success') {
-//         // Reattach files to the request data
-//         if (isset($data['file_paths'])) {
-//             $files = [];
-//             foreach ($data['file_paths'] as $path) {
-//                 $files[] = Storage::path($path); // Retrieve files from temporary storage
-//             }
-//             $data['files'] = $files; // Add files back to the data
-//         }
-
-//         // Process the document upload or related logic
-//         $response = UserFileDocument::userFileDocument($data);
-
-//         // Clear the session data after processing
-//         session()->forget('document_data');
-
-//         // Redirect to the document index with a success message
-//         $notification = array(
-//             'message' => 'Document uploaded and sent successfully.',
-//             'alert-type' => 'success'
-//         );
-//         return redirect()->route('document.index')->with($notification);
-//     }
-
-//     // Handle failed payment
-//     $notification = array(
-//         'message' => 'Payment failed. Please try again.',
-//         'alert-type' => 'error'
-//     );
-//     return redirect()->route('document.index')->with($notification);
-// }
-
-
+    /**Show a document to the user */
     public function document_show($received)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -485,6 +509,11 @@ class SuperAdminActions extends Controller
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
 
             return view('admin.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+
+            return view('secretary.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'User') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
@@ -498,6 +527,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function document_show_sent($sent)
     {
         if (Auth::user()->default_role === 'superadmin') {
@@ -506,6 +537,11 @@ class SuperAdminActions extends Controller
             return view('superadmin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'Admin') {
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
+
+            return view('admin.documents.show', compact('document_received'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
             return view('admin.documents.show', compact('document_received'));
@@ -561,10 +597,14 @@ class SuperAdminActions extends Controller
 
             return view('admin.documents.sent', compact('sent_documents', 'recipient'));
         }
+        if (Auth::user()->default_role === 'Secretary') {
+            list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+            return view('secretary.documents.sent', compact('sent_documents', 'recipient'));
+        }
         if (Auth::user()->default_role === 'User') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-
+            
             // Check if $recipient is null or empty
             if (!empty($recipient) && isset($recipient[0])) {
                 $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
@@ -577,13 +617,14 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+           
             if (!empty($recipient) && isset($recipient[0])) {
-                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+                $mda = UserDetails::with(['tenant', 'tenant_department'])->where('id', $recipient[0]->id)->get();
             } else {
                 // Handle the case when $recipient is null or empty
                 $mda = collect(); // Return an empty collection
             }
-
+            // dd($mda);
             return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         return view('errors.404');
@@ -593,13 +634,18 @@ class SuperAdminActions extends Controller
     {
         if (Auth::user()->default_role === 'superadmin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-            // dd($received_documents);
+
             return view('superadmin.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-            // dd($received_documents);
+
             return view('admin.documents.received', compact('received_documents'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+
+            return view('secretary.documents.received', compact('received_documents'));
         }
         if (Auth::user()->default_role === 'User') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
@@ -608,6 +654,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
+        //    dd($received_documents);
             return view('staff.documents.received', compact('received_documents'));
         }
         return view('errors.404');
@@ -634,6 +681,15 @@ class SuperAdminActions extends Controller
     public function getReplyform(Request $request, Document $document)
     {
         if (Auth::user()->default_role === 'Admin') {
+            $authUser = Auth::user();
+
+            $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
+            $recipients = User::where('id', $getter[0]->sender_id)->get();
+
+
+            return view('staff.documents.reply', compact('recipients', 'document'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
             $authUser = Auth::user();
 
             $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
@@ -697,12 +753,6 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with('error', 'Tenant information is missing.');
                 }
 
-                // $recipients = User::with('userDetail')
-                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
-                //         $query->where('tenant_id', $tenantId);
-                //     })
-                //     ->where('id', '!=', $authUser->id)
-                //     ->get();
                 $recipients = User::with(['userDetail' => function ($query) {
                     $query->select('id', 'user_id', 'designation', 'tenant_id');
                 }])
@@ -719,8 +769,37 @@ class SuperAdminActions extends Controller
 
                 return view('staff.documents.send', compact('recipients', 'document'));
 
+            case 'Secretary':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
+
+                $recipients = User::with(['userDetail' => function ($query) {
+                    $query->select('id', 'user_id', 'designation', 'tenant_id');
+                }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
+
+
+                if ($recipients->isEmpty()) {
+                    $notification = [
+                        'title' => 'No recipients found.',
+                        'message' => 'No recipients found.',
+                        'type' => 'error',
+                    ];
+                    return redirect()->back()->with($notification);
+                }
+
+                return view('staff.documents.send', compact('recipients', 'document'));
+
+
             default:
-                return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
+                return view('errors.404');
         }
     }
 
@@ -733,12 +812,99 @@ class SuperAdminActions extends Controller
                 ->withErrors($result['errors'])
                 ->withInput();
         }
-        SendMailHelper::sendNotificationMail($data, $request);
+        try {
+            SendMailHelper::sendNotificationMail($data, $request);
+        } catch (\Exception $e) {
+            Log::error('Failed to send review notification email: ' . $e->getMessage());
+            return redirect()->route('document.index')->with([
+                'message' => 'Document was processed, but notification email failed.',
+                'alert-type' => 'warning',
+            ]);
+        }
+
         $notification = array(
             'message' => 'Document sent successfully',
             'alert-type' => 'success'
         );
         return redirect()->route('document.index')->with($notification);
+    }
+
+    public function secSendToAdmin(Request $request, Document $document)
+    {
+
+        // Validate request input
+        $validated = $request->validate([
+            'document_data' => 'required|json',
+        ]);
+
+        // Decode the JSON data
+        $documentData = json_decode($validated['document_data'], true);
+
+        $documentID = $documentData['document_id'];
+        // Validate required fields in the decoded data
+        if (!isset($documentData['document']['id'], $documentData['sender']['name'], $documentData['recipient']['name'])) {
+            return redirect()->back()->with([
+                'message' => 'Invalid document data provided.',
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Retrieve tenant and role details
+        $authUser = Auth::user();
+        $tenantId = $authUser->userDetail->tenant_id ?? null;
+
+        // Check for tenant assignment
+        if (!$tenantId) {
+            return redirect()->back()->with([
+                'message' => 'You are not assigned to any tenant.',
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Fetch the recipient(s)
+        $recipient = User::with('userDetail')
+            ->where('default_role', 'Admin')
+            ->whereHas('userDetail', function ($query) use ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            })
+            ->get();
+
+        if ($recipient->isEmpty()) {
+            return redirect()->back()->with([
+                'message' => 'No admin users found for the tenant.',
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Process the document
+        $stamp = StampHelper::stampIncomingMail($documentID);
+        $result = DocumentStorage::reviewedDocument($documentData, $recipient);
+
+        // Send notification email
+        try {
+            SendMailHelper::sendReviewNotificationMail($documentData, $recipient);
+        } catch (\Exception $e) {
+            Log::error('Failed to send review notification email: ' . $e->getMessage());
+            return redirect()->back()->with([
+                'message' => 'Document was processed, but notification email failed.',
+                'alert-type' => 'warning',
+            ]);
+        }
+
+        // Redirect with success notification
+        return redirect()->route('document.index')->with([
+            'message' => 'Document sent successfully.',
+            'alert-type' => 'success',
+        ]);
+    }
+
+    public function track_document(Request $request, Document $document)
+    {
+        // Fetch the document ID from the request
+        // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
+        $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+       
+        return view('staff.documents.filemovement', compact('document_locations', 'document'));
     }
 
     /**Department Management */
@@ -774,6 +940,8 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+
+
     public function department_store(Request $request)
     {
         if (Auth::user()->default_role === 'superadmin') {

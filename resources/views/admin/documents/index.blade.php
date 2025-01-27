@@ -4,12 +4,12 @@
     <div class="container-fluid pt-4 px-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-               @if (session('success'))
-               <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fa fa-exclamation-circle me-2"></i>{{session('success')}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-               @endif
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-exclamation-circle me-2"></i>{{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -22,7 +22,8 @@
                 <h6 class="mb-0">Document Management</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i
+                            class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
             </div>
             <div class="table-responsive">
@@ -41,35 +42,134 @@
                         @forelse ($documents as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank" href="{{asset('documents'.'/'.$document->tenant_id.'/'.$document->department_id.'/'.$document->file_path)}}">{{$document->docuent_number}}</a></td>
-                                <td>{{$document->title}}</td>
+                                <td><a target="_blank"
+                                        href="{{ asset('documents' . '/' . $document->tenant_id . '/' . $document->department_id . '/' . $document->file_path) }}">{{ $document->docuent_number }}</a>
+                                </td>
+                                <td>{{ $document->title }}</td>
                                 {{-- <td></td> --}}
                                 <td>Processing</td>
                                 <td>
                                     <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
+                                        <a href="#" class="nav-link dropdown-toggle"
+                                            data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a>
+                                            {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
+                                            <a href="" onclick="showSendOptions(event)"
+                                                class="dropdown-item">Send</a>
                                             <a href="edit_studet.html" class="dropdown-item">Edit</a>
                                             {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                            @empty
+                        @empty
                             <tr class="text-center">
                                 <td colspan="6">No Data Found</td>
-                                </tr>
+                            </tr>
                         @endforelse
 
                     </tbody>
                 </table>
                 <div class="pt-4">
-                    {{$documents->links('pagination::bootstrap-5')}}
+                    {{ $documents->links('pagination::bootstrap-5') }}
                 </div>
-                
             </div>
         </div>
     </div>
+    <!-- Pop-up Modal -->
+    <div id="sendOptionsModal" class="modal pt-5" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Choose Sending Option</h2>
+            <p>Would you like to send the document internally or externally?</p>
+            <button onclick="sendDocument('internal')">Send Internally</button><br>
+            <button onclick="sendDocument('external')">Send Externally</button>
+        </div>
+    </div>
     <!-- Table End -->
+    {{-- <script>
+        function showSendOptions(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            document.getElementById('sendOptionsModal').style.display = 'block'; // Show the modal
+        }
+
+        function closeModal() {
+            document.getElementById('sendOptionsModal').style.display = 'none'; // Hide the modal
+        }
+
+        function sendDocument(option) {
+            const documentId = '{{ $document->id }}'; // Assuming $document contains the document ID
+            if (option === 'internal') {
+                window.location.href = "{{ route('document.send', $document) }}"; // Redirect to internal send route
+            } else {
+                // window.location.href = "#"; // Redirect to external send route
+            }
+        }
+    </script> --}}
+    <script>
+        // Check if $document is null and set a default value or handle accordingly
+        @if(isset($document) && $document)
+            const documentId = '{{ $document->id }}'; // Use document ID if available
+        @else
+            const documentId = null; // Set to null or handle as needed
+        @endif
+    
+        function showSendOptions(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            document.getElementById('sendOptionsModal').style.display = 'block'; // Show the modal
+        }
+    
+        function closeModal() {
+            document.getElementById('sendOptionsModal').style.display = 'none'; // Hide the modal
+        }
+    
+        function sendDocument(option) {
+            if (!documentId) {
+                alert("Document not found."); // Alert user if document ID is null
+                return; // Exit the function early
+            }
+    
+            if (option === 'internal') {
+                window.location.href = "{{ route('document.send', ':id') }}".replace(':id', documentId); // Redirect to internal send route
+            } else {
+                // Handle external send route here, e.g.:
+                window.location.href = "#".replace(':id', documentId); // Redirect to external send route
+            }
+        }
+    </script>
+    
+    <style>
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+        }
+
+        .close {
+            color: #a31212;
+            float: right;
+            font-size: 28px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: rgb(198, 63, 63);
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 @endsection

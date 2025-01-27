@@ -23,7 +23,8 @@
                             <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
                                 <div class="text-center">
                                     <img class="mb-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="130px" height="130px" alt="">
-                                    <h3>Sign In</h3>
+                                    <h3>BNSEFS</h3>
+                                    <small class="text-muted">E-Filing System</small>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     @if (session('errors'))
@@ -42,7 +43,7 @@
                                         required autocomplete="current-password" name="password">
                                     <label for="floatingPassword">Password</label>
                                 </div>
-                                 <div class="m-2">
+                                 <div class="m-2 text-center">
                                             {!!htmlFormSnippet()!!}
 
                                             @if ($errors->has('g-recaptcha-response'))
@@ -64,7 +65,7 @@
                                  
                                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                                 <p class="text-center mb-0">Don't have an Account? <a href="{{route('register')}}">Register</a></p>
-
+                                <p class="text-center"><small class="text-center text-muted">E-Filing System Powered by BDIC</small></p>
                             </div>
                         </div>
                     </div>

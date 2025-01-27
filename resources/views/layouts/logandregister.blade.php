@@ -164,6 +164,89 @@
             }
         }
     </script>
+    <script>
+        //Fetch all States
+        fetch('https://nga-states-lga.onrender.com/fetch')
+            .then((res) => res.json())
+            .then((data) => {
+                var x = document.getElementById("state");
+                for (let index = 0; index < Object.keys(data).length; index++) {
+                    var option = document.createElement("option");
+                    option.text = data[index];
+                    option.value = data[index];
+                    x.add(option);
+                }
+            });
+        //Fetch Local Goverments based on selected state
+        function selectLGA(target) {
+            var state = target.value;
+            fetch('https://nga-states-lga.onrender.com/?state=' + state)
+                .then((res) => res.json())
+                .then((data) => {
+                    var x = document.getElementById("lga");
+
+                    var select = document.getElementById("lga");
+                    var length = select.options.length;
+                    for (i = length - 1; i >= 0; i--) {
+                        select.options[i] = null;
+                    }
+                    for (let index = 0; index < Object.keys(data).length; index++) {
+                        var option = document.createElement("option");
+                        option.text = data[index];
+                        option.value = data[index];
+                        x.add(option);
+                    }
+                });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure the dropdown element exists
+            const countryDropdown = document.getElementById('country');
+            if (!countryDropdown) {
+                console.error('Dropdown element with ID "country" not found.');
+                return;
+            }
+
+            // Fetch countries from the API
+            fetch('https://restcountries.com/v3.1/all')
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch countries: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Clear existing options (if any)
+                    countryDropdown.innerHTML = '';
+
+                    // Add a default option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.text = 'Select Country';
+                    defaultOption.value = '';
+                    countryDropdown.add(defaultOption);
+
+                    // Sort countries alphabetically by name
+                    data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+                    // Populate the dropdown with country names
+                    data.forEach((country) => {
+                        const option = document.createElement('option');
+                        option.text = country.name.common;
+                        option.value = country.name.common;
+                        countryDropdown.add(option);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching countries:', error);
+                    // Display a user-friendly error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.textContent = 'Failed to load countries. Please try again later.';
+                    errorMessage.style.color = 'red';
+                    countryDropdown.parentElement.appendChild(errorMessage);
+                });
+        });
+    </script>
 </body>
 
 </html>

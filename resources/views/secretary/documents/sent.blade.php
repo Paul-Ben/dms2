@@ -26,11 +26,11 @@
                     <thead>
                         <tr class="text-dark">
                             <th scope="col" >#</th>
-                            <th scope="col" style="width: 18.66%;" >Document No</th>
-                            <th scope="col" style="width: 25.66%;" >Title</th>
+                            <th scope="col" >Document No</th>
+                            <th scope="col" >Subject</th>
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
-                            <th scope="col" >Date</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,14 +43,15 @@
                             </td>
                                 <td>{{$sent->document->title}}</td>
                                 <td>
-                                    {{$mda[0]->designation}}, {{$mda[0]->tenant_department->name}} <br>
-                                    <span>{{$mda[0]->tenant->code}}</span>
-                                    <span></span>
+                                    {{$sent->recipient_details[0]->userDetail->designation}}, <br>
+                                    @if ($sent->recipient_details[0]->userDetail->tenant->name)
+                                         <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
+                                    @endif
                                 </td>
-                                {{-- <td>{{$sent->sender->userDetail->designation}}</td> --}}
+                                {{-- <td>{{$sent->message}}</td> --}}
                                 <td>
-                                    {{ $sent->document->updated_at->format('M j, Y g:i A') }}
                                     {{-- <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a> --}}
+                                    {{ $sent->document->updated_at->format('M j, Y g:i A') }}
                                 </td>
                             </tr>
                             @empty
@@ -58,6 +59,7 @@
                                 <td colspan="6">No Data Found</td>
                                 </tr>
                         @endforelse
+
                     </tbody>
                 </table>
             </div>

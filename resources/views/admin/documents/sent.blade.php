@@ -14,7 +14,7 @@
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Sent Documents</h6>
+                <h6 class="mb-0">Outgoing Mails</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
@@ -27,10 +27,10 @@
                         <tr class="text-dark">
                             <th scope="col" >#</th>
                             <th scope="col" >Document No</th>
-                            <th scope="col" >Title</th>
+                            <th scope="col" >Subject</th>
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
-                            <th scope="col" >Action</th>
+                            <th scope="col" >Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,10 +48,10 @@
                                          <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
                                     @endif
                                 </td>
-                                {{-- <td>{{$sent->message}}</td> --}}
-                                <td>
+                                <td>{{$sent->document->updated_at->format('M j, Y g:i A')}}</td>
+                                {{-- <td>
                                     <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
-                                </td>
+                                </td> --}}
                             </tr>
                             @empty
                             <tr class="text-center">
