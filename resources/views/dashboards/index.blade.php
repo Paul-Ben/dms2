@@ -233,7 +233,7 @@
                                     Log Out
                                 </a>
                             </form>
-                        </div>
+                        </div> 
                     </div>
                 </div>
             </nav>
