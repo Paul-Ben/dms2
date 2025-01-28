@@ -321,6 +321,15 @@
                     <p>{{ e($document_received->message) }}</p>
                     <p>Best regards,<br>{{ e($document_received->sender->name) }}</p>
                 </div>
+                <div>
+                    @if ($document_received->attachments->isNotEmpty())
+                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
+                            target="__blank">Attachment by {{ $document_received->sender->name }}</a>
+                    @else
+                        
+                    @endif
+
+                </div>
 
                 <!-- Attachment -->
                 <div class="attachment mt-4">

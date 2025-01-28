@@ -178,12 +178,13 @@
                     </button>
                     </a>
                     
-                    {{-- <button class="btn" onclick="processEmail()">
+                    <button class="btn" type="button" data-bs-toggle="modal"
+                    data-bs-target="#forwardedMessageModal">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
-                        Process
-                    </button> --}}
+                        Previous Minuting
+                    </button>
                     <a href="{{route('track', $document_received->document_id)}}">
                          <button class="btn" >
                         <svg viewBox="0 0 24 24">
@@ -229,6 +230,15 @@
                     Best regards,<br>
                     {{ $document_received->sender->name }}
                 </div>
+                <div>
+                    @if ($document_received->attachments->isNotEmpty())
+                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
+                            target="__blank">Attachment by {{ $document_received->sender->name }}</a>
+                    @else
+                        
+                    @endif
+
+                </div>
 
                 <div class="attachment" id="fileinput">
                     <div class="file-icon">
@@ -260,6 +270,57 @@
                             <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
                                 frameborder="0"></iframe>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <!-- Modal -->
+        <div class="modal fade" id="forwardedMessageModal" tabindex="-1" aria-labelledby="forwardedMessageModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="forwardedMessageModalLabel">
+                            Previous Minutes
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @foreach ($document_locations as $location)
+                            <div class="forwarded-content">
+                            <p>---------- {{$document_received->document->docuent_number}} ----------</p>
+                            <p>
+                                <strong>From:</strong> {{ $location->sender->name }}
+                                &lt;{{ $location->sender->userDetail->designation }}&gt;
+                            </p>
+                            <p>
+                                <strong>Date:</strong> {{$location->updated_at->format('M j, Y g:i A')}}
+                            </p>
+                            <p>
+                                <strong>Subject:</strong> {{$document_received->document->title}}
+                            </p>
+                            <p>
+                                <strong>To:</strong> {{$location->recipient->name}}
+                                &lt;{{ $location->recipient->userDetail->designation }}&gt;
+                            </p>
+                            <br />
+                            <p>Hi {{$location->recipient->name}},</p>
+                            <p>
+                                {{ $location->message }}
+                            </p>
+                           
+                            <p>Best regards,</p>
+                            <p>{{ $location->sender->name }}</p>
+                        </div>
+                        @endforeach
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>

@@ -83,6 +83,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/received', [SuperAdminActions::class, 'received_documents'])->name('document.received');
     // Route::get('/document/{document}/view', [SuperAdminActions::class, 'viewDocument'])->name('document.view');
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');
+    Route::get('/document/{document}/sendout', [SuperAdminActions::class, 'getSendExternalForm'])->name('document.sendout');
     Route::get('/document/{document}/reply', [SuperAdminActions::class, 'getReplyform'])->name('document.reply');
     Route::post('/document/{document}/send', [SuperAdminActions::class, 'sendDocument'])->name('document.senddoc');
     Route::post('/document/send2admin', [SuperAdminActions::class, 'secSendToAdmin'])->name('document.senddoc2admin');

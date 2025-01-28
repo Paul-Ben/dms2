@@ -111,6 +111,9 @@
                                                 <option value="female">Female</option>
                                             </select>
                                             <label for="genderSelect">Gender</label>
+                                            @if ($errors->has('gender'))
+                                                <small class="text-danger">{{ $errors->first('gender') }}</small>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -122,6 +125,9 @@
                                                 <option value="corporate">Corporate</option>
                                             </select>
                                             <label for="accountTypeSelect">Account Type</label>
+                                            @if ($errors->has('account_type'))
+                                            <small class="text-danger">{{ $errors->first('account_type') }}</small>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
@@ -169,6 +175,9 @@
                                                 <option value="international">International</option>
                                             </select>
                                             <label for="regionSelect">Region</label>
+                                            @if ($errors->has('region'))
+                                            <small class="text-danger">{{ $errors->first('region') }}</small>
+                                        @endif
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -177,6 +186,9 @@
                                                 <option value="" selected='selected'>Select Country</option>
                                             </select>
                                             <label for="countryInput">Country</label>
+                                            @if ($errors->has('country'))
+                                            <small class="text-danger">{{ $errors->first('country') }}</small>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>

@@ -194,7 +194,7 @@
                 </div>
 
                 <div class="email-body ml-8">
-                    Hi John,<br><br>
+                    Hi {{ $document_received->recipient->name }},<br><br>
 
                     {{ $document_received->message }}.<br><br>
                     Best regards,<br>

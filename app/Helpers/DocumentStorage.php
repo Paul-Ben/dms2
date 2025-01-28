@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
 use App\Helpers\PDF;
+use App\Models\Attachments;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -158,13 +159,28 @@ class DocumentStorage
      * Send document to a recipient
      */
     public static function sendDocument($data)
-    {
+    { 
         $data->validate([
             'recipient_id' => 'required|array', // Validate that it's an array
             'recipient_id.*' => 'exists:users,id',
             // 'recipient_id' => 'required|exists:users,id',
             'message' => 'nullable|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
+
+        if ($data->hasFile('attachment')) {
+            // Get the uploaded file
+            $file = $data->file('attachment');
+        
+            // Define the path where you want to store the file
+            $destinationPath = public_path('documents/attachments');
+        
+            // Generate a unique filename (optional)
+            $fileName = time() . '_' . $file->getClientOriginalName();
+        
+            // Move the file to the public attachments directory
+            $file->move($destinationPath, $fileName);
+        }
 
         foreach ($data->recipient_id as $recipient) {
             $document_action = FileMovement::create([
@@ -173,7 +189,10 @@ class DocumentStorage
                 'message' => $data->message,
                 'document_id' => $data->document_id,
             ]);
-
+            Attachments::create([
+                'file_movement_id' => $document_action->id,
+                'attachment' => $fileName,
+            ]);
             DocumentRecipient::create([
                 'file_movement_id' => $document_action->id,
                 'recipient_id' => $recipient,
@@ -432,7 +451,7 @@ class DocumentStorage
                 ->where('sender_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
-
+                
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
                 $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);

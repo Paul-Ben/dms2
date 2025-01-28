@@ -71,7 +71,7 @@ class SuperAdminActions extends Controller
             $departments = TenantDepartment::where('tenant_id', $id)->get();
             $designations = Designation::all();
             $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
-         
+
             return view('admin.usermanager.create', compact('departments', 'designations', 'roles'));
         }
         return view('errors.404');
@@ -374,13 +374,12 @@ class SuperAdminActions extends Controller
         $documentId = $request->document_number;
         $appName = config('app.name');
 
-        try{
-             Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
-        Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-        } catch (\Exception $e){
+        try {
+            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+            Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+        } catch (\Exception $e) {
             Log::error('Failed to send Document notification');
-
-        } 
+        }
 
         // Define the payment link
         $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
@@ -392,80 +391,140 @@ class SuperAdminActions extends Controller
         // Redirect to the payment link
         return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     }
+    
     // public function user_store_file_document(Request $request)
     // {
-    //     // Store the initial data in the session or temporary storage
-    //     $data = $request;
+    //     // $request->validate([
+    //     //     'title' => 'required|string|max:255',
+    //     //     'document_number' => 'required|string|max:50|unique:user_file_documents,document_number',
+    //     //     'recipient_id' => 'required|exists:users,id',
+    //     // ]);
 
-    //     $result = UserFileDocument::userFileDocument($data);
+    //     $data = $request->all();
+    //     $jsonData = json_encode($data);
+    //     // $result = UserFileDocument::userFileDocument($data);
+        
 
-    //     $senderName = Auth::user()->name;
-    //     // $receiverName = User::find($data->recipient_id)?->name;
-    //     $receiverName = User::find($data->recipient_id)?->name;
-    //     $documentName = $request->title;
+    //     //     $documentName = $request->title;
     //     $documentId = $request->document_number;
-    //     $appName = config('app.name');
+    //     //     $appName = config('app.name');
+    //     $senderName = Auth::user()->name;
+    //     $receiverName = User::find($data['recipient_id'])?->name;
     //     $amount = 3000;
-    //     // try {
-    //     //     Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
-    //     //     Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-    //     // } catch (\Exception $e) {
-    //     //     Log::error('Failed to send Document notification');
-    //     // }
 
     //     try {
-    //         $transactionReference = $documentId;
-    //         $response = Http::accept('application/json')
-    //             ->withHeaders([
-    //                 'Authorization' => env('CREDO_PUBLIC_KEY'),
-    //                 'Content-Type' => 'application/json',
-    //             ])
-    //             ->timeout(10) // Set a timeout to avoid waiting indefinitely
-    //             ->retry(3, 1000) // Retry the request up to 3 times with a 1-second delay
-    //             ->post(env('CREDO_URL') . '/transaction/initialize', [
-    //                 "email" => Auth::user()->email,
-    //                 "amount" => ($amount * 100),
-    //                 "callbackUrl" => route("payment.callback"),
-    //                 "bearer" => 0,
-    //             ]);
+    //         $response = $this->initializePayment(Auth::user()->email, $senderName, $receiverName, $documentId, $amount, $jsonData, route("payment.callback"));
 
-
-    //         // Check if response is successful
     //         if ($response->successful()) {
-    //             $responseData = $response->json('data'); // Use json() for direct access
+    //             $responseData = $response->json('data');
     //             if (isset($responseData['authorizationUrl'])) {
-    //                 return redirect($responseData['authorizationUrl']);
+    //                 return redirect($responseData['authorizationUrl'])
+    //                     ->with('success', 'Redirecting to the payment gateway...');
     //             }
     //         }
-    //         $notification = [
+
+    //         return redirect()->back()->with([
     //             'message' => 'Credo E-Tranzact gateway service took too long to respond.',
-    //             'alert-type' => 'error'
-    //         ];
-    //         return redirect()->back()->with($notification);
+    //             'alert-type' => 'error',
+    //         ]);
     //     } catch (Exception $e) {
-    //         //throw $th;
-    //         Log::error('Error initializing payment gateway. Please try again' . $e->getMessage());
-    //         $notification = [
-    //             'message' => 'Error initializing payment gateway. Please try again',
-    //             'alert-type' => 'error'
-    //         ];
-    //         return redirect()->back()->with($notification);
+    //         Log::error('Error initializing payment gateway: ' . $e->getMessage());
+    //         return redirect()->back()->with([
+    //             'message' => 'Error initializing payment gateway. Please try again.',
+    //             'alert-type' => 'error',
+    //         ]);
     //     }
-
-    //     // Define the payment link
-    //     // $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
-
-    //     // Append a callback URL to the payment link
-    //     // $callbackUrl = route('payment.callback');
-    //     // $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
-
-    //     // Redirect to the payment link
-    //     // return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
     // }
-    
+
+    // private function initializePayment($email, $senderName, $receiverName, $documentId, $amount, $jsonData, $callbackUrl)
+    // {
+    //     return Http::accept('application/json')
+    //         ->withHeaders([
+    //             'Authorization' => env('CREDO_PUBLIC_KEY'),
+    //             'Content-Type' => 'application/json',
+    //         ])
+    //         ->timeout(10)
+    //         ->retry(3, 1000)
+    //         ->post(env('CREDO_URL') . '/transaction/initialize', [
+    //             "email" => $email,
+    //             "senderName" => $senderName,
+    //             "receiverName" => $receiverName,
+    //             "reference" => $documentId,
+    //             "amount" => $amount * 100,
+    //             "metadata" => $jsonData,
+    //             "callbackUrl" => $callbackUrl,
+    //             "bearer" => 0,
+    //         ]);
+    // }
+
+    // public function paymentCallback(Request $request)
+    // {
+
+    //     // Validate the callback request
+    //     $validated = $request->validate([
+    //         'reference' => 'required|string',
+    //     ]);
+    //     $data = $request->all();
+    //     $reference = $validated['reference'];
+    //     // dd($data);
+    //     try {
+    //         // Confirm the transaction with the payment gateway
+    //         $response = Http::accept('application/json')
+    //             ->withHeaders([
+    //                 'Authorization' => env('CREDO_SECRET_KEY'),
+    //             ])
+    //             ->get(env('CREDO_URL') . "/transaction/{$reference}/verify");
+
+    //         if ($response->successful()) {
+    //             $paymentData = $response->json('data');
+    //             $data = json_decode($paymentData['metadata'], true);
+    //             dd($data);
+    //             // Check if payment is successful
+    //             if ($paymentData['status'] === 'success') {
+    //                 // Extract relevant details
+    //                 $paymentDetails = [
+    //                     'transaction_id' => $paymentData['transactionId'],
+    //                     'reference' => $paymentData['reference'],
+    //                     'amount' => $paymentData['amount'] / 100, // Convert to original currency
+    //                     'email' => $paymentData['customer']['email'],
+    //                     'status' => $paymentData['status'],
+    //                     'paid_at' => $paymentData['paidAt'],
+    //                 ];
+
+    //                 // Store payment details in the database
+    //                 // Payment::updateOrCreate(
+    //                 //     ['reference' => $paymentDetails['reference']],
+    //                 //     $paymentDetails
+    //                 // );
+
+    //                 // Generate receipt (customize as needed)
+    //                 $receipt = [
+    //                     'receipt_no' => strtoupper(uniqid('RCPT-')),
+    //                     'transaction_id' => $paymentDetails['transaction_id'],
+    //                     'reference' => $paymentDetails['reference'],
+    //                     'amount' => $paymentDetails['amount'],
+    //                     'paid_at' => $paymentDetails['paid_at'],
+    //                     'email' => $paymentDetails['email'],
+    //                 ];
+
+    //                 // Render or save receipt
+    //                 return view('payments.receipt', compact('receipt'));
+    //             } else {
+    //                 return redirect()->route('payment.failed')->withErrors('Payment was not successful.');
+    //             }
+    //         } else {
+    //             throw new Exception('Failed to verify payment.');
+    //         }
+    //     } catch (Exception $e) {
+    //         Log::error('Payment Callback Error: ' . $e->getMessage());
+    //         return redirect()->route('payment.failed')->withErrors('Payment verification failed.');
+    //     }
+    // }
+
 
     public function paymentCallback(Request $request)
     {
+
         // Retrieve the necessary data from the request or session
         $data = session()->get('document_data');
 
@@ -474,9 +533,10 @@ class SuperAdminActions extends Controller
 
         if ($paymentStatus === 'success') {
             // Process the document upload or related logic
-            $response = UserFileDocument::undoDocumentActions($data);
-            session()->forget('document_data');
-            // Redirect to the document index with a success message
+            $result = UserFileDocument::userFileDocument($data);
+            // $response = UserFileDocument::undoDocumentActions($data);
+            // session()->forget('document_data');
+
             $notification = array(
                 'message' => 'Document uploaded and sent successfully.',
                 'alert-type' => 'success'
@@ -498,7 +558,7 @@ class SuperAdminActions extends Controller
     }
 
     /**Show a document to the user */
-    public function document_show($received)
+    public function document_show($received, Document $document)
     {
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
@@ -506,24 +566,28 @@ class SuperAdminActions extends Controller
             return view('superadmin.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-
-            return view('admin.documents.show', compact('document_received'));
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
+            // dd($document_received);
+            return view('admin.documents.show', compact('document_received', 'document_locations'));
         }
         if (Auth::user()->default_role === 'Secretary') {
-            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
 
-            return view('secretary.documents.show', compact('document_received'));
+            return view('secretary.documents.show', compact('document_received', 'document_locations'));
         }
         if (Auth::user()->default_role === 'User') {
-            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
 
             return view('user.documents.show', compact('document_received'));
         }
         if (Auth::user()->default_role === 'Staff') {
-            $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
+            $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
 
-            return view('staff.documents.show', compact('document_received'));
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
+
+            return view('staff.documents.show', compact('document_received', 'document_locations'));
         }
         return view('errors.404');
     }
@@ -604,7 +668,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'User') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            
+
             // Check if $recipient is null or empty
             if (!empty($recipient) && isset($recipient[0])) {
                 $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
@@ -617,7 +681,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-           
+
             if (!empty($recipient) && isset($recipient[0])) {
                 $mda = UserDetails::with(['tenant', 'tenant_department'])->where('id', $recipient[0]->id)->get();
             } else {
@@ -654,7 +718,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-        //    dd($received_documents);
+            //    dd($received_documents);
             return view('staff.documents.received', compact('received_documents'));
         }
         return view('errors.404');
@@ -710,6 +774,31 @@ class SuperAdminActions extends Controller
         return view('errors.404');
     }
 
+    public function getSendExternalForm(Request $request, Document $document)
+    {
+        if (Auth::user()->default_role === 'Admin') {
+            $recipients = User::with(['userDetail.tenant' => function ($query) {
+                $query->select('id', 'name'); // Include only relevant columns
+            }])
+                ->where('default_role', 'Admin') // Admins in other tenants
+                ->get();
+
+            if ($recipients->isEmpty()) {
+                $notification = [
+                    'message' => 'No recipients found.',
+                    'alert-type' => 'error'
+                ];
+                return redirect()->back()->with($notification);
+            }
+            return view('admin.documents.send_external', compact('recipients', 'document'));
+        }
+        $notification = [
+            'message' => 'You do not have permission to send external documents.',
+            'alert-type' => 'error'
+        ];
+        return view('errors.404')->with($notification);
+    }
+
     public function getSendform(Request $request, Document $document)
     {
         $authUser = Auth::user();
@@ -722,25 +811,37 @@ class SuperAdminActions extends Controller
 
             case 'Admin':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
+                $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
 
                 if (!$tenantId) {
                     return redirect()->back()->with('error', 'Tenant information is missing.');
                 }
 
-                $recipients = User::with(['userDetail.tenant' => function ($query) {
-                    $query->select('id', 'name'); // Include only relevant columns
-                }])
+                // $recipients = User::with(['userDetail.tenant' => function ($query) {
+                //     $query->select('id', 'name'); // Include only relevant columns
+                // }])
+                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
+                //         $query->where('tenant_id', $tenantId); // Users in the same tenant
+                //     })
+                //     ->orWhere('default_role', 'Admin') // Admins in other tenants
+                //     ->get();
+
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
                     ->whereHas('userDetail', function ($query) use ($tenantId) {
-                        $query->where('tenant_id', $tenantId); // Users in the same tenant
+                        $query->where('tenant_id', $tenantId);
                     })
-                    ->orWhere('default_role', 'Admin') // Admins in other tenants
+                    ->where('id', '!=', $authUser->id)
                     ->get();
 
                 if ($recipients->isEmpty()) {
                     return redirect()->back()->with('error', 'No recipients found.');
                 }
 
-                return view('admin.documents.send', compact('recipients', 'document'));
+                return view('admin.documents.send', compact('recipients', 'document', 'document_locations'));
 
             case 'User':
                 $recipients = User::where('default_role', 'Admin')->get();
@@ -748,29 +849,39 @@ class SuperAdminActions extends Controller
 
             case 'Staff':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
-
+                $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
                 if (!$tenantId) {
                     return redirect()->back()->with('error', 'Tenant information is missing.');
                 }
 
-                $recipients = User::with(['userDetail' => function ($query) {
-                    $query->select('id', 'user_id', 'designation', 'tenant_id');
-                }])
+                // $recipients = User::with(['userDetail' => function ($query) {
+                //     $query->select('id', 'user_id', 'designation', 'tenant_id');
+                // }])
+                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
+                //         $query->where('tenant_id', $tenantId);
+                //     })
+                //     ->where('id', '!=', $authUser->id)
+                //     ->get();
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
                     ->whereHas('userDetail', function ($query) use ($tenantId) {
                         $query->where('tenant_id', $tenantId);
                     })
                     ->where('id', '!=', $authUser->id)
                     ->get();
 
-
                 if ($recipients->isEmpty()) {
                     return redirect()->back()->with('error', 'No recipients found.');
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document'));
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations'));
 
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
+                $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
 
                 if (!$tenantId) {
                     return redirect()->back()->with('error', 'Tenant information is missing.');
@@ -795,7 +906,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document'));
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations'));
 
 
             default:
@@ -900,11 +1011,17 @@ class SuperAdminActions extends Controller
 
     public function track_document(Request $request, Document $document)
     {
-        // Fetch the document ID from the request
-        // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
-        $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
-       
-        return view('staff.documents.filemovement', compact('document_locations', 'document'));
+        if (in_array(Auth::user()->default_role, ['Admin', 'Staff', 'Secretary'])) {
+            // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+
+            return view('staff.documents.filemovement', compact('document_locations', 'document'));
+        }
+
+        if (Auth::user()->default_role === 'User') {
+            $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+            return view('user.documents.filemovement', compact('document_locations', 'document'));
+        }
     }
 
     /**Department Management */
