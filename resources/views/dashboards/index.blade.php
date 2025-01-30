@@ -38,7 +38,50 @@
     <link href="{{ asset('dbf/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('dbf/css/custom.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
-
+    <style>
+        .image-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #ddd;
+        }
+    
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: opacity 0.3s ease-in-out;
+        }
+    
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+    
+        .image-container:hover .overlay {
+            opacity: 1;
+        }
+    
+        .file-input {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -296,7 +339,18 @@
     <script src="{{ asset('dbf/lib/tempusdominus/js/moment.min.js') }}"></script>
     <script src="{{ asset('dbf/lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
     <script src="{{ asset('dbf/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
     <!-- Template Javascript -->
     <script src="{{ asset('dbf/js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

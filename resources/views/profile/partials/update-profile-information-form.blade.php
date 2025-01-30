@@ -10,9 +10,26 @@
                         @csrf
                         @method('patch')
                         <div class="row">
-                            <div class="col-sm-12 col-xl-6 mb-3">
+                            <div class="col-sm-12 col-xl-12 mb-3">
+                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="image-container" onclick="document.getElementById('fileInput').click();">
+                                    <img id="profileImage" src="{{ $user->userDetail->avatar ?? 'default-avatar.jpg' }}" alt="Profile Photo">
+                                    <div class="overlay">Click to upload</div>
+                                </div>
+                                <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="previewImage(event)">
+                            </div>
+                        </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Name</label>
                                 <input type="text" name="name" value="{{ $user->name }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Gender</label>
+                                <input type="text" name="name" value="{{ $user->userDetail->gender }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Phone Number</label>
+                                <input type="text" name="name" value="{{ $user->userDetail->phone_number }}" class="form-control">
                             </div>
                         </div>
                         <div class="row">
@@ -46,10 +63,14 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-sm-12 col-xl-6 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">NIN (National Identification Number)</label>
+                                <input type="text" value="{{ $user->userDetail->nin_number }}" class="form-control" disabled>
+                            </div>
                         </div>
 
                         <div style="text-align: left;">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
                             @if (session('status') === 'profile-updated')
                                 <div class="alert alert-success alert-dismissible fade show" role="alert"
                                     id="statusMessage">
