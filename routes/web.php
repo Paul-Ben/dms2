@@ -73,6 +73,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
     Route::get('/departments/create', [SuperAdminActions::class, 'department_create'])->name('department.create');
     Route::post('/departments/create', [SuperAdminActions::class, 'department_store'])->name('department.store');
+    Route::get('/departments/{department}/edit', [SuperAdminActions::class, 'department_edit'])->name('department.edit');
+    Route::put('/departments/{department}/edit', [SuperAdminActions::class, 'department_update'])->name('department.update');
+    Route::delete('/departments/{department}/delete', [SuperAdminActions::class, 'department_delete'])->name('department.delete');
 
 
     /**Document management related links */

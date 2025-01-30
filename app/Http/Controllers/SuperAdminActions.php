@@ -1126,4 +1126,64 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404');
     }
+    public function department_edit(TenantDepartment $department)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $organisations = Tenant::all();
+            return view('superadmin.departments.edit', compact('department', 'organisations'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            $organisations = Tenant::all();
+            return view('admin.departments.edit', compact('department', 'organisations'));
+        }
+        return view('errors.404');
+    }
+    public function department_update(Request $request, TenantDepartment $department)
+    {
+        if (Auth::user()->default_role === 'superadmin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'tenant_id' => 'required|exists:tenants,id',
+            ]);
+            $department->update($request->all());
+            $notification = [
+                'message' => 'Department updated successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('department.index')->with($notification);
+            }
+        if (Auth::user()->default_role === 'Admin') {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'tenant_id' => 'required|exists:tenants,id',
+            ]);
+            $department->update($request->all());
+            $notification = [
+                'message' => 'Department updated successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('department.index')->with($notification);
+        }
+        return view('errors.404');
+        }
+        public function department_delete(TenantDepartment $department)
+        {
+            if (Auth::user()->default_role === 'superadmin') {
+                $department->delete();
+                $notification = [
+                    'message' => 'Department deleted successfully',
+                    'alert-type' => 'success'
+                ];
+                return redirect()->route('department.index')->with($notification);
+            }
+            if (Auth::user()->default_role === 'Admin') {
+                $department->delete();
+                $notification = [
+                    'message' => 'Department deleted successfully',
+                    'alert-type' => 'success'
+                ];
+                return redirect()->route('department.index')->with($notification);
+            }
+            return view('errors.404');
+        }
 }
