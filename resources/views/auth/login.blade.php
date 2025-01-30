@@ -55,14 +55,9 @@
                                             
                                             @endif
                                         </div>
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                                    </div>
-                                    <a href="{{ route('password.request') }}">Forgot Password</a>
-                                </div>
-                                 
+                                        <div class="m-2 text-center">
+                                            <a href="{{ route('password.request') }}">Forgot Password</a>
+                                        </div>
                                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                                 <p class="text-center mb-0">Don't have an Account? <a href="{{route('register')}}">Register</a></p>
                                 <p class="text-center"><small class="text-center text-muted">E-Filing System Powered by BDIC</small></p>

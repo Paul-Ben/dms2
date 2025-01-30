@@ -50,8 +50,8 @@
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
-                                            <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a>
+                                            <a href="{{route('user.edit', $user)}}" class="dropdown-item">Edit</a>
+                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
                                 </td>

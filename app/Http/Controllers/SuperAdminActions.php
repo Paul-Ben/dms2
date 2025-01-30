@@ -143,13 +143,27 @@ class SuperAdminActions extends Controller
     public function user_edit(User $user)
     {
         try {
-            $user_details = User::with('userDetail')->where('id', $user->id)->first();
+            if (Auth::user()->default_role === 'superadmin') {
+                $user_details = User::with('userDetail')->where('id', $user->id)->first();
+                list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+
+                return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+            }
+            if (Auth::user()->default_role === 'Admin') {
+                $user_details = User::with('userDetail')->where('id', $user->id)->first();
+                list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+
+                return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+            }
+            return view('errors.404');
+            // $user_details = User::with('userDetail')->where('id', $user->id)->first();
 
 
-            list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+            // list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
-            return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+            // return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
         } catch (\Exception $e) {
+            Log::error('Error while fetching user details: ' . $e->getMessage());
             $notification = [
                 'message' => 'Error while fetching user details',
                 'alert-type' => 'error'
@@ -160,32 +174,64 @@ class SuperAdminActions extends Controller
 
     public function user_update(Request $request, User $user)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8',
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|required|string|min:8',
+            'nin_number' => 'sometimes|string',
+            'phone_number' => 'sometimes|string',
+            'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'default_role' => 'required|string',
+            'designation' => 'required|string',
+            'tenant_id' => 'required|integer',
+            'department_id' => 'required|integer',
+            'gender' => 'required|string',
+            'signature' => 'sometimes|string',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'default_role' => $request->input('default_role'),
+        ]);
+
+        if ($request->input('password')) {
+            $user->update([
+                'password' => Hash::make($request->input('password')),
+            ]);
         }
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        $userDetail = $user->userDetail;
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
+        if (!$userDetail) {
+            $userDetail = new UserDetails();
+            $userDetail->user_id = $user->id;
         }
 
-        $user->save();
+        $userDetail->update([
+            'nin_number' => $request->input('nin_number'),
+            'phone_number' => $request->input('phone_number'),
+            'designation' => $request->input('designation'),
+            'tenant_id' => $request->input('tenant_id'),
+            'department_id' => $request->input('department_id'),
+            'gender' => $request->input('gender'),
+            'signature' => $request->input('signature'),
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+            $avatar->storeAs('public/avatars', $avatarName);
+            $userDetail->update([
+                'avatar' => $avatarName,
+            ]);
+        }
         $notification = [
             'message' => 'User updated successfully',
             'alert-type' => 'success'
         ];
 
-        return redirect()->route('user.index')->with($notification);
+        return redirect()->route('users.index')->with($notification);
     }
 
     public function user_delete(User $user)

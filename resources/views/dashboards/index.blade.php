@@ -144,9 +144,9 @@
                     </div>
 
                     @role('Admin')
-                    <a href="{{ route('users.index') }}"
+                    {{-- <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Pending Incoming</a>
+                                class="fa fa-user-circle me-2"></i>Pending Incoming</a> --}}
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
@@ -172,17 +172,6 @@
                             </div>
                         </div>
                     @endrole
-
-
-                    {{-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div> --}}
                 </div>
             </nav>
         </div>
