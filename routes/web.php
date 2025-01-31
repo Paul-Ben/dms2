@@ -96,6 +96,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::post('/document/file/document', [SuperAdminActions::class, 'user_store_file_document'])->name('document.storefile');
     Route::get('/payment/callback', [SuperAdminActions::class, 'paymentCallback'])->name('payment.callback');
     Route::get('/document/{document}/location', [SuperAdminActions::class, 'track_document'])->name('track');
+    Route::get('/document/{document}/attachments', [SuperAdminActions::class, 'get_attachments'])->name('getAttachments');
 
  
 
