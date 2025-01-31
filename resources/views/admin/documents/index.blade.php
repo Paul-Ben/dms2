@@ -133,7 +133,7 @@
                 window.location.href = "{{ route('document.send', ':id') }}".replace(':id', documentId); // Redirect to internal send route
             } else {
                 // Handle external send route here, e.g.:
-                window.location.href = "#".replace(':id', documentId); // Redirect to external send route
+                window.location.href = "{{route('document.sendout', ':id')}}".replace(':id', documentId); // Redirect to external send route
             }
         }
     </script>

@@ -18,7 +18,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h6 class="mb-4">Fill All Fields Required</h6>
                             <div>
-                                <a class="btn btn-sm btn-primary" href="{{ route('organisation.index') }}"><i
+                                <a class="btn btn-sm btn-primary" href="{{ route('department.index') }}"><i
                                         class="fa fa-arrow-left me-2"></i>Back</a>
                             </div>
 
@@ -48,7 +48,6 @@
                                         @foreach ($organisations as $organisation)
                                             <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
                                         @endforeach
-                                        <option value="Ministry">Ministry</option>
                                     </select>
                                 </div>
                             </div>

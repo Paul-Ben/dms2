@@ -73,6 +73,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
     Route::get('/departments/create', [SuperAdminActions::class, 'department_create'])->name('department.create');
     Route::post('/departments/create', [SuperAdminActions::class, 'department_store'])->name('department.store');
+    Route::get('/departments/{department}/edit', [SuperAdminActions::class, 'department_edit'])->name('department.edit');
+    Route::put('/departments/{department}/edit', [SuperAdminActions::class, 'department_update'])->name('department.update');
+    Route::delete('/departments/{department}/delete', [SuperAdminActions::class, 'department_delete'])->name('department.delete');
 
 
     /**Document management related links */
@@ -83,6 +86,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/received', [SuperAdminActions::class, 'received_documents'])->name('document.received');
     // Route::get('/document/{document}/view', [SuperAdminActions::class, 'viewDocument'])->name('document.view');
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');
+    Route::get('/document/{document}/sendout', [SuperAdminActions::class, 'getSendExternalForm'])->name('document.sendout');
     Route::get('/document/{document}/reply', [SuperAdminActions::class, 'getReplyform'])->name('document.reply');
     Route::post('/document/{document}/send', [SuperAdminActions::class, 'sendDocument'])->name('document.senddoc');
     Route::post('/document/send2admin', [SuperAdminActions::class, 'secSendToAdmin'])->name('document.senddoc2admin');

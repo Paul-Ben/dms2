@@ -160,48 +160,48 @@
         <div class="bg-light rounded p-4">
             <div class="email-container">
                 <div class="toolbar">
-                    <a href="{{route('document.reply', $document_received->document_id)}}">
+                    <a href="{{ route('document.reply', $document_received->document_id) }}">
                         <button class="btn" onclick="replyEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                        </svg>
-                        Reply
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Reply
+                        </button>
                     </a>
-                    <a href="{{route('document.send', $document_received->document_id)}}">
+                    <a href="{{ route('document.send', $document_received->document_id) }}">
                         <button class="btn" onclick="forwardEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                        </svg>
-                        Forward
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+                            </svg>
+                            Forward
+                        </button>
                     </a>
-                    {{-- <button class="btn" onclick="processEmail()">
+                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#forwardedMessageModal">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
-                        Process
-                    </button> --}}
-                    <a href="{{route('track', $document_received->document_id)}}">
-                        <button class="btn" >
-                       <svg viewBox="0 0 24 24">
-                           <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                       </svg>
-                       Track
-                   </button>
-                   </a>
+                        Previous Minuting
+                    </button>
+                    <a href="{{ route('track', $document_received->document_id) }}">
+                        <button class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                            </svg>
+                            Track
+                        </button>
+                    </a>
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-                        </svg>
-                        Back
-                    </button>
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                            </svg>
+                            Back
+                        </button>
                     </a>
                 </div>
 
                 <div class="email-header">
-                    <div class="subject">Subject: {{$document_received->document->title}}</div>
+                    <div class="subject">Subject: {{ $document_received->document->title }}</div>
                     <div class="email-meta">
                         <div>From:</div>
                         <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>
@@ -220,6 +220,15 @@
                     Best regards,<br>
                     {{ $document_received->sender->name }}
                 </div>
+                <div>
+                    @if ($document_received->attachments->isNotEmpty())
+                        <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
+                            target="__blank">Attachment by {{ $document_received->sender->name }}</a>
+                    @else
+                        
+                    @endif
+
+                </div>
 
                 <div class="attachment" id="fileinput">
                     <div class="file-icon">
@@ -229,8 +238,10 @@
                         </svg>
                     </div>
                     <div class="file-details">
-                        <div class="file-name"><a href="{{asset('documents/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
-                        <div class="file-meta">PDF Document • 2.4 MB • Added {{ $document_received->created_at->format('M j, Y') }}</div>
+                        <div class="file-name"><a href="{{ asset('documents/' . $document_received->document->file_path) }}"
+                                target="__blank">{{ $document_received->document->file_path }}</a></div>
+                        <div class="file-meta">PDF Document • 2.4 MB • Added
+                            {{ $document_received->created_at->format('M j, Y') }}</div>
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
                             <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
@@ -249,8 +260,59 @@
                         </a>
                     </div>
                     <div id="previewContainer">
-                        <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0" 
-                                src="{{ asset('documents/' . $document_received->document->file_path) }}"></iframe>
+                        <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0"
+                            src="{{ asset('documents/' . $document_received->document->file_path) }}"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <!-- Modal -->
+        <div class="modal fade" id="forwardedMessageModal" tabindex="-1" aria-labelledby="forwardedMessageModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="forwardedMessageModalLabel">
+                            Previous Minutes
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @foreach ($document_locations as $location)
+                            <div class="forwarded-content">
+                                <p>---------- {{ $document_received->document->docuent_number }} ----------</p>
+                                <p>
+                                    <strong>From:</strong> {{ $location->sender->name }}
+                                    &lt;{{ $location->sender->userDetail->designation }}&gt;
+                                </p>
+                                <p>
+                                    <strong>Date:</strong> {{ $location->updated_at->format('M j, Y g:i A') }}
+                                </p>
+                                <p>
+                                    <strong>Subject:</strong> {{ $document_received->document->title }}
+                                </p>
+                                <p>
+                                    <strong>To:</strong> {{ $location->recipient->name }}
+                                    &lt;{{ $location->recipient->userDetail->designation }}&gt;
+                                </p>
+                                <br />
+                                <p>Hi {{ $location->recipient->name }},</p>
+                                <p>
+                                    {{ $location->message }}
+                                </p>
+
+                                <p>Best regards,</p>
+                                <p>{{ $location->sender->name }}</p>
+                            </div>
+                        @endforeach
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -259,8 +321,8 @@
     <script>
         function showPreview() {
             document.getElementById('previewModal').style.display = 'block';
-           
-            
+
+
         }
 
         function closePreview() {
@@ -293,19 +355,19 @@
             }
         }
     </script>
-  <script>
-    function previewDocument(fileUrl, fileType) {
-        if (fileType === 'pdf') {
-            document.getElementById('imagePreview').style.display = 'none';
-            const pdfPreview = document.getElementById('pdfPreview');
-            pdfPreview.style.display = 'block';
-            pdfPreview.src = fileUrl;
-        } else if (fileType.match(/(jpg|jpeg|png)/)) {
-            document.getElementById('pdfPreview').style.display = 'none';
-            const imagePreview = document.getElementById('imagePreview');
-            imagePreview.style.display = 'block';
-            imagePreview.src = fileUrl;
+    <script>
+        function previewDocument(fileUrl, fileType) {
+            if (fileType === 'pdf') {
+                document.getElementById('imagePreview').style.display = 'none';
+                const pdfPreview = document.getElementById('pdfPreview');
+                pdfPreview.style.display = 'block';
+                pdfPreview.src = fileUrl;
+            } else if (fileType.match(/(jpg|jpeg|png)/)) {
+                document.getElementById('pdfPreview').style.display = 'none';
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.style.display = 'block';
+                imagePreview.src = fileUrl;
+            }
         }
-    }
-</script>
+    </script>
 @endsection

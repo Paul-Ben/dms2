@@ -25,11 +25,11 @@
                             </div>
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Gender</label>
-                                <input type="text" name="name" value="{{ $user->userDetail->gender }}" class="form-control">
+                                <input type="text" name="gender" value="{{ $user->userDetail->gender }}" class="form-control">
                             </div>
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Phone Number</label>
-                                <input type="text" name="name" value="{{ $user->userDetail->phone_number }}" class="form-control">
+                                <input type="text" name="phone_number" value="{{ $user->userDetail->phone_number }}" class="form-control">
                             </div>
                         </div>
                         <div class="row">

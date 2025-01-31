@@ -52,8 +52,8 @@
                                             <a href="#" class="nav-link dropdown-toggle"
                                                 data-bs-toggle="dropdown">Details</a>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('organisation.edit', $department)}}" class="dropdown-item">Edit</a>
-                                                <form action="{{ route('organisation.delete', $department) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                                <a href="{{route('department.edit', $department)}}" class="dropdown-item">Edit</a>
+                                                <form action="{{ route('department.delete', $department) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                     @csrf
                                                     @method('DELETE')
                                                    

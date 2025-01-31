@@ -26,4 +26,9 @@ class FileMovement extends Model
     {
         return $this->belongsTo(User::class, 'recipient_id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachments::class);
+    }
 }

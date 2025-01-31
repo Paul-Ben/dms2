@@ -5,9 +5,9 @@
         <div class="container-fluid pt-4 px-4">
             <div class="col-12">
                 <div class="bg-light rounded h-100 p-4">
-                    @if (session('success'))
+                    @if (session('errors'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fa fa-exclamation-circle me-2"></i>{{ session('success') }}
+                            <i class="fa fa-exclamation-circle me-2"></i>{{ session('errors') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
                         </div>
@@ -30,8 +30,9 @@
 
                         </div>
 
-                        <form method="POST" action="{{ route('user.save') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('user.update', $user) }}" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Name</label>

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_details', function (Blueprint $table) {
-            //
-            $table->string('company_address')->nullable();
+        Schema::create('attachments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('file_movement_id')->constrained()->onDelete('cascade');
+            $table->string('attachment')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_details', function (Blueprint $table) {
-            //
-            $table->dropColumn('company_address');
-        });
+        Schema::dropIfExists('attachments');
     }
 };
