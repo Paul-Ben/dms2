@@ -64,55 +64,11 @@ class DocumentStorage
         if ($data->hasFile('file_path')) {
             $filePath = $data->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $tempFilePath = $filePath->getPathname();
-
-            if ($filePath->getMimeType() === 'application/pdf') {
-                $pdf = new PDF();
-
-                $pageCount = $pdf->setSourceFile($tempFilePath);
-
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                    $templateId = $pdf->importPage($pageNo);
-                    $size = $pdf->getTemplateSize($templateId);
-
-                    $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                    $pdf->useTemplate($templateId);
-
-
-                    $pdf->SetFont('Arial', 'B', 14);
-                    $pdf->SetTextColor(0, 128, 0); // Green text color
-                    $pdf->SetDrawColor(0, 128, 0); // Green border color
-                    $pdf->SetFillColor(255, 255, 255); // White background
-
-                    // Calculate box width and height
-                    $boxWidth = 100;
-                    $boxHeight = 20; // Adjust height to fit both lines
-
-                    // Position the box
-                    $pdf->SetXY(55, 140); // Center position (adjust coordinates as needed)
-
-                    // Add the combined text in a single box
-                    $pdf->MultiCell(
-                        $boxWidth,
-                        $boxHeight / 2, // Line height for each line
-                        "RECEIVED\n" . date('Y-m-d H:i:s'), // Text with newline
-                        1, // Border
-                        'C', // Center alignment
-                        true // Fill background
-                    );
-                    $pdf->SetAlpha(0.5); // Semi-transparent
-                }
-
-                $watermarkedFilePath = public_path('documents/' . $filename);
-                $pdf->Output($watermarkedFilePath, 'F');
-
-                $data->file_path = $filename;
-            } else {
-                $file_path = $filePath->move(public_path('documents/'), $filename);
-                $data->file_path = $filename;
-            }
+            $filePath->move(public_path('documents/'), $filename); // Save the file to the documents directory
+            $data->file_path = $filename; // Update the file path in the data
         }
 
+        // Create the document record
         Document::create([
             'title' => $data->title,
             'docuent_number' => $data->document_number,
@@ -123,6 +79,7 @@ class DocumentStorage
             'metadata' => json_encode($data->metadata),
         ]);
 
+        // Log the activity
         Activity::create([
             'action' => 'You uploaded a document',
             'user_id' => Auth::user()->id,
@@ -193,6 +150,7 @@ class DocumentStorage
                 Attachments::create([
                     'file_movement_id' => $document_action->id,
                     'attachment' => $fileName,
+                    'document_id' => $data->document_id,
                 ]);
             }
             DocumentRecipient::create([
@@ -368,12 +326,10 @@ class DocumentStorage
     public static function reviewedDocument(array $data, $recipient)
     {
         $recipientID = $recipient[0]->id;
-        // dd($recipientID);
+
         // Validate input data
         $validator = Validator::make($data, [
             'sender.id' => 'required|exists:users,id',
-            // 'recipient_id' => 'required|array',
-            // 'recipient_id.*' => 'exists:users,id',
             'recipient.id' => 'required|exists:users,id',
             'document_id' => 'required|exists:documents,id',
             'message' => 'nullable|string',
@@ -386,6 +342,7 @@ class DocumentStorage
                 'errors' => $validator->errors(),
             ];
         }
+
 
         $validated = $validator->validated();
 
@@ -411,6 +368,13 @@ class DocumentStorage
                 'user_id' => $authUserId,
                 'created_at' => $currentTime,
             ]);
+
+            // Update document status in the documents table
+            $document = Document::find($validated['document_id']);
+            if ($document) {
+                $document->status = 'processing'; // Update the status as needed
+                $document->save();
+            }
 
             // Log activities
             Activity::insert([

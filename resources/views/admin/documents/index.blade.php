@@ -47,7 +47,7 @@
                                 </td>
                                 <td>{{ $document->title }}</td>
                                 {{-- <td></td> --}}
-                                <td>Processing</td>
+                                <td>{{$document->status}}</td>
                                 <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle"
@@ -87,25 +87,6 @@
         </div>
     </div>
     <!-- Table End -->
-    {{-- <script>
-        function showSendOptions(event) {
-            event.preventDefault(); // Prevent the default link behavior
-            document.getElementById('sendOptionsModal').style.display = 'block'; // Show the modal
-        }
-
-        function closeModal() {
-            document.getElementById('sendOptionsModal').style.display = 'none'; // Hide the modal
-        }
-
-        function sendDocument(option) {
-            const documentId = '{{ $document->id }}'; // Assuming $document contains the document ID
-            if (option === 'internal') {
-                window.location.href = "{{ route('document.send', $document) }}"; // Redirect to internal send route
-            } else {
-                // window.location.href = "#"; // Redirect to external send route
-            }
-        }
-    </script> --}}
     <script>
         // Check if $document is null and set a default value or handle accordingly
         @if(isset($document) && $document)

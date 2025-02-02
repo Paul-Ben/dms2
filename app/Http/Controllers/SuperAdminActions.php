@@ -28,6 +28,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendNotificationMail;
 use App\Mail\ReceiveNotificationMail;
+use App\Models\Attachments;
 use Exception;
 
 class SuperAdminActions extends Controller
@@ -614,7 +615,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
-            // dd($document_received);
+           
             return view('admin.documents.show', compact('document_received', 'document_locations'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -734,7 +735,7 @@ class SuperAdminActions extends Controller
                 // Handle the case when $recipient is null or empty
                 $mda = collect(); // Return an empty collection
             }
-            // dd($mda);
+           
             return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda'));
         }
         return view('errors.404');
@@ -764,7 +765,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-            //    dd($received_documents);
+           
             return view('staff.documents.received', compact('received_documents'));
         }
         return view('errors.404');
@@ -863,15 +864,6 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with('error', 'Tenant information is missing.');
                 }
 
-                // $recipients = User::with(['userDetail.tenant' => function ($query) {
-                //     $query->select('id', 'name'); // Include only relevant columns
-                // }])
-                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
-                //         $query->where('tenant_id', $tenantId); // Users in the same tenant
-                //     })
-                //     ->orWhere('default_role', 'Admin') // Admins in other tenants
-                //     ->get();
-
                 $recipients = User::select('id', 'name')
                     ->with(['userDetail' => function ($query) {
                         $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
@@ -899,15 +891,6 @@ class SuperAdminActions extends Controller
                 if (!$tenantId) {
                     return redirect()->back()->with('error', 'Tenant information is missing.');
                 }
-
-                // $recipients = User::with(['userDetail' => function ($query) {
-                //     $query->select('id', 'user_id', 'designation', 'tenant_id');
-                // }])
-                //     ->whereHas('userDetail', function ($query) use ($tenantId) {
-                //         $query->where('tenant_id', $tenantId);
-                //     })
-                //     ->where('id', '!=', $authUser->id)
-                //     ->get();
                 $recipients = User::select('id', 'name')
                     ->with(['userDetail' => function ($query) {
                         $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
@@ -1068,6 +1051,23 @@ class SuperAdminActions extends Controller
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
             return view('user.documents.filemovement', compact('document_locations', 'document'));
         }
+    }
+
+    public function get_attachments(Request $request, Document $document)
+    {
+        if (Auth::user()->default_role === 'Admin') {
+            $attachments = Attachments::where('document_id', $document->id)->paginate(5);
+            return view('admin.documents.attachments', compact('attachments', 'document'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            $attachments = Attachments::where('document_id', $document->id)->paginate(5);
+            return view('admin.documents.attachments', compact('attachments', 'document'));
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            $attachments = Attachments::where('document_id', $document->id)->paginate(5);
+            return view('staff.documents.attachments', compact('attachments', 'document'));
+        }
+        return view('errors.404');
     }
 
     /**Department Management */
