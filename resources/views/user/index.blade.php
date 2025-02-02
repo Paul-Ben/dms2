@@ -68,7 +68,7 @@
                         </div>
                         @forelse ($activities as $activity)
                             <div class="d-flex align-items-center border-bottom py-3">
-                                <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt=""
+                                <img class="rounded-circle flex-shrink-0" src="{{ Auth::user()->userDetail->avatar }}" alt=""
                                     style="width: 40px; height: 40px;">
                                 <div class="w-100 ms-3">
                                     <div class="d-flex w-100 justify-content-between">

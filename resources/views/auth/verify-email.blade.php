@@ -43,7 +43,7 @@
                 {{-- <i class="bi bi-envelope-arrow-up-fill display-1 text-primary"></i> --}}
                 <h4 class=" fw-bold mt-2">Verification Email Sent!</h4>
                 <p class="mb-4">
-                    Thanks for signing up for E-Filling System. Before getting started, could you verify your email address
+                    Thanks for signing up for Integrated Document Management System. Before getting started, could you verify your email address
                     by clicking on the link we just emailed to you? If you didn't receive the email, we 
                     will gladly send you another.
                 </p>

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 Route::get('/ministries', function () {
     $ministries = Tenant::where('category', 'Ministry')->paginate(10);
     return view('mdalistings', compact('ministries'));

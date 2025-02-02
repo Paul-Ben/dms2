@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BNSGDMS</title>
+    <title>BSGIDMS</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -105,13 +105,13 @@
                 <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
                     <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BNSEFS</h5>
-                        <small class="text-muted">E-Filing System</small>
+                        <h5 class="mb-0" style="font-weight: bold;">BSGIDMS </h5>
+                        <small class="text-muted"> Doc Mgt</small>
                     </div>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="{{ asset('assets/demo-data/m1.jpg') }}" alt=""
+                        <img class="rounded-circle" src="{{ Auth::user()->userDetail->avatar }}" alt=""
                             style="width: 40px; height: 40px;">
                         {{-- {{ asset('dbf/img/user.jpg') }} --}}
                         <div
@@ -187,8 +187,8 @@
                 <a href="/" class="navbar-brand d-flex d-lg-none me-4">
                     <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BNSEFS</h5>
-                        <small class="text-muted">E-Filing System</small>
+                        <h5 class="mb-0" style="font-weight: bold;">BSGIDMS</h5>
+                        <small class="text-muted">Doc Mgt</small>
                     </div>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
@@ -198,7 +198,7 @@
                     <input class="form-control border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
+                    {{-- <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-envelope me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">Message</span>
@@ -239,8 +239,8 @@
                             <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item text-center">See all message</a>
                         </div>
-                    </div>
-                    <div class="nav-item dropdown">
+                    </div> --}}
+                    {{-- <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">Notificatin</span>
@@ -263,10 +263,10 @@
                             <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ asset('assets/demo-data/m1.jpg') }}"
+                            <img class="rounded-circle me-lg-2" src="{{ Auth::user()->userDetail->avatar }}"
                                 alt="" style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">{{ Auth::user()->name }}</span>
                         </a>

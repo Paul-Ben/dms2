@@ -40,6 +40,7 @@ class DashboardController extends Controller
             return view('staff.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
         }
         if (Auth::user()->default_role === 'User') {
+
             list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
             $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
 

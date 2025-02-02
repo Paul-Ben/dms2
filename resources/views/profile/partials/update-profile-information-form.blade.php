@@ -6,7 +6,7 @@
                 <div class="bg-light rounded h-100 p-4">
                     <h6 class="mb-4">Profile Information</h6>
                     <p>Update your account's profile information and email address.</p>
-                    <form method="post" action="{{ route('profile.update') }}">
+                    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('patch')
                         <div class="row">
@@ -16,7 +16,7 @@
                                     <img id="profileImage" src="{{ $user->userDetail->avatar ?? 'default-avatar.jpg' }}" alt="Profile Photo">
                                     <div class="overlay">Click to upload</div>
                                 </div>
-                                <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="previewImage(event)">
+                                <input type="file" name="avatar" id="fileInput" class="file-input" accept="image/*" onchange="previewImage(event)">
                             </div>
                         </div>
                             <div class="col-sm-12 col-xl-4 mb-3">

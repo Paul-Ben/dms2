@@ -31,10 +31,10 @@
                     <div class="col-md-12 col-sm-6 text-center">
                         <div class="info mb-30">
                             <h2 class="color-white">Benue State Government</h2>
-                            <h1 class="color-white">E-Filing System</h1>
+                            <h1 class="color-white">Integrated Document Management System</h1>
                             <h2 class="mb-30 color-white">Digitize It</h2>
                             <span class="subscribe pb-5">Secure and reliable<br> document filing.<i
-                                    class="fa fa-arrow-circle-o-right"></i></span>
+                                    class="fa fa-arrow-circle-o-right"></i></span> 
                         </div>
                     </div>
 
@@ -48,7 +48,7 @@
                 <div class="col-lg-7 col-md-8 col-sm-6 animated fadeInLeft text-justify" data-id="1">
                     <h1>WELCOME!</h1>
                     <p>
-                        It gives me great pleasure to announce the launch of our new e-filing application, a revolutionary
+                        It gives me great pleasure to announce the launch of our new Integrated Document Management System, a revolutionary
                         platform designed to make your interactions with the Benue State government more efficient and
                         accessible.
                     </p>
@@ -123,7 +123,7 @@
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 text-center">
                     <h2 class="color-white mb-40">What are you waiting for?</h2>
-                    <p>File Anytime, Anywhere. Experience the Convenience of E-Filing with Benue State Government. Access Our Online Portal Now.</p>
+                    <p>File Anytime, Anywhere. Experience the Convenience of Integrated Document Management System, with Benue State Government. Access Our Online Portal Now.</p>
                     <a href="{{route('login')}}" class="btn mt-40">Get Started</a>
                 </div>
             </div>
@@ -133,12 +133,12 @@
     <section class="testimonials animatedParent  " data-sequence="500">
         <div class="container">
             <h2 class="">TESTIMONIALS</h2>
-            <p>Beyond Convenience: How E-Filing is Improving Efficiency and Transparency in Benue State Government</p>
+            <p>Beyond Convenience: How Integrated Document Management System is Improving Efficiency and Transparency in Benue State Government</p>
             <div class="row">
                 <div class="col-sm-6 animated fadeInLeft" data-id="1">
                     <div class="testimonial">
                         <figure><img src="{{ asset('assets/demo-data/m1.jpg') }}" alt="/" style="border-radius: 50%"></figure>
-                        <q>I was initially hesitant to try the e-filing system, but I'm so glad I did!  This system is a game-changer for businesses like mine.</q>
+                        <q>I was initially hesitant to try the Integrated Document Management System, but I'm so glad I did!  This system is a game-changer for businesses like mine.</q>
                         <span>Ternenge Yina, <i class="text-success">Business Owner</i></span>
                     </div>
                 </div>
