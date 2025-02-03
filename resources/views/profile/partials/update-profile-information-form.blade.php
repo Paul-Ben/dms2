@@ -13,7 +13,7 @@
                             <div class="col-sm-12 col-xl-12 mb-3">
                                 <div class="d-flex justify-content-center align-items-center">
                                 <div class="image-container" onclick="document.getElementById('fileInput').click();">
-                                    <img id="profileImage" src="{{ $user->userDetail->avatar ?? 'default-avatar.jpg' }}" alt="Profile Photo">
+                                    <img id="profileImage" src="{{ asset('uploads/avatars/'. $authUser->userDetail->avatar ?? 'default-avatar.jpg')  }}" alt="Profile Photo">
                                     <div class="overlay">Click to upload</div>
                                 </div>
                                 <input type="file" name="avatar" id="fileInput" class="file-input" accept="image/*" onchange="previewImage(event)">
