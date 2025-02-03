@@ -85,7 +85,7 @@ class ProfileController extends Controller
         {
             unlink(public_path($userDetail->avatar));
         }
-        $userDetail->avatar = "uploads/avatars/" . $filename;
+        $userDetail->avatar =  $filename;
             
         }
         

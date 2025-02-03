@@ -111,7 +111,7 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="{{ Auth::user()->userDetail->avatar }}" alt=""
+                        <img class="rounded-circle" src="{{ asset('uploads/avatars/'.$authUser->userDetail->avatar)  }}" alt=""
                             style="width: 40px; height: 40px;">
                         {{-- {{ asset('dbf/img/user.jpg') }} --}}
                         <div
@@ -119,8 +119,8 @@
                         </div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">{{ Auth::user()->name }}</h6>
-                        <span>{{ Auth::user()->userDetail->designation }}</span>
+                        <h6 class="mb-0">{{ $authUser->name }}</h6>
+                        <span>{{ $authUser->userDetail->designation }}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -266,9 +266,9 @@
                     </div> --}}
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ Auth::user()->userDetail->avatar }}"
+                            <img class="rounded-circle me-lg-2" src="{{ asset('uploads/avatars/'.$authUser->userDetail->avatar)  }}"
                                 alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">{{ Auth::user()->name }}</span>
+                            <span class="d-none d-lg-inline-flex">{{ $authUser->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">My Profile</a>

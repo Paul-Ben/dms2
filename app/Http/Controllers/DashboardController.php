@@ -17,35 +17,31 @@ class DashboardController extends Controller
 
     public function index()
     {
-        if (Auth::user()->default_role === 'superadmin') {
-            list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-            $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
-            return view('superadmin.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
-        }
-        if (Auth::user()->default_role === 'Admin') {
-            list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-            $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
-           
-            return view('admin.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
-        }
-        if (Auth::user()->default_role === 'Secretary') {
-            list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-            $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
+        $authUser = Auth::user();
+        $role = $authUser->default_role;
 
-            return view('secretary.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
-        }
-        if (Auth::user()->default_role === 'Staff') {
-            list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-            $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
-            return view('staff.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
-        }
-        if (Auth::user()->default_role === 'User') {
 
-            list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
-            $activities = Activity::with('user')->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
+        $views = [
+            'superadmin' => 'superadmin.index',
+            'Admin' => 'admin.index',
+            'Secretary' => 'secretary.index',
+            'Staff' => 'staff.index',
+            'User' => 'user.index',
+        ];
 
-            return view('user.index', compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities'));
+
+        if (!array_key_exists($role, $views)) {
+            return view('errors.404');
         }
-        return view('errors.404');
+
+
+        list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
+        $activities = Activity::with('user')
+            ->where('user_id', $authUser->id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+
+        return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'authUser'));
     }
 }
