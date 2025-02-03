@@ -193,13 +193,22 @@
                         Track
                     </button>
                     </a>
-                   
-                    <button class="btn" onclick="processEmail()">
+                    @if ($document_received->attachments->isNotEmpty())
+                   <a href="{{route('getAttachments', $document_received->document_id)}}" target="_blank">
+                       <button class="btn">
+                           <svg viewBox="0 0 24 24">
+                               <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                           </svg>
+                           Attachments
+                       </button>
+                   </a>
+                   @endif
+                    {{-- <button class="btn" onclick="processEmail()">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M18.3 5.7c-.4-.4-1-.4-1.4 0L12 10.6 7.1 5.7c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4L10.6 12l-4.9 4.9c-.4.4-.4 1 0 1.4s1 .4 1.4 0L12 13.4l4.9 4.9c.4.4 1 .4 1.4 0s.4-1 0-1.4L13.4 12l4.9-4.9c.4-.4.4-1 0-1.4z" />
                         </svg>
                         File Document
-                    </button> 
+                    </button>  --}}
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
                         <svg viewBox="0 0 24 24">
@@ -231,12 +240,12 @@
                     {{ $document_received->sender->name }}
                 </div>
                 <div>
-                    @if ($document_received->attachments->isNotEmpty())
+                    {{-- @if ($document_received->attachments->isNotEmpty())
                         <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
                             target="__blank">Attachment by {{ $document_received->sender->name }}</a>
                     @else
                         
-                    @endif
+                    @endif --}}
 
                 </div>
 

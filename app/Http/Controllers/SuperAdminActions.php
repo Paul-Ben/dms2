@@ -1081,7 +1081,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Secretary') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('admin.documents.attachments', compact('attachments', 'document', 'authUser'));
+            return view('secretary.documents.attachments', compact('attachments', 'document', 'authUser'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);

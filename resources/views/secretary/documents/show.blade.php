@@ -293,6 +293,16 @@
                        Track
                    </button>
                    </a>
+                   @if ($document_received->attachments->isNotEmpty())
+                   <a href="{{route('getAttachments', $document_received->document_id)}}" target="_blank">
+                       <button class="btn">
+                           <svg viewBox="0 0 24 24">
+                               <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                           </svg>
+                           Attachments
+                       </button>
+                   </a>
+                   @endif
                     <a href="{{ url()->previous() }}">
                         <button class="btn" onclick="replyEmail()">
                             <svg viewBox="0 0 24 24">
@@ -322,12 +332,12 @@
                     <p>Best regards,<br>{{ e($document_received->sender->name) }}</p>
                 </div>
                 <div>
-                    @if ($document_received->attachments->isNotEmpty())
+                    {{-- @if ($document_received->attachments->isNotEmpty())
                         <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
                             target="__blank">Attachment by {{ $document_received->sender->name }}</a>
                     @else
                         
-                    @endif
+                    @endif --}}
 
                 </div>
 
