@@ -99,7 +99,7 @@
                                     <label for="exampleInputEmail1" class="form-label">Organisation</label>
                                     <select id="organisationSelect" name="tenant_id" onchange="getDepartments(this.value)"
                                         class="form-select">
-                                        <option value="{{$user_details->userDetail->tenant_id}}">{{$user_details->userDetail->tenant_id}}</option>
+                                        <option value="{{$user_details->userDetail->tenant_id}}">{{$organisationName}}</option>
                                         @foreach ($organisations as $organisation)
                                             <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
                                         @endforeach
@@ -108,8 +108,8 @@
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
                                     <select id="departmentSelect" name="department_id" class="form-select">
-                                        <option value="{{$user_details->userDetail->department_id}}">{{$user_details->userDetail->department_id}}</option>
-                                        @foreach ($departments as $department)
+                                        <option value="{{$user_details->userDetail->department_id}}">{{$user->userDetail->tenant_department->name ?? 'No department for this user' }}</option>
+                                        @foreach ($tenantDepartments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                                         @endforeach
                                     </select>
