@@ -48,7 +48,7 @@
             cursor: pointer;
             border: 3px solid #ddd;
         }
-    
+
         .image-container img {
             width: 100%;
             height: 100%;
@@ -56,7 +56,7 @@
             border-radius: 50%;
             transition: opacity 0.3s ease-in-out;
         }
-    
+
         .overlay {
             position: absolute;
             top: 0;
@@ -73,11 +73,11 @@
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
-    
+
         .image-container:hover .overlay {
             opacity: 1;
         }
-    
+
         .file-input {
             display: none;
         }
@@ -103,7 +103,8 @@
                         style="width: 80px; height: 80px;">
                 </a> --}}
                 <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        style="width: 80px; height: 80px;">
                     <div class="ms-3">
                         <h5 class="mb-0" style="font-weight: bold;">BSGIDMS </h5>
                         <small class="text-muted"> Doc Mgt</small>
@@ -111,7 +112,8 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="{{ asset('uploads/avatars/'.$authUser->userDetail->avatar)  }}" alt=""
+                        <img class="rounded-circle"
+                            src="{{ asset('uploads/avatars/' . $authUser->userDetail->avatar) }}" alt=""
                             style="width: 40px; height: 40px;">
                         {{-- {{ asset('dbf/img/user.jpg') }} --}}
                         <div
@@ -130,20 +132,37 @@
                     <a href="{{ route('document.index') }}"
                         class="nav-item nav-link {{ request()->routeIs('document.index', 'document.create') ? 'active' : '' }}"><i
                             class="fa fa-th me-2"></i>Documents</a>
-                    <div class="nav-item dropdown">
-                        <a href="#"
-                            class="nav-link dropdown-toggle {{ request()->routeIs('document.received', 'document.sent') ? 'active' : '' }}"
-                            data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="{{ route('document.received') }}" class="dropdown-item"><i
-                                    class="fa fa-inbox"></i>Incoming Mails </a>
-                            <a href="{{ route('document.sent') }}" class="dropdown-item"><i
-                                    class="fa fa-paper-plane"></i>Outgoing Mails</a>
+                            <div class="nav-item dropdown">
+                                <a href="#"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('document.received', 'document.sent') ? 'active' : '' }}"
+                                    data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
+                                <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="{{ route('document.received') }}" class="dropdown-item"><i
+                                            class="fa fa-inbox"></i>Incoming Mails </a>
+                                    <a href="{{ route('document.sent') }}" class="dropdown-item"><i
+                                            class="fa fa-paper-plane"></i>Outgoing Mails</a>
+                                </div>
+                            </div>        
+                    @role('Admin|Secretary|Staff')
+                        <a href="{{ route('memo.index') }}"
+                            class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
+                                class="fa fa-th me-2"></i>Memos</a>
+                        <div class="nav-item dropdown">
+                            <a href="#"
+                                class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.sent') ? 'active' : '' }}"
+                                data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>Memo Movement</a>
+                            <div class="dropdown-menu bg-transparent border-0">
+                                <a href="{{ route('memo.received') }}" class="dropdown-item"><i
+                                        class="fa fa-inbox"></i>Incoming Memos </a>
+                                <a href="{{ route('memo.sent') }}" class="dropdown-item"><i
+                                        class="fa fa-paper-plane"></i>Outgoing Memos</a>
+                            </div>
                         </div>
-                    </div>
+                    @endrole
+                    
 
                     @role('Admin')
-                    {{-- <a href="{{ route('users.index') }}"
+                        {{-- <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Pending Incoming</a> --}}
                         <a href="{{ route('users.index') }}"
@@ -185,7 +204,8 @@
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a> --}}
                 <a href="/" class="navbar-brand d-flex d-lg-none me-4">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo" style="width: 80px; height: 80px;">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        style="width: 80px; height: 80px;">
                     <div class="ms-3">
                         <h5 class="mb-0" style="font-weight: bold;">BSGIDMS</h5>
                         <small class="text-muted">Doc Mgt</small>
@@ -266,8 +286,9 @@
                     </div> --}}
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ asset('uploads/avatars/'.$authUser->userDetail->avatar)  }}"
-                                alt="" style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2"
+                                src="{{ asset('uploads/avatars/' . $authUser->userDetail->avatar) }}" alt=""
+                                style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">{{ $authUser->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
@@ -281,7 +302,7 @@
                                     Log Out
                                 </a>
                             </form>
-                        </div> 
+                        </div>
                     </div>
                 </div>
             </nav>

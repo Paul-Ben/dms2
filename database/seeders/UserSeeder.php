@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         $superadmin = User::create([
             'name' => 'John Agi',
-            'email' => 'superadmin@bdic.com',
+            'email' => 'paulben.ajene@gmail.com',
             'password' => bcrypt('123456'),
             'status' => 'active',
             'default_role' => 'superadmin',
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
         // Create an Admin User
         $admin = User::create([
             'name' => 'Ephraim Tarfa',
-            'email' => 'admin@bdic.com',
+            'email' => 'testuser1@bdic.ng',
             'password' => bcrypt('123456'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         // Create an Staff User
         $admin = User::create([
             'name' => 'Godfrey Ejeh',
-            'email' => 'saff@bdic.com',
+            'email' => 'testuser2@bdic.ng',
             'password' => bcrypt('123456'),
             'default_role' => 'Staff',
             'email_verified_at' => Carbon::now()
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
         // Create a Regular User
         $user = User::create([
             'name' => 'Shima Adi',
-            'email' => 'user@example.com',
+            'email' => 'testuser3@bdic.ng',
             'password' => bcrypt('123456'),
             'default_role' => 'User',
             'email_verified_at' => Carbon::now()
@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
         // Create an Admin User
         $admin = User::create([
             'name' => 'Ephraim Tarfa',
-            'email' => 'admin2@bdic.com',
+            'email' => 'testuser3@bdic.ng',
             'password' => bcrypt('123456'),
             'default_role' => 'Admin',
             'status' => 'active',

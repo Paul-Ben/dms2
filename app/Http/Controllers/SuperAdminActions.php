@@ -7,7 +7,6 @@ use App\Helpers\FileService;
 use App\Helpers\SendMailHelper;
 use App\Helpers\StampHelper;
 use App\Helpers\UserAction;
-use App\Helpers\UserFileDocument;
 use App\Models\Designation;
 use App\Models\Document;
 use App\Models\DocumentRecipient;
@@ -23,13 +22,19 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\List_;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendNotificationMail;
 use App\Mail\ReceiveNotificationMail;
+use App\Models\Activity;
 use App\Models\Attachments;
+use App\Models\DocumentHold;
+use App\Models\Memo;
+use App\Models\MemoTemplate;
+use App\Models\Payment;
 use Exception;
+use setasign\Fpdi\Fpdi;
 
 class SuperAdminActions extends Controller
 {
@@ -366,8 +371,8 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
-            // dd($documents);
-            return view('admin.documents.index', compact('documents', 'authUser'));
+            $tenantName = optional($authUser->userDetail)->tenant->name;
+            return view('admin.documents.index', compact('documents', 'authUser', 'tenantName'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $documents = DocumentStorage::myDocuments();
@@ -413,7 +418,7 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         if (Auth::user()->default_role === 'User') {
             $recipients = DocumentStorage::getUserRecipients();
-            // dd($recipients);
+
             return view('user.documents.filedocument', compact('recipients', 'authUser'));
         }
         return view('errors.404', compact('authUser'));
@@ -421,198 +426,224 @@ class SuperAdminActions extends Controller
 
     public function user_store_file_document(Request $request)
     {
-        // Store the initial data in the session or temporary storage
-        $data = $request;
-        // session()->put('document_data', $data);
-        $result = UserFileDocument::userFileDocument($data);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'document_number' => 'required|string|max:255',
+            'file_path' => 'required|mimes:pdf|max:2048', // PDF file, max 2MB
+            'uploaded_by' => 'required|exists:users,id',
+            'status' => 'nullable|in:pending,processing,approved,rejected,kiv,completed',
+            'description' => 'nullable|string',
+            'recipient_id' => 'required|exists:users,id',
+            'metadata' => 'nullable|json',
+        ]);
+        if ($request->hasFile('file_path')) {
+            $filePath = $request->file('file_path');
+            $filename = time() . '_' . $filePath->getClientOriginalName();
+            $file_path = $filePath->move(public_path('documents/'), $filename);
+            $file = $request->merge(['file_path' => $filename]);
+        }
+
+        $reference = Str::random(12);
+        $amount = 3000;
+        $documentHold = DocumentHold::create([
+            'title' => $request->title,
+            'docuent_number' => $request->document_number,
+            'file_path' => $filename,
+            'uploaded_by' => Auth::user()->id,
+            'status' => $request->status ?? 'pending',
+            'description' => $request->description,
+            'reference' => $reference,
+            'amount' => $amount,
+            'recipient_id' => $request->recipient_id,
+            'metadata' => json_encode($request->metadata),
+        ]);
+
+
+        $authUser = Auth::user();
+
+        try {
+
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => env('CREDO_PUBLIC_KEY'),
+                'content_type' => "Content-Type: application/json",
+            ])->post(env("CREDO_URL") . "/transaction/initialize", [
+                "email" => $authUser->email,
+                "amount" => ($amount * 100),
+                "reference" => $reference,
+                "callbackUrl" => route("etranzact.callBack"),
+                "bearer" => 0,
+            ]);
+
+            $responseData = $response->collect("data");
+
+            if (isset($responseData['authorizationUrl'])) {
+                return redirect($responseData['authorizationUrl']);
+            }
+
+            $notification = [
+                'message' => 'Credo E-Tranzact gateway service took too long to respond.',
+                'alert-type' => 'error',
+            ];
+
+            return redirect()->back()->with($notification);
+        } catch (\Exception $e) {
+            report($e);
+            Log::error('Error initializing payment gateway: ' . $e->getMessage());
+            $notification = [
+                'message' => 'Error initializing payment gateway. Please try again.',
+                'alert-type' => 'error',
+            ];
+            return redirect()->back()->with($notification);
+        }
+    }
+    public function handleETranzactCallback(Request $request)
+    {
+        
+        // Verify the transaction with the payment gateway
+        $response = Http::accept('application/json')->withHeaders([
+            'authorization' => env('CREDO_SECRET_KEY'),
+            'content-type' => 'application/json',
+        ])->get(env('CREDO_URL') . "/transaction/{$request->reference}/verify");
+
+        // Check if the response is successful
+        if (!$response->successful()) {
+            return $this->handleFailedPayment('Payment verification failed. Please try again.');
+        }
+
+        $payment = $response->json('data');
+    
+        // Extract payment status and message
+        $status = $payment['status'];
+        $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
+
+        // Handle successful payment
+        if ( $message == 'Successful') {
+            $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
+            $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
+           
+            // Create a new payment record
+           Payment::create([
+                'businessName' => $payment['businessName'],
+                'reference' => $payment['businessRef'],
+                'transAmount' => $payment['transAmount'],
+                'transFee' => $payment['transFeeAmount'],
+                'transTotal' => $payment['debitedAmount'],
+                'transDate' => $payment['transactionDate'],
+                'settlementAmount' => $payment['settlementAmount'],
+                'status' => $payment['status'],
+                'statusMessage' => $payment['statusMessage'],
+                'customerEmail' => $payment['customerId'],
+                'customerId' => Auth::id(),
+                'channelId' => $payment['channelId'],
+                'currencyCode' => $payment['currencyCode'],
+                'recipient_id' => $recipient_id,
+                'tenant_id' => $tenant_id,
+            ]);
+            return $this->handleSuccessfulPayment($request->reference);
+        }
+
+        // Handle failed payment
+        return $this->handleFailedPayment('Payment failed. Please try again.');
+    }
+
+    /**
+     * Handle a successful payment.
+     */
+    protected function handleSuccessfulPayment($reference)
+    {
+        // Find the document hold record
+        $document = DocumentHold::where('reference', $reference)->first();
+
+        if (!$document) {
+            return $this->handleFailedPayment('Document not found.');
+        }
+
+        // Update document hold status
+        $document->status = 'Successful';
+        $document->save();
+
+        // Create a new document
+        $newDocument = Document::create([
+            'title' => $document->title,
+            'docuent_number' => $document->docuent_number,
+            'file_path' => $document->file_path,
+            'uploaded_by' => $document->uploaded_by,
+            'status' => 'pending',
+            'description' => $document->description,
+            'metadata' => json_encode($document->metadata),
+        ]);
+
+        // Log document upload activity
+        Activity::create([
+            'action' => 'You uploaded a document',
+            'user_id' => Auth::id(),
+        ]);
+
+        // Create file movement record
+        $fileMovement = FileMovement::create([
+            'recipient_id' => $document->recipient_id,
+            'sender_id' => Auth::id(),
+            'message' => $document->description,
+            'document_id' => $newDocument->id,
+        ]);
+
+        // Create document recipient record
+        DocumentRecipient::create([
+            'file_movement_id' => $fileMovement->id,
+            'recipient_id' => $document->recipient_id,
+            'user_id' => Auth::id(),
+            'created_at' => now(),
+        ]);
+
+        // Log additional activities
+        Activity::insert([
+            [
+                'action' => 'Sent Document',
+                'user_id' => Auth::id(),
+                'created_at' => now(),
+            ],
+            [
+                'action' => 'Document Received',
+                'user_id' => $document->recipient_id,
+                'created_at' => now(),
+            ],
+        ]);
 
         $senderName = Auth::user()->name;
-        // $receiverName = User::find($data->recipient_id)?->name;
-        $receiverName = User::find($data->recipient_id)?->name;
-        $documentName = $request->title;
-        $documentId = $request->document_number;
+        $receiverName = User::find($document->recipient_id)->name;
+        $documentName = $document->title;
+        $documentId = $document->docuent_number;
         $appName = config('app.name');
 
         try {
-            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
-            Mail::to(User::find($data->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-        } catch (\Exception $e) {
-            Log::error('Failed to send Document notification');
-        }
+                    Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+                    Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send Document notification');
+                }
 
-        // Define the payment link
-        $link = "https://app.credodemo.com/pay/benuee-state-digital-infrastructure-company-plc";
-
-        // Append a callback URL to the payment link
-        $callbackUrl = route('payment.callback');
-        $linkWithCallback = $link . "?callbackUrl=" . urlencode($callbackUrl);
-
-        // Redirect to the payment link
-        return redirect($linkWithCallback)->with('success', 'Document uploaded and sent successfully');
+        // Redirect with success notification
+        return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
     }
-    
-    // public function user_store_file_document(Request $request)
-    // {
-    //     // $request->validate([
-    //     //     'title' => 'required|string|max:255',
-    //     //     'document_number' => 'required|string|max:50|unique:user_file_documents,document_number',
-    //     //     'recipient_id' => 'required|exists:users,id',
-    //     // ]);
 
-    //     $data = $request->all();
-    //     $jsonData = json_encode($data);
-    //     // $result = UserFileDocument::userFileDocument($data);
-        
-
-    //     //     $documentName = $request->title;
-    //     $documentId = $request->document_number;
-    //     //     $appName = config('app.name');
-    //     $senderName = Auth::user()->name;
-    //     $receiverName = User::find($data['recipient_id'])?->name;
-    //     $amount = 3000;
-
-    //     try {
-    //         $response = $this->initializePayment(Auth::user()->email, $senderName, $receiverName, $documentId, $amount, $jsonData, route("payment.callback"));
-
-    //         if ($response->successful()) {
-    //             $responseData = $response->json('data');
-    //             if (isset($responseData['authorizationUrl'])) {
-    //                 return redirect($responseData['authorizationUrl'])
-    //                     ->with('success', 'Redirecting to the payment gateway...');
-    //             }
-    //         }
-
-    //         return redirect()->back()->with([
-    //             'message' => 'Credo E-Tranzact gateway service took too long to respond.',
-    //             'alert-type' => 'error',
-    //         ]);
-    //     } catch (Exception $e) {
-    //         Log::error('Error initializing payment gateway: ' . $e->getMessage());
-    //         return redirect()->back()->with([
-    //             'message' => 'Error initializing payment gateway. Please try again.',
-    //             'alert-type' => 'error',
-    //         ]);
-    //     }
-    // }
-
-    // private function initializePayment($email, $senderName, $receiverName, $documentId, $amount, $jsonData, $callbackUrl)
-    // {
-    //     return Http::accept('application/json')
-    //         ->withHeaders([
-    //             'Authorization' => env('CREDO_PUBLIC_KEY'),
-    //             'Content-Type' => 'application/json',
-    //         ])
-    //         ->timeout(10)
-    //         ->retry(3, 1000)
-    //         ->post(env('CREDO_URL') . '/transaction/initialize', [
-    //             "email" => $email,
-    //             "senderName" => $senderName,
-    //             "receiverName" => $receiverName,
-    //             "reference" => $documentId,
-    //             "amount" => $amount * 100,
-    //             "metadata" => $jsonData,
-    //             "callbackUrl" => $callbackUrl,
-    //             "bearer" => 0,
-    //         ]);
-    // }
-
-    // public function paymentCallback(Request $request)
-    // {
-
-    //     // Validate the callback request
-    //     $validated = $request->validate([
-    //         'reference' => 'required|string',
-    //     ]);
-    //     $data = $request->all();
-    //     $reference = $validated['reference'];
-    //     // dd($data);
-    //     try {
-    //         // Confirm the transaction with the payment gateway
-    //         $response = Http::accept('application/json')
-    //             ->withHeaders([
-    //                 'Authorization' => env('CREDO_SECRET_KEY'),
-    //             ])
-    //             ->get(env('CREDO_URL') . "/transaction/{$reference}/verify");
-
-    //         if ($response->successful()) {
-    //             $paymentData = $response->json('data');
-    //             $data = json_decode($paymentData['metadata'], true);
-    //             dd($data);
-    //             // Check if payment is successful
-    //             if ($paymentData['status'] === 'success') {
-    //                 // Extract relevant details
-    //                 $paymentDetails = [
-    //                     'transaction_id' => $paymentData['transactionId'],
-    //                     'reference' => $paymentData['reference'],
-    //                     'amount' => $paymentData['amount'] / 100, // Convert to original currency
-    //                     'email' => $paymentData['customer']['email'],
-    //                     'status' => $paymentData['status'],
-    //                     'paid_at' => $paymentData['paidAt'],
-    //                 ];
-
-    //                 // Store payment details in the database
-    //                 // Payment::updateOrCreate(
-    //                 //     ['reference' => $paymentDetails['reference']],
-    //                 //     $paymentDetails
-    //                 // );
-
-    //                 // Generate receipt (customize as needed)
-    //                 $receipt = [
-    //                     'receipt_no' => strtoupper(uniqid('RCPT-')),
-    //                     'transaction_id' => $paymentDetails['transaction_id'],
-    //                     'reference' => $paymentDetails['reference'],
-    //                     'amount' => $paymentDetails['amount'],
-    //                     'paid_at' => $paymentDetails['paid_at'],
-    //                     'email' => $paymentDetails['email'],
-    //                 ];
-
-    //                 // Render or save receipt
-    //                 return view('payments.receipt', compact('receipt'));
-    //             } else {
-    //                 return redirect()->route('payment.failed')->withErrors('Payment was not successful.');
-    //             }
-    //         } else {
-    //             throw new Exception('Failed to verify payment.');
-    //         }
-    //     } catch (Exception $e) {
-    //         Log::error('Payment Callback Error: ' . $e->getMessage());
-    //         return redirect()->route('payment.failed')->withErrors('Payment verification failed.');
-    //     }
-    // }
-
-
-    public function paymentCallback(Request $request)
+    /**
+     * Handle a failed payment.
+     */
+    protected function handleFailedPayment($message)
     {
+        return $this->redirectWithNotification($message, 'error');
+    }
 
-        // Retrieve the necessary data from the request or session
-        $data = session()->get('document_data');
+    /**
+     * Redirect with a notification.
+     */
+    protected function redirectWithNotification($message, $type)
+    {
+        $notification = [
+            'message' => $message,
+            'alert-type' => $type,
+        ];
 
-        // Verify payment status (if needed)
-        $paymentStatus = $request->query('status');
-
-        if ($paymentStatus === 'success') {
-            // Process the document upload or related logic
-            $result = UserFileDocument::userFileDocument($data);
-            // $response = UserFileDocument::undoDocumentActions($data);
-            // session()->forget('document_data');
-
-            $notification = array(
-                'message' => 'Document uploaded and sent successfully.',
-                'alert-type' => 'success'
-            );
-            return redirect()->route('document.sent')->with($notification);
-        }
-
-        // Handle failed payment
-        // $notification = array(
-        //     'message' => 'Payment failed. Please try again.',
-        //     'alert-type' => 'error'
-        // );
-        // Handle failed payment
-        $notification = array(
-            'message' => 'Document uploaded and sent successfully. Payment confirmed.',
-            'alert-type' => 'success'
-        );
         return redirect()->route('document.index')->with($notification);
     }
 
@@ -628,7 +659,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
-           
+
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -687,6 +718,7 @@ class SuperAdminActions extends Controller
 
     public function document_store(Request $request)
     {
+
         $data = $request;
         $result = DocumentStorage::storeDocument($data);
 
@@ -720,7 +752,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-
+            // dd($sent_documents);
             return view('admin.documents.sent', compact('sent_documents', 'recipient', 'authUser'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -750,7 +782,7 @@ class SuperAdminActions extends Controller
                 // Handle the case when $recipient is null or empty
                 $mda = collect(); // Return an empty collection
             }
-           
+
             return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
         }
         return view('errors.404', compact('authUser'));
@@ -781,7 +813,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-           
+
             return view('staff.documents.received', compact('received_documents', 'authUser'));
         }
         return view('errors.404', compact('authUser'));
@@ -1090,6 +1122,439 @@ class SuperAdminActions extends Controller
         return view('errors.404', compact('authUser'));
     }
 
+    /**Memo Actions */
+    public function memo_index()
+    {
+        $authUser = Auth::user();
+        $memos = Memo::where('user_id', $authUser->id)->orderBy('id', 'desc')->paginate(10);
+        return view('admin.memo.index', compact('memos', 'authUser'));
+    }
+
+    public function create_memo()
+    {
+        $authUser = Auth::user();
+        return view('admin.memo.create', compact('authUser'));
+    }
+
+    public function store_memo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'document_number' => 'required|string|max:255|unique:memos,docuent_number',
+            'content' => 'required|string',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $memo = new Memo();
+        $memo->title = $request->input('title');
+        $memo->docuent_number = $request->input('document_number');
+        $memo->content = $request->input('content');
+        $memo->user_id = $request->input('user_id');
+        $memo->save();
+
+        $notification = array(
+            'message' => 'Memo created successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('memo.index')->with($notification);
+    }
+
+    public function edit_memo(Memo $memo)
+    {
+        $authUser = Auth::user();
+        return view('admin.memo.edit', compact('memo', 'authUser'));
+    }
+
+    public function update_memo(Request $request, Memo $memo)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'document_number' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $memo->title = $request->input('title');
+        $memo->docuent_number = $request->input('document_number');
+        $memo->content = $request->input('content');
+        // $memo->user_id = $request->input('user_id');
+        $memo->save();
+
+        $notification = array(
+            'message' => 'Memo updated successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('memo.index')->with($notification);
+    }
+
+    public function delete_memo(Memo $memo)
+    {
+        $authUser = Auth::user();
+        $memo->delete();
+        $notification = array(
+            'message' => 'Memo deleted successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('memo.index')->with($notification);
+    }
+
+    public function generateMemoPdf(Memo $memo)
+    {
+        // dd($memo);
+        $authUser = Auth::user();
+        // Create new FPDI instance
+        $pdf = new Fpdi();
+
+        // Set the source file (your letterhead template)
+        $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
+
+        // Import the first page of the template
+        $tplId = $pdf->importPage(1);
+
+        // Add a new page to the PDF and use the imported template
+        $pdf->AddPage();
+        $pdf->useTemplate($tplId);
+
+        // Set font and add dynamic content
+        $pdf->SetFont('Arial', '', 14);
+
+        // Add title/subject information
+        $pdf->SetXY(25, 100); // Adjust X and Y coordinates as needed
+        $pdf->Write(0, "Subject: " . $memo['title']);
+
+        // Add body/content
+        $pdf->SetXY(25, 120); // Adjust Y coordinate for body text
+        $pdf->MultiCell(0, 10, $memo['content']);
+
+        //Add Salutation
+
+        // $pdf->SetXY(25, 150);
+        // $pdf->Write(0, "Yours faithfully,");
+
+        // $pdf->SetXY(25, 160);
+        // $pdf->Write(0, $authUser->userDetail->signature);
+        // $pdf->SetXY(25, 180);
+        // $pdf->Write(0, $authUser->name);
+
+        // Output the PDF to browser for download or display
+        return response()->stream(function () use ($pdf) {
+            $pdf->Output('I', 'letter.pdf'); // Output inline in browser or use 'D' for download
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="letter.pdf"',
+        ]);
+    }
+
+
+    public function get_memo(Request $request, Memo $memo)
+    {
+        $authUser = Auth::user();
+        // $memo = Memo::where('id', $id)->first();
+        return view('admin.memo.show', compact('memo', 'authUser'));
+    }
+
+    public function createMemoTemplateForm()
+    {
+        $authUser = Auth::user();
+        return view('admin.memo.template', compact('authUser'));
+    }
+
+    public function storeMemoTemplate(Request $request)
+    {
+        $authUser = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:memo_templates,name',
+            'template' => 'required|file|mimes:pdf,doc,docx|max:2048', // Allow PDF, Word files, max 2MB
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            $notification = [
+                'message' => 'File upload failed',
+                'alert-type' => 'error',
+            ];
+            return redirect()->back()->with($notification);
+        }
+
+        // Handle file upload
+        if ($request->hasFile('template')) {
+            $file = $request->file('template');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Unique file name
+            $filePath = $file->move(public_path('templates/'), $fileName); // Store in public/memo_templates
+
+            // Create the memo template
+            $memoTemplate = MemoTemplate::create([
+                'name' => $request->name,
+                'template' => $fileName, // Store the file name in the database
+                'user_id' => $request->user_id,
+            ]);
+
+            $notification = [
+                'message' => 'Memo template created successfully',
+                'alert-type' => 'success',
+            ];
+            return redirect()->route('memo.index')->with($notification);
+        }
+        // $notification = [
+        //     'message' => 'File upload failed',
+        //     'alert-type' => 'error',
+        // ];
+        // return redirect()->back()->with($notification);
+    }
+
+    public function getSendMemoExternalForm(Request $request, Memo $memo)
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'Admin') {
+            $recipients = User::with(['userDetail.tenant' => function ($query) {
+                $query->select('id', 'name'); // Include only relevant columns
+            }])
+                ->where('default_role', 'Admin') // Admins in other tenants
+                ->get();
+
+            if ($recipients->isEmpty()) {
+                $notification = [
+                    'message' => 'No recipients found.',
+                    'alert-type' => 'error'
+                ];
+                return redirect()->back()->with($notification);
+            }
+            return view('admin.memo.send_external', compact('recipients', 'memo', 'authUser'));
+        }
+        $notification = [
+            'message' => 'You do not have permission to send external documents.',
+            'alert-type' => 'error'
+        ];
+        return view('errors.404', compact('authUser'))->with($notification);
+    }
+
+    public function getSendMemoform(Request $request, Memo $memo)
+    {
+        $authUser = Auth::user();
+        $role = $authUser->default_role;
+
+        switch ($role) {
+            case 'superadmin':
+                $recipients = User::all();
+                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser'));
+
+            case 'Admin':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+                // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+
+                if (!$tenantId) {
+                    $notification = [
+                        'message' => 'Tenant information is missing.',
+                        'alert-type' => 'error',
+                    ];
+                    return redirect()->back()->with($notification);
+                }
+
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
+
+                if ($recipients->isEmpty()) {
+                    $notification = [
+                        'message' => 'No recipients found.',
+                        'alert-type' => 'error',
+                    ];
+                    return redirect()->back()->with($notification);
+                }
+
+                return view('admin.memo.send', compact('recipients', 'memo', 'authUser'));
+
+            case 'User':
+                $recipients = User::where('default_role', 'Admin')->get();
+                return view('user.documents.send', compact('recipients', 'document', 'authUser'));
+
+            case 'Staff':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+                // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
+
+                if ($recipients->isEmpty()) {
+                    return redirect()->back()->with('error', 'No recipients found.');
+                }
+
+                return view('staff.memo.send', compact('recipients', 'memo', 'authUser'));
+
+            case 'Secretary':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+                // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
+
+                $recipients = User::with(['userDetail' => function ($query) {
+                    $query->select('id', 'user_id', 'designation', 'tenant_id');
+                }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
+
+
+                if ($recipients->isEmpty()) {
+                    $notification = [
+                        'title' => 'No recipients found.',
+                        'message' => 'No recipients found.',
+                        'type' => 'error',
+                    ];
+                    return redirect()->back()->with($notification);
+                }
+
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser'));
+
+
+            default:
+                return view('errors.404', compact('authUser'));
+        }
+    }
+
+    public function sendMemo(Request $request)
+    {
+        $data = $request;
+        $result = DocumentStorage::sendMemo($data);
+        if ($result['status'] === 'error') {
+            return redirect()->back()
+                ->withErrors($result['errors'])
+                ->withInput();
+        }
+        try {
+            SendMailHelper::sendNotificationMail($data, $request);
+        } catch (\Exception $e) {
+            Log::error('Failed to send review notification email: ' . $e->getMessage());
+            return redirect()->route('document.index')->with([
+                'message' => 'Document was processed, but notification email failed.',
+                'alert-type' => 'warning',
+            ]);
+        }
+
+        $notification = array(
+            'message' => 'Memo sent successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('memo.index')->with($notification);
+    }
+
+
+    public function sent_memos()
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'superadmin') {
+
+            list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
+
+            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
+            // dd($sent_documents);
+            return view('admin.memo.sent', compact('sent_documents', 'recipient', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
+            return view('secretary.memo.sent', compact('sent_documents', 'recipient', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'User') {
+
+            list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+
+            // Check if $recipient is null or empty
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
+
+            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
+            
+            if (!empty($recipient) && isset($recipient[0])) {
+                $mda = UserDetails::with(['tenant', 'tenant_department'])->where('id', $recipient[0]->id)->get();
+            } else {
+                // Handle the case when $recipient is null or empty
+                $mda = collect(); // Return an empty collection
+            }
+
+            return view('staff.memo.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+        }
+        return view('errors.404', compact('authUser'));
+    }
+
+    public function received_memos()
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'superadmin') {
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+
+            return view('superadmin.documents.received', compact('received_documents', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            list($received_documents) = DocumentStorage::getReceivedMemos();
+            // dd($received_documents);
+            return view('admin.memo.received', compact('received_documents', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            list($received_documents) = DocumentStorage::getReceivedMemos();
+
+            return view('secretary.memo.received', compact('received_documents', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'User') {
+            list($received_documents) = DocumentStorage::getReceivedDocuments();
+
+            return view('user.documents.received', compact('received_documents', 'authUser'));
+        }
+        if (Auth::user()->default_role === 'Staff') {
+            list($received_documents) = DocumentStorage::getReceivedMemos();
+            // dd($received_documents);
+            return view('staff.memo.received', compact('received_documents', 'authUser'));
+        }
+        return view('errors.404', compact('authUser'));
+    }
+
     /**Department Management */
     public function department_index()
     {
@@ -1175,7 +1640,7 @@ class SuperAdminActions extends Controller
                 'alert-type' => 'success'
             ];
             return redirect()->route('department.index')->with($notification);
-            }
+        }
         if (Auth::user()->default_role === 'Admin') {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -1189,26 +1654,26 @@ class SuperAdminActions extends Controller
             return redirect()->route('department.index')->with($notification);
         }
         return view('errors.404', compact('authUser'));
+    }
+    public function department_delete(TenantDepartment $department)
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'superadmin') {
+            $department->delete();
+            $notification = [
+                'message' => 'Department deleted successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('department.index')->with($notification);
         }
-        public function department_delete(TenantDepartment $department)
-        {
-            $authUser = Auth::user();
-            if (Auth::user()->default_role === 'superadmin') {
-                $department->delete();
-                $notification = [
-                    'message' => 'Department deleted successfully',
-                    'alert-type' => 'success'
-                ];
-                return redirect()->route('department.index')->with($notification);
-            }
-            if (Auth::user()->default_role === 'Admin') {
-                $department->delete();
-                $notification = [
-                    'message' => 'Department deleted successfully',
-                    'alert-type' => 'success'
-                ];
-                return redirect()->route('department.index')->with($notification);
-            }
-            return view('errors.404', compact('authUser'));
+        if (Auth::user()->default_role === 'Admin') {
+            $department->delete();
+            $notification = [
+                'message' => 'Department deleted successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('department.index')->with($notification);
         }
+        return view('errors.404', compact('authUser'));
+    }
 }

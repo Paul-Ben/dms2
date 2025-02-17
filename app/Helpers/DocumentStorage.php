@@ -8,6 +8,9 @@ use App\Models\DocumentRecipient;
 use App\Models\FileMovement;
 use App\Helpers\PDF;
 use App\Models\Attachments;
+use App\Models\Memo;
+use App\Models\MemoMovement;
+use App\Models\MemoRecipient;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -53,6 +56,7 @@ class DocumentStorage
      */
     public static function storeDocument($data)
     {
+        $authUser = Auth::user();
         $data->validate([
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
@@ -73,7 +77,7 @@ class DocumentStorage
             'title' => $data->title,
             'docuent_number' => $data->document_number,
             'file_path' => $data->file_path,
-            'uploaded_by' => Auth::user()->id,
+            'uploaded_by' => $authUser->id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,
             'metadata' => json_encode($data->metadata),
@@ -82,7 +86,7 @@ class DocumentStorage
         // Log the activity
         Activity::create([
             'action' => 'You uploaded a document',
-            'user_id' => Auth::user()->id,
+            'user_id' => $authUser->id,
         ]);
 
         return [
@@ -175,6 +179,69 @@ class DocumentStorage
         return [
             'status' => 'success',
             'message' => 'Document sent successfully!',
+        ];
+    }
+
+    public static function sendMemo($data)
+    {
+        $data->validate([
+            'recipient_id' => 'required|array', // Validate that it's an array
+            'recipient_id.*' => 'exists:users,id',
+            // 'recipient_id' => 'required|exists:users,id',
+            'message' => 'nullable|string',
+            // 'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+
+        // if ($data->hasFile('attachment')) {
+        //     // Get the uploaded file
+        //     $file = $data->file('attachment');
+
+        //     // Define the path where you want to store the file
+        //     $destinationPath = public_path('documents/attachments');
+
+        //     // Generate a unique filename (optional)
+        //     $fileName = time() . '_' . $file->getClientOriginalName();
+
+        //     // Move the file to the public attachments directory
+        //     $file->move($destinationPath, $fileName);
+        // }
+
+        foreach ($data->recipient_id as $recipient) {
+            $document_action = MemoMovement::create([
+                'recipient_id' => $recipient,
+                'sender_id' => Auth::user()->id,
+                'message' => $data->message,
+                'memo_id' => $data->memo_id,
+            ]);
+            // if ($data->hasFile('attachment')) {
+            //     Attachments::create([
+            //         'file_movement_id' => $document_action->id,
+            //         'attachment' => $fileName,
+            //         'document_id' => $data->document_id,
+            //     ]);
+            // }
+            MemoRecipient::create([
+                'memo_movement_id' => $document_action->id,
+                'recipient_id' => $recipient,
+                'user_id' => Auth::user()->id,
+                'created_at' => now(),
+            ]);
+            Activity::insert([
+                [
+                    'action' => 'Sent Memo',
+                    'user_id' => Auth::user()->id,
+                    'created_at' => now(),
+                ],
+                [
+                    'action' => 'Memo Received',
+                    'user_id' => $recipient,
+                    'created_at' => now(),
+                ],
+            ]);
+        }
+        return [
+            'status' => 'success',
+            'message' => 'Memo sent successfully!',
         ];
     }
     // public static function reviewedDocument($data)
@@ -411,13 +478,14 @@ class DocumentStorage
      */
     public static function getSentDocuments($perPage = 5)
     {
+        $authUser = Auth::user();
         try {
             // Eager load both relationships and paginate the results
             $sent_documents = FileMovement::with(['document_recipients', 'document'])
-                ->where('sender_id', Auth::user()->id)
+                ->where('sender_id',  $authUser->id)
                 ->orderBy('id', 'desc')
                 ->paginate($perPage);
-
+           
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
                 $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);
@@ -426,8 +494,7 @@ class DocumentStorage
             }
 
             return [$sent_documents, $recipient];
-
-            // return [$sent_documents, $recipient];
+            
         } catch (\Exception $e) {
             // Log the error message
             Log::error('Error retrieving received documents: ' . $e->getMessage());
@@ -490,5 +557,56 @@ class DocumentStorage
             });
 
         return $adminWithTenantDetails;
+    }
+
+    public static function getSentMemos($perPage = 5)
+    {
+        $authUser = Auth::user();
+        try {
+            // Eager load both relationships and paginate the results
+            $sent_documents = MemoMovement::with(['memo_recipients', 'memo'])
+                ->where('sender_id',  $authUser->id)
+                ->orderBy('id', 'desc')
+                ->paginate($perPage);
+           
+            // Fetch recipient details for each sent document
+            foreach ($sent_documents as $key => $value) {
+                $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);
+                // You can attach recipient details to the document if needed
+                $value->recipient_details = $recipient; // Optional: Attach recipient details
+            }
+
+            return [$sent_documents, $recipient];
+            
+        } catch (\Exception $e) {
+            // Log the error message
+            Log::error('Error retrieving received documents: ' . $e->getMessage());
+            // Return an empty collection and null sender details
+            return [collect(), null];
+        }
+    }
+
+    public static function getReceivedMemos($perPage = 5)
+    {
+        try {
+            // Eager load both relationships and paginate the results
+            $received_documents = MemoMovement::with(['memo_recipients', 'memo', 'sender.userDetail.tenant_department'])
+                ->where('recipient_id', Auth::user()->id)
+                ->orderBy('id', 'desc')
+                ->paginate($perPage);
+            // dd($received_documents);
+            // Fetch sender details for each received document
+            foreach ($received_documents as $key => $value) {
+                // $value->sender_details = User::select('name', 'email')->find($value->sender_id);
+                $value->sender_details = User::with('userDetail')->find($value->sender_id);
+            }
+
+            return [$received_documents];
+        } catch (\Exception $e) {
+            // Log the error message
+            Log::error('Error retrieving received documents: ' . $e->getMessage());
+            // Return an empty collection and null sender details
+            return [collect(), null];
+        }
     }
 }

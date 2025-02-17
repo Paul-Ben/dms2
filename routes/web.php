@@ -98,9 +98,28 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/{document}/location', [SuperAdminActions::class, 'track_document'])->name('track');
     Route::get('/document/{document}/attachments', [SuperAdminActions::class, 'get_attachments'])->name('getAttachments');
 
+    /**Memo management related links */
+    Route::get('/document/memo', [SuperAdminActions::class, 'memo_index'])->name('memo.index');
+    Route::get('/document/memo/create', [SuperAdminActions::class, 'create_memo'])->name('memo.create');
+    Route::post('/document/memo/create', [SuperAdminActions::class, 'store_memo'])->name('memo.store');
+    Route::get('/document/memo/{memo}/edit', [SuperAdminActions::class, 'edit_memo'])->name('memo.edit');
+    Route::put('/document/memo/{memo}/edit', [SuperAdminActions::class, 'update_memo'])->name('memo.update');
+    Route::delete('/document/memo/{memo}/delete', [SuperAdminActions::class, 'delete_memo'])->name('memo.delete');
+    Route::get('/document/memo/{memo}/view', [SuperAdminActions::class, 'get_memo'])->name('memo.view');
+    Route::get('/generate-letter/{memo}/memo', [SuperAdminActions::class, 'generateMemoPdf'])->name('memo.generate');
+    Route::get('/document/memo/template', [SuperAdminActions::class, 'createMemoTemplateForm'])->name('memo.template');
+    Route::post('/document/memo/template', [SuperAdminActions::class, 'storeMemoTemplate'])->name('memo.template.store');
+    Route::get('/document/memo/template/{template}/edit', [SuperAdminActions::class, 'editMemoTemplateForm'])->name('memo.template.edit');
+    Route::get('/document/memo/{memo}/send', [SuperAdminActions::class, 'getSendMemoform'])->name('memo.send');
+    Route::get('/document/memo/{memo}/sendout', [SuperAdminActions::class, 'getSendMemoExternalForm'])->name('memo.sendout');
+    Route::post('/document/memo/{memo}/send', [SuperAdminActions::class, 'sendMemo'])->name('memo.senddoc');
+    Route::get('/document/sent/memo', [SuperAdminActions::class, 'sent_memos'])->name('memo.sent');
+    Route::get('/document/received/memo', [SuperAdminActions::class, 'received_memos'])->name('memo.received');
+
+
  
 
 });
 
-
+Route::get('/etranzact/callback', [SuperAdminActions::class, 'handleETranzactCallback'])->name("etranzact.callBack");
 require __DIR__.'/auth.php';

@@ -26,7 +26,7 @@
                                                 {{-- <img class="me-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="80px" height="80px" alt=""> --}}
                                                 <div>
                                                     <h2 class="text-success">REGISTER</h2>
-                                                    <small class="text-muted">Integrated Document Manangement System</small>
+                                                    <small class="text-muted">Benue State Government Integrated Document Manangement System</small>
                                                 </div>
                                             </div>
                                         </div>

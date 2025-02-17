@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_recipients', function (Blueprint $table) {
+        Schema::create('memo_recipients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('file_movement_id')->constrained('file_movements')->onDelete('cascade');
+            $table->foreignId('memo_movement_id')->constrained('memo_movements')->onDelete('cascade');
             $table->foreignId('recipient_id')->constrained('users');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_recipients');
+        Schema::dropIfExists('memo_recipients');
     }
 };

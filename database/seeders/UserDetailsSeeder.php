@@ -16,7 +16,7 @@ class UserDetailsSeeder extends Seeder
         DB::table('user_details')->insert([
             [
                 'user_id' => 1,
-                'nin_number' => '123456789',
+                'nin_number' => '38525458361',
                 'gender' => 'male',
                 'phone_number' => '123456789',
                 'designation' => 'System Admin',
@@ -27,8 +27,8 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 2,
-                'nin_number' => '123456789',
-                'gender' => 'female',
+                'nin_number' => '38625458361',
+                'gender' => 'male',
                 'phone_number' => '123456789',
                 'designation' => 'Head of Service',
                 'avatar' => 'avatar.png',
@@ -38,9 +38,9 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 3,
-                'nin_number' => '123456789',
+                'nin_number' => '39625458361',
                 'gender' => 'male',
-                'phone_number' => '123456789',
+                'phone_number' => '08098776523',
                 'designation' => 'Permanent Secretary',
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
@@ -49,9 +49,9 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 4,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458361',
                 'gender' => 'male',
-                'phone_number' => '123456789',
+                'phone_number' => '0807746538',
                 'designation' => 'User',
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
@@ -60,9 +60,9 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 5,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458701',
                 'gender' => 'male',
-                'phone_number' => '123456789',
+                'phone_number' => '0807746538',
                 'designation' => 'Commisioner',
                 'avatar' => 'avatar.png',
                 'signature' => 'signature.png',
@@ -71,7 +71,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 6,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458711',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -82,7 +82,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 7,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458721',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -93,7 +93,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 8,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458731',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -104,7 +104,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 9,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458741',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -115,7 +115,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 10,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458751',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -126,7 +126,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 11,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458771',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -137,7 +137,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 12,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458781',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -148,7 +148,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 13,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458769',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -159,7 +159,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 14,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458768',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -170,7 +170,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 15,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458767',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -181,7 +181,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 16,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458766',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -192,7 +192,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 17,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458765',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -203,7 +203,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 18,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458764',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -214,7 +214,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 19,
-                'nin_number' => '123456789',
+                'nin_number' => '33625458763',
                 'gender' => 'male',
                 'phone_number' => '08067662536',
                 'designation' => 'Commisioner',
@@ -225,7 +225,7 @@ class UserDetailsSeeder extends Seeder
             ],
             [
                 'user_id' => 20,
-                'nin_number' => '12345678912',
+                'nin_number' => '33625458762',
                 'gender' => 'female',
                 'phone_number' => '08067662536',
                 'designation' => 'Confidential Secretary',

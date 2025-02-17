@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_recipients', function (Blueprint $table) {
+        Schema::create('memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('file_movement_id')->constrained('file_movements')->onDelete('cascade');
-            $table->foreignId('recipient_id')->constrained('users');
-            $table->foreignId('user_id')->constrained('users');
+            $table->string('title');
+            $table->string('docuent_number');
+            $table->text('content');
+            $table->string('status')->default('draft');
+            $table->foreignId('user_id')->constrained();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_recipients');
+        Schema::dropIfExists('memos');
     }
 };

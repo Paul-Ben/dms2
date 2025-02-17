@@ -24,7 +24,7 @@
                                 <div class="text-center">
                                     {{-- <img class="mb-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="130px" height="130px" alt=""> --}}
                                     <h2 class="text-success">LOGIN</h2>
-                                    <small class="text-muted">Integrated Document Management System</small>
+                                    <small class="text-muted">Benue State Government Integrated Document Management System</small>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     @if (session('errors'))

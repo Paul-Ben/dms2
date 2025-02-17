@@ -19,10 +19,10 @@
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Document Management</h6>
+                <h6 class="mb-0">Memo Management</h6>
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('memo.create') }}">Memo</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('memo.template') }}">Add Template</a>
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                             class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
@@ -40,13 +40,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($documents as $key => $document)
+                        @forelse ($memos as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank"
-                                        href="{{ asset('documents' . '/' . $document->file_path) }}">{{ $document->docuent_number }}</a>
+                                <td><a href="{{ route('memo.generate', $document) }}">{{ $document->docuent_number }}</a>
                                 </td>
-                                <td>{{ $document->title }}</td>
+                                <td><a href="{{ route('memo.generate', $document)}}" target="__blank">{{ $document->title }}</a></td>
                                 {{-- <td></td> --}}
                                 <td>{{$document->status}}</td>
                                 <td>
@@ -54,10 +53,9 @@
                                         <a href="#" class="nav-link dropdown-toggle"
                                             data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
                                             <a href="" onclick="showSendOptions(event)"
                                                 class="dropdown-item">Send</a>
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
+                                            <a href="{{route('memo.edit', $document)}}" class="dropdown-item">Edit</a>
                                             {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
@@ -72,7 +70,7 @@
                     </tbody>
                 </table>
                 <div class="pt-4">
-                    {{ $documents->links('pagination::bootstrap-5') }}
+                    {{ $memos->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
@@ -107,15 +105,15 @@
     
         function sendDocument(option) {
             if (!documentId) {
-                alert("Document not found."); // Alert user if document ID is null
+                alert("Memo not found."); // Alert user if document ID is null
                 return; // Exit the function early
             }
     
             if (option === 'internal') {
-                window.location.href = "{{ route('document.send', ':id') }}".replace(':id', documentId); // Redirect to internal send route
+                window.location.href = "{{ route('memo.send', ':id') }}".replace(':id', documentId); // Redirect to internal send route
             } else {
                 // Handle external send route here, e.g.:
-                window.location.href = "{{route('document.sendout', ':id')}}".replace(':id', documentId); // Redirect to external send route
+                window.location.href = "{{route('memo.sendout', ':id')}}".replace(':id', documentId); // Redirect to external send route
             }
         }
     </script>
