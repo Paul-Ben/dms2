@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
         // Create an Admin User
         $admin = User::create([
             'name' => 'Ephraim Tarfa',
-            'email' => 'testuser3@bdic.ng',
+            'email' => 'testuser4@bdic.ng',
             'password' => bcrypt('123456'),
             'default_role' => 'Admin',
             'status' => 'active',

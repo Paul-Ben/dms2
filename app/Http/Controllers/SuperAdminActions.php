@@ -189,7 +189,7 @@ class SuperAdminActions extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|required|string|min:8',
+            'password' => 'sometimes|string|min:8',
             'nin_number' => 'sometimes|string',
             'phone_number' => 'sometimes|string',
             'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -207,7 +207,7 @@ class SuperAdminActions extends Controller
             'default_role' => $request->input('default_role'),
         ]);
 
-        if ($request->input('password')) {
+        if ($request->input('password') != $user->password) {
             $user->update([
                 'password' => Hash::make($request->input('password')),
             ]);

@@ -17,7 +17,7 @@
                 <h6 class="mb-0">Incoming Mails</h6>
                 <div>
                     {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
-                    <a class="btn btn-sm btn-primary" href="{{ route(url()->previous()) }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
+                    <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 
             </div>

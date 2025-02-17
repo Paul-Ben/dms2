@@ -48,7 +48,7 @@
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Password</label>
                                     <input type="password" value="{{$user->password}}" name="password" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" required>
+                                        aria-describedby="emailHelp" >
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">NIN</label>
