@@ -155,8 +155,9 @@ class SuperAdminActions extends Controller
             if (Auth::user()->default_role === 'superadmin') {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
                 list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
-
-                return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details', 'authUser'));
+                $organisationName = optional($user->userDetail)->tenant->name;
+                $tenantDepartments = TenantDepartment::all();
+                return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'departments', 'designations', 'user_details', 'authUser'));
             }
             if (Auth::user()->default_role === 'Admin') {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
