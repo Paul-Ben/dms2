@@ -30,15 +30,10 @@ Route::get('/agencies', function () {
     return view('agencylisting', compact('agencies'));
 })->name('agency');
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/test-verify', function () { 
     return view('test-verify');
 });
-// Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
 
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -94,9 +89,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/document/{received}/view', [SuperAdminActions::class, 'document_show'])->name('document.view');
     Route::get('/document/document/{sent}/view', [SuperAdminActions::class, 'document_show_sent'])->name('document.view_sent');
     Route::post('/document/file/document', [SuperAdminActions::class, 'user_store_file_document'])->name('document.storefile');
-    Route::get('/payment/callback', [SuperAdminActions::class, 'paymentCallback'])->name('payment.callback');
     Route::get('/document/{document}/location', [SuperAdminActions::class, 'track_document'])->name('track');
     Route::get('/document/{document}/attachments', [SuperAdminActions::class, 'get_attachments'])->name('getAttachments');
+    Route::get('/etranzact/callback', [SuperAdminActions::class, 'handleETranzactCallback'])->name("etranzact.callBack");
 
     /**Memo management related links */
     Route::get('/document/memo', [SuperAdminActions::class, 'memo_index'])->name('memo.index');
@@ -121,5 +116,4 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
 });
 
-Route::get('/etranzact/callback', [SuperAdminActions::class, 'handleETranzactCallback'])->name("etranzact.callBack");
 require __DIR__.'/auth.php';
