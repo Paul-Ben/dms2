@@ -544,7 +544,7 @@ class DocumentStorage
     {
         $adminWithTenantDetails = User::where('default_role', 'Secretary')
             ->whereHas('userDetail', function ($query) {
-                $query->whereNotNull('tenant_id')->whereNull('department_id');
+                $query->whereNotNull('tenant_id');
             })
             ->with(['userDetail.tenant'])
             ->get()
