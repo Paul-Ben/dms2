@@ -65,12 +65,12 @@ Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
     Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminAPIController::class, 'orgDelete']);
 
     /** Department Management Routes */
-    Route::get('/departments', [SuperAdminAPIController::class, 'department_index']);
-    Route::get('/departments/create', [SuperAdminAPIController::class, 'department_create']);
-    Route::post('/departments/create', [SuperAdminAPIController::class, 'department_store']);
-    Route::get('/departments/{department}/edit', [SuperAdminAPIController::class, 'department_edit']);
-    Route::put('/departments/{department}/edit', [SuperAdminAPIController::class, 'department_update']);
-    Route::delete('/departments/{department}/delete', [SuperAdminAPIController::class, 'department_delete']);
+    Route::get('/departments', [SuperAdminAPIController::class, 'departmentIndex']);
+    Route::get('/departments/create', [SuperAdminAPIController::class, 'departmentCreate']);
+    Route::post('/departments/create', [SuperAdminAPIController::class, 'departmentStore']);
+    Route::get('/departments/{department}/edit', [SuperAdminAPIController::class, 'departmentEdit']);
+    Route::put('/departments/{department}/edit', [SuperAdminAPIController::class, 'departmentUpdate']);
+    Route::delete('/departments/{department}/delete', [SuperAdminAPIController::class, 'departmentDelete']);
 
     /** Document Management Routes */
     Route::get('/document', [SuperAdminAPIController::class, 'documentIndex']);
