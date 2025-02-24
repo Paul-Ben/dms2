@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [DashboardAPIController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-
+ 
 Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
     /** User Management Routes */
     Route::get('/users', [SuperAdminAPIController::class, 'userIndex']);
