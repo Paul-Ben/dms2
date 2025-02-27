@@ -74,7 +74,7 @@
     <section class="features">
         <div class="container">
             <h2>FILING LISTING </h2>
-            <p>Submit a document for processig from the comfort of your home to any of the ministries or agencies within the
+            <p class="text-justify">Submit a document for processig from the comfort of your home to any of the ministries or agencies within the
                 Benue State Civil Service.
                 This service ensures that your document gets the required attention in real time with dispatch and
                 professionalism. Click on any of the items below
@@ -115,6 +115,7 @@
                 </a>
 
             </div>
+            
         </div>
     </section>
 
