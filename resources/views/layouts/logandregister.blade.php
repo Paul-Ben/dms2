@@ -9,7 +9,10 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="{{ asset('dashboard/img/favicon.ico') }}" rel="icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('favicon_io/apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('favicon_io/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('favicon_io/favicon-16x16.png')}}">
+    <link rel="manifest" href="{{asset('favicon_io/site.webmanifest')}}">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,9 +89,9 @@
     <!-- Template Javascript -->
     <script src="{{ asset('dbf/js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-     <!-- Include the intl-tel-input library -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-     <script src="{{ asset('dbf/js/custom.js') }}"></script>
+    <!-- Include the intl-tel-input library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="{{ asset('dbf/js/custom.js') }}"></script>
     <script>
         @if (Session::has('message'))
             var type = "{{ Session::get('alert-type', 'info') }}"
