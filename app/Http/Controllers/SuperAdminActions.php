@@ -1628,7 +1628,6 @@ class SuperAdminActions extends Controller
             return view('superadmin.departments.edit', compact('department', 'organisations', 'departmentName', 'authUser'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            // $organisations = Tenant::all();
             $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
             return view('admin.departments.edit', compact('department', 'departmentName', 'authUser'));
         }
