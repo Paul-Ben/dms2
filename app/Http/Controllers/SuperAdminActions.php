@@ -1624,11 +1624,13 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         if (Auth::user()->default_role === 'superadmin') {
             $organisations = Tenant::all();
-            return view('superadmin.departments.edit', compact('department', 'organisations', 'authUser'));
+            $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
+            return view('superadmin.departments.edit', compact('department', 'organisations', 'departmentName', 'authUser'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            $organisations = Tenant::all();
-            return view('admin.departments.edit', compact('department', 'organisations', 'authUser'));
+            // $organisations = Tenant::all();
+            $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
+            return view('admin.departments.edit', compact('department', 'departmentName', 'authUser'));
         }
         return view('errors.404', compact('authUser'));
     }
