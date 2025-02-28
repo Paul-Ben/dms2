@@ -1494,7 +1494,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
-            // dd($sent_documents);
+            
             return view('admin.memo.sent', compact('sent_documents', 'recipient', 'authUser'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -1555,7 +1555,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedMemos();
-            // dd($received_documents);
+            
             return view('staff.memo.received', compact('received_documents', 'authUser'));
         }
         return view('errors.404', compact('authUser'));
