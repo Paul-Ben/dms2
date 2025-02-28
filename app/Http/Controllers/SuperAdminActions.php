@@ -34,6 +34,7 @@ use App\Models\Memo;
 use App\Models\MemoTemplate;
 use App\Models\Payment;
 use Exception;
+use Illuminate\Support\Facades\Response;
 use setasign\Fpdi\Fpdi;
 
 class SuperAdminActions extends Controller
@@ -501,7 +502,7 @@ class SuperAdminActions extends Controller
     }
     public function handleETranzactCallback(Request $request)
     {
-        
+
         // Verify the transaction with the payment gateway
         $response = Http::accept('application/json')->withHeaders([
             'authorization' => env('CREDO_SECRET_KEY'),
@@ -514,19 +515,21 @@ class SuperAdminActions extends Controller
         }
 
         $payment = $response->json('data');
-    
+
         // Extract payment status and message
         $status = $payment['status'];
         $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
 
         // Handle successful payment
-        if ( $message == 'Successful') {
+        if ($message == 'Successful') {
             $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
+            $document_no = DocumentHold::where('reference', $request->reference)->first()->docuent_id;
             $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
-           
+
             // Create a new payment record
-           Payment::create([
+            Payment::create([
                 'businessName' => $payment['businessName'],
+                // 'document_no' => $document_no,
                 'reference' => $payment['businessRef'],
                 'transAmount' => $payment['transAmount'],
                 'transFee' => $payment['transFeeAmount'],
@@ -619,11 +622,11 @@ class SuperAdminActions extends Controller
         $appName = config('app.name');
 
         try {
-                    Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
-                    Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
-                } catch (\Exception $e) {
-                    Log::error('Failed to send Document notification');
-                }
+            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+            Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+        } catch (\Exception $e) {
+            Log::error('Failed to send Document notification');
+        }
 
         // Redirect with success notification
         return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
@@ -1514,7 +1517,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
-            
+
             if (!empty($recipient) && isset($recipient[0])) {
                 $mda = UserDetails::with(['tenant', 'tenant_department'])->where('id', $recipient[0]->id)->get();
             } else {
@@ -1679,4 +1682,62 @@ class SuperAdminActions extends Controller
         }
         return view('errors.404', compact('authUser'));
     }
+
+    /**Receipts */
+    public function receipt_index()
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'User') {
+            $receipts = Payment::where('customerId', $authUser->id)->orderBy('id', 'desc')->paginate(10);
+            // dd($receipts);
+            return view('user.receipts.index', compact('receipts', 'authUser'));
+        }
+        return view('errors.404', compact('authUser'));
+    }
+
+    public function show_receipt($receipt)
+    {
+        $authUser = Auth::user();
+        if (Auth::user()->default_role === 'User') {
+           
+            $user = User::with('userDetail')->where('id', $authUser->id)->first();
+            $receipt = Payment::with('user')->where('id', $receipt)->first();
+            // dd($receipt);
+
+            return view('user.receipts.show', compact('receipt', 'user', 'authUser'));
+        }
+        return view('errors.404', compact('authUser'));
+    }
+
+    public function downloadReceipt(Request $request)
+{
+    // Create a new FPDI instance
+    $pdf = new Fpdi();
+
+    // Add a page
+    $pdf->AddPage();
+
+    // Set font and font size
+    $pdf->SetFont('Arial', 'B', 16);
+
+    // Add content to the PDF
+    $pdf->Cell(40, 10, 'Payment Receipt');
+    $pdf->Ln(); // Line break
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(40, 10, 'Receipt No: RCPT-123456');
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'Transaction ID: TXN-789012');
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'Amount: ₦3,000.00');
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'Paid At: 2025-02-26 10:00 AM');
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'Email: user@example.com');
+
+    // Output the PDF as a download
+    return Response::make($pdf->Output('S'), 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="receipt.pdf"',
+    ]);
+}
 }

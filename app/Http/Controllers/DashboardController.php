@@ -35,13 +35,13 @@ class DashboardController extends Controller
         }
 
 
-        list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count) = DocumentStorage::documentCount();
+        list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count, $totalAmount) = DocumentStorage::documentCount();
         $activities = Activity::with('user')
             ->where('user_id', $authUser->id)
             ->orderBy('id', 'desc')
             ->paginate(10);
 
 
-        return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'authUser'));
+        return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'totalAmount',  'authUser'));
     }
 }

@@ -44,7 +44,7 @@
                     </a>
                     <div class="ms-3">
                         <p class="mb-2">Total Revenue</p>
-                        <h6 class="mb-0">$1234</h6>
+                        <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6>
                     </div>
                 </div>
             </div>
