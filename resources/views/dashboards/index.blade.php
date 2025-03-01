@@ -305,7 +305,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
+                            {{-- <a href="#" class="dropdown-item">Settings</a> --}}
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <a class="dropdown-item" href="{{ route('logout') }}"
