@@ -20,10 +20,26 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
+
+        if($validated['current_password'] === $validated['password']) {
+            $notification = [
+                'message' => 'New password cannot be the same as the current password',
+                'type' => 'error'
+            ];
+
+            return back()->with($notification);
+        }
+
+
         $request->user()->update([
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with('status', 'password-updated');
+        $notification = [
+            'message' => 'Password updated successfully',
+            'type' => 'success'
+        ];
+
+        return back()->with($notification);
     }
 }
