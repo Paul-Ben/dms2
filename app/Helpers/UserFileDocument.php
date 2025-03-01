@@ -26,7 +26,7 @@ class UserFileDocument
             'file_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'description' => 'nullable|string',
             'metadata' => 'nullable|json',
-        ]);
+        ]); 
 
         if ($data->hasFile('file_path')) {
             $filePath = $data->file('file_path');

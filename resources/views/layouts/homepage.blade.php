@@ -60,8 +60,23 @@ Style Sheets
         }
         .navbar-nav > li > a:hover {
             color: #30B34E !important;
+            transition: color 0.3s ease;
         }
+        /* On hover */
+        .navbar-nav > li > a:hover {
+            color: #30B34E !important;
+        }
+
+        /* Fix: Apply active class color to the <a> inside the active <li> */
+        .navbar-nav li.active-link a {
+            color: #30B34E !important;
+        }
+
+
         @media (max-width: 767px) {
+        .navbar-nav li.active-link a {
+            color: white !important;
+           }
             .navbar-header {
                 display: flex;
                 justify-content: space-between;
@@ -157,10 +172,11 @@ Body Content
             </div>
             <div class="collapse navbar-collapse" id="navbar-menu">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li class="{{ request()->is('/') ? 'active-link' : '' }}"><a href="/">Home</a></li>
+                    <li class="{{ request()->is('about') ? 'active-link' : '' }}"><a href="#about">About</a></li>
+                    <li class="{{ request()->is('services') ? 'active-link' : '' }}"><a href="#services">Services</a></li>
+                    <li class="{{ request()->is('contact') ? 'active-link' : '' }}"><a href="#contact">Contact</a></li>
+                    
                     @if (auth()->user())
                         <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                     @else

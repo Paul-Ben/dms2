@@ -628,6 +628,7 @@ class SuperAdminAPIController extends Controller
     public function documentStore(Request $request)
     {
         $data = $request;
+
         $result = DocumentStorage::storeDocument($data);
 
         if ($result['status'] === 'error') {
@@ -915,7 +916,7 @@ class SuperAdminAPIController extends Controller
     public function trackDocument(Request $request, Document $document)
     {
         $authUser = Auth::user();
-        if (in_array($authUser->default_role, ['Admin', 'Staff', 'Secretary'])) {
+        if (in_array($authUser->default_role, ['superadmin', 'Admin', 'Staff', 'Secretary'])) {
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
             return response()->json(['document_locations' => $document_locations, 'document' => $document], 200);
         }

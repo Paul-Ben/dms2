@@ -130,6 +130,80 @@ To set up the application locally, follow these steps:
 
 > Endpoint: **DELETE** `https://efiling.bdic.ng/api/dashboard/superadmin/organisations/{tenant}/delete` - Delete Organisation.
 
+## Document Management
+
+> Endpoint: **GET** `https://efiling.bdic.ng/api/dashboard/document` - List Documents.
+
+> Endpoint: **POST** `https://efiling.bdic.ng/api/dashboard/document/create` - Create Document.
+
+> Endpoint: **POST** `https://efiling.bdic.ng/api/dashboard/document/{document}/send` - Send Document.
+```
+{
+	"recipient_id": [2],
+	"document_id": 1,
+	"message": "Test Message"
+}
+```
+> Endpoint: **GET** `https://efiling.bdic.ng/api/dashboard/document/{document}/location` - Track Document.
+
+
+## Department Management
+
+> Endpoint: **GET** `https://efiling.bdic.ng/api/dashboard/departments` - List All Departments.
+
+> Endpoint: **POST** `https://efiling.bdic.ng/api/dashboard/departments/create` - Create Department.
+
+```
+{
+	"name": "Agric Test Department",
+	"email": "agrictest@gmail.com",
+	"phone": "09088776622",
+	"status": "active",
+	"tenant_id": 3,
+}
+```
+> Endpoint: **PUT** `https://efiling.bdic.ng/api/dashboard/departments/create` - Edit Department.
+
+## Memos Management
+
+> Endpoint: **GET** `https://efiling.bdic.ng/api/ddashboard/document/memo` - List All Memos.
+
+> Endpoint: **POST** `https://efiling.bdic.ng/api/ddashboard/document/memo/create` - Create Memo.
+
+```
+{
+	"title": "This is a test Tile", 
+	"document_number": "BN/doc/09320564355146753",
+	"content": "This is a test conten.",
+	 "user_id": 7
+}
+```
+
+> Endpoint: **PUT** `https://efiling.bdic.ng/api/dashboard/document/memo/{memo}/edit` - Update Memo.
+
+```
+{
+	"title": "Test Memo Updated", 
+	"document_number": "BN/doc/440820250225143848",
+	"content": "This is an updated content."
+	
+}
+```
+
+> Endpoint: **DELETE** `https://efiling.bdic.ng/api/dashboard/document/memo/{memo}/delete` - Delete
+ Memo.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

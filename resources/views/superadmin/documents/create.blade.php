@@ -54,7 +54,7 @@
                                 <div class="row">
                                     <div class="col-sm-12 col-xl-6 mb-3" >
                                         <label for="exampleInputEmail1" class="form-label">Document Number</label>
-                                        <input type="text" name="document_number" class="form-control" value="{{ 'BN/doc/' . rand(0, 9999) . date('YmdHis')}}" placeholder="document number">
+                                        <input type="text" name="document_number" class="form-control" value="{{ 'BN/doc/' . rand(0, 9999) . date('YmdHis') }}" placeholder="document number">
                                         <input type="text" name="uploaded_by" class="form-control" value="{{Auth::user()->id}}" placeholder="document number" hidden>
                                     </div>
                                 </div>
