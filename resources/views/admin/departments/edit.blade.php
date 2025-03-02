@@ -44,12 +44,14 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="category" class="form-label">Parent Organisation</label>
-                                    <select class="form-select" id="category" name="tenant_id">
-                                        <option value="{{$department->tenant_id}}">{{$department->tenant_id}}</option>
+                                    <input type="text" class="form-control" value="{{$departmentName->name}}" readonly>
+                                    <input type="text" class="form-control" name="tenant_id" value="{{$department->tenant_id}}" hidden>
+                                    {{-- <select class="form-select" id="category" name="tenant_id" readonly>
+                                        <option value="{{$department->tenant_id}}">{{$departmentName->name}}</option>
                                         @foreach ($organisations as $organisation)
                                             <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                 </div>
                             </div>
                             <div class="row">
@@ -69,7 +71,7 @@
                             
                             <div style="text-align: center;">
                                 <button type="submit" class="btn btn-primary">Submit</button>
-                                <button type="reset" class="btn btn-secondary">Reset</button>
+            
                             </div>
                         </form>
                     </div>

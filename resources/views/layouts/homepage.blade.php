@@ -6,7 +6,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BSGEFS</title>
+    <title>BSGIDMS</title>
     <!--=================================
 Meta tags
 =================================-->
@@ -19,16 +19,21 @@ Style Sheets
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon_io/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon_io/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('favicon_io/site.webmanifest') }}">
 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/animations.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/customcss.css') }}">
-    
+
 
     <script async src="{{ asset('assets/js/lib/modernizr-2.6.2-respond-1.1.0.min.js') }}"></script>
-    <script src="{{ asset('assets/js/app/custom.js')}}"></script>
+    <script src="{{ asset('assets/js/app/custom.js') }}"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
     <style>
         .navbar {
@@ -37,41 +42,41 @@ Style Sheets
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             height: 80px;
         }
+
         .navbar-brand {
             padding: 10px 20px;
             margin-bottom: 12px;
             right: 20px;
         }
+
         .navbar-toggle {
             border: none;
             background: transparent !important;
             margin-top: 25px;
             left: 40px;
         }
+
         .navbar-toggle .icon-bar {
             background: #30B34E !important;
             width: 25px;
             height: 4px;
-           
+
         }
-        .navbar-nav > li > a {
+
+        .navbar-nav>li>a {
             margin-top: 12px;
             color: black !important;
         }
-        .navbar-nav > li > a:hover {
+
+        .navbar-nav>li>a:hover {
             color: #30B34E !important;
             transition: color 0.3s ease;
-        }
-        /* On hover */
-        .navbar-nav > li > a:hover {
-            color: #30B34E !important;
         }
 
         /* Fix: Apply active class color to the <a> inside the active <li> */
         .navbar-nav li.active-link a {
             color: #30B34E !important;
         }
-
 
         @media (max-width: 767px) {
         .navbar-nav li.active-link a {
@@ -83,18 +88,22 @@ Style Sheets
                 width: 100%;
                 align-items: center;
             }
+
             .navbar-brand.hidden-lg {
                 display: block !important;
                 margin-right: 15px;
             }
+
             .navbar-brand.visible-lg {
                 display: none !important;
             }
+
             .navbar-toggle {
                 margin-left: auto;
                 order: 2;
                 align-self: center;
             }
+
             .navbar-collapse {
                 background: #30B34E;
                 position: absolute;
@@ -103,22 +112,27 @@ Style Sheets
                 z-index: 1000;
                 padding: 10px 0;
             }
+
             .navbar-nav {
                 width: 100%;
                 text-align: center;
             }
-            .navbar-nav > li {
+
+            .navbar-nav>li {
                 width: 100%;
 
             }
-            .navbar-nav > li > a:hover {
-            color: white !important;
+
+            .navbar-nav>li>a:hover {
+                color: white !important;
+            }
         }
-        }
+
         @media (min-width: 768px) {
             .navbar-brand.hidden-lg {
                 display: none !important;
             }
+
             .navbar-brand.visible-lg {
                 display: block !important;
             }
@@ -159,15 +173,18 @@ Body Content
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand visible-lg" href="{{ route('home') }}">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56" alt="Large Screen Logo">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56"
+                        alt="Large Screen Logo">
                 </a>
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="false">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu"
+                    aria-expanded="false">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand hidden-lg" href="#">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56" alt="Small Screen Logo">
+                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56"
+                        alt="Small Screen Logo">
                 </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-menu">
@@ -186,7 +203,7 @@ Body Content
             </div>
         </div>
     </nav>
-    
+
     <!--========================================
 Body Content
 ===========================================-->
@@ -194,8 +211,8 @@ Body Content
         @yield('content')
     </div>
 
-   
-   
+
+
     <footer>
         <div class="container">
             <span class="rights pull-left">All rights reserved Copyright © 2025 BSGIDMS</span>

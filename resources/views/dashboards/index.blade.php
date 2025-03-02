@@ -20,6 +20,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon_io/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon_io/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('favicon_io/site.webmanifest') }}">
+
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('dbf/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dbf/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
@@ -132,17 +138,17 @@
                     <a href="{{ route('document.index') }}"
                         class="nav-item nav-link {{ request()->routeIs('document.index', 'document.create') ? 'active' : '' }}"><i
                             class="fa fa-th me-2"></i>Documents</a>
-                            <div class="nav-item dropdown">
-                                <a href="#"
-                                    class="nav-link dropdown-toggle {{ request()->routeIs('document.received', 'document.sent') ? 'active' : '' }}"
-                                    data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
-                                <div class="dropdown-menu bg-transparent border-0">
-                                    <a href="{{ route('document.received') }}" class="dropdown-item"><i
-                                            class="fa fa-inbox"></i>Incoming Mails </a>
-                                    <a href="{{ route('document.sent') }}" class="dropdown-item"><i
-                                            class="fa fa-paper-plane"></i>Outgoing Mails</a>
-                                </div>
-                            </div>        
+                    <div class="nav-item dropdown">
+                        <a href="#"
+                            class="nav-link dropdown-toggle {{ request()->routeIs('document.received', 'document.sent') ? 'active' : '' }}"
+                            data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{{ route('document.received') }}" class="dropdown-item"><i
+                                    class="fa fa-inbox"></i>Incoming Mails </a>
+                            <a href="{{ route('document.sent') }}" class="dropdown-item"><i
+                                    class="fa fa-paper-plane"></i>Outgoing Mails</a>
+                        </div>
+                    </div>
                     @role('Admin|Secretary|Staff')
                         <a href="{{ route('memo.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
@@ -159,7 +165,7 @@
                             </div>
                         </div>
                     @endrole
-                    
+
 
                     @role('Admin')
                         {{-- <a href="{{ route('users.index') }}"
@@ -172,6 +178,12 @@
                                 class="fa fa-file me-2"></i>Departments
                         </a>
                     @endrole
+                    @role('User')
+                        <a href="{{ route('receipt.index') }}"
+                            class="nav-item nav-link {{ request()->routeIs('receipt.index') ? 'active' : '' }}"><i
+                                class="fa fa-th me-2"></i>Receipts</a>
+                    @endrole
+
                     @role('superadmin')
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
@@ -293,7 +305,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
+                            {{-- <a href="#" class="dropdown-item">Settings</a> --}}
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -317,13 +329,12 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Government of Benue State</a>, All Right Reserved.
+                            &copy; <a href="#">Government of Benue State</a>, All Rights Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             Powered By <a href="#">BDIC</a>
                             </br>
-                            {{-- Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a> --}}
                         </div>
                     </div>
                 </div>

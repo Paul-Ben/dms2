@@ -45,7 +45,7 @@
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="category" class="form-label">Parent Organisation</label>
                                     <select class="form-select" id="category" name="tenant_id">
-                                        <option value="{{$department->tenant_id}}">{{$department->tenant_id}}</option>
+                                        <option value="{{$department->tenant_id}}">{{$departmentName->name}}</option>
                                         @foreach ($organisations as $organisation)
                                             <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
                                         @endforeach
@@ -69,7 +69,6 @@
                             
                             <div style="text-align: center;">
                                 <button type="submit" class="btn btn-primary">Submit</button>
-                                <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </form>
                     </div>

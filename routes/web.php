@@ -111,8 +111,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/sent/memo', [SuperAdminActions::class, 'sent_memos'])->name('memo.sent');
     Route::get('/document/received/memo', [SuperAdminActions::class, 'received_memos'])->name('memo.received');
 
-
- 
+    Route::get('/document/receipts', [SuperAdminActions::class, 'receipt_index'])->name('receipt.index');
+    Route::get('/document/{receipt}/receipt', [SuperadminActions::class, 'show_receipt'])->name('receipt.show');
+    Route::get('/download-receipt', [SuperadminActions::class, 'downloadReceipt'])->name('download.receipt');
 
 });
 

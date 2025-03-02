@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('status');
             $table->string('statusMessage');
             $table->string('customerEmail');
-            $table->integer('customerId');
+            $table->foreignId('customerId')->constrained('users');
             $table->integer('channelId');
             $table->string('currencyCode');
             $table->foreignId('recipient_id')->constrained('users');

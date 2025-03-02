@@ -11,6 +11,7 @@ use App\Models\Attachments;
 use App\Models\Memo;
 use App\Models\MemoMovement;
 use App\Models\MemoRecipient;
+use App\Models\Payment;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -31,10 +32,13 @@ class DocumentStorage
             ->where('sender_id', Auth::user()->id)->count();
 
         $uploaded_documents_count = Document::where('uploaded_by', Auth::user()->id)->count();
+        $totalAmount = Payment::where('tenant_id', Auth::user()->userDetail->tenant_id)->sum('transAmount');
+       
         return [
             $received_documents_count,
             $sent_documents_count,
             $uploaded_documents_count,
+            $totalAmount
         ];
     }
 
