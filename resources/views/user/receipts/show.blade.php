@@ -14,6 +14,61 @@
             border-color: #666 !important;
             color: #333 !important;
         }
+
+        .paid-watermark {
+            position: relative;
+            
+            overflow: hidden;
+            /* Prevent overflow of the watermark */
+        }
+
+        .paid-watermark::before {
+            content: "PAID";
+            /* Text for the watermark */
+            position: absolute;
+            /* Positioning the watermark */
+            top: 50%;
+            /* Center vertically */
+            left: 50%;
+            /* Center horizontally */
+            transform: translate(-50%, -50%);
+            /* Adjust for centering */
+            font-size: 48px;
+            /* Adjust font size */
+            font-weight: bold;
+            /* Make the text bold */
+            color: rgba(6, 7, 6, 0.5);
+            /* Light gray color with transparency */
+            pointer-events: none;
+            /* Ensure it doesn't interfere with table interactions */
+            z-index: 1;
+            /* Place it behind the table content */
+        }
+
+        @media print {
+            .paid-watermark::before {
+            content: "PAID";
+            /* Text for the watermark */
+            position: absolute;
+            /* Positioning the watermark */
+            top: 50%;
+            /* Center vertically */
+            left: 50%;
+            /* Center horizontally */
+            transform: translate(-50%, -50%);
+            /* Adjust for centering */
+            font-size: 48px;
+            /* Adjust font size */
+            font-weight: bold;
+            /* Make the text bold */
+            color: rgba(6, 7, 6, 0.5);
+            /* Light gray color with transparency */
+            pointer-events: none;
+            /* Ensure it doesn't interfere with table interactions */
+            z-index: 1;
+            /* Place it behind the table content */
+        }
+        }
     </style>
 </head>
 
@@ -61,7 +116,7 @@
                     <h4>Being payment for:</h4>
                     <div class="row mb-3">
                         <div class="col-12">
-                            <div class="table-responsive">
+                            <div class="table-responsive paid-watermark">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -123,7 +178,7 @@
 
             // Options for the PDF
             const options = {
-                margin: 3,
+                margin: 1,
                 filename: 'receipt.pdf',
                 image: {
                     type: 'jpeg',
@@ -134,7 +189,7 @@
                 },
                 jsPDF: {
                     unit: 'mm',
-                    format: 'a4',
+                    format: 'a3',
                     orientation: 'portrait'
                 }
             };
@@ -150,6 +205,7 @@
 
             const printWindow = window.open('', '', 'height=900,width=800');
             printWindow.document.write('<html><head><title>Print Receipt</title>');
+            printWindow.document.write('<style>@media print { .paid-watermark::before { color: rgba(6, 7, 6, 0.5); } }</style>');
             printWindow.document.write(
                 '<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
             printWindow.document.write('</head><body>');
