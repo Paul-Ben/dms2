@@ -47,7 +47,7 @@
                         @forelse ($receipts as $key => $receipt)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{$receipt->docuent_number}}</td>
+                                <td>{{$receipt->document_no}}</td>
                                 <td>{{$receipt->reference}}</td>
                                 <td>{{$receipt->transAmount}}</td>
                                 <td>{{$receipt->transDate}}</td>

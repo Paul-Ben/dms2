@@ -181,7 +181,7 @@
                     @role('User')
                         <a href="{{ route('receipt.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('receipt.index') ? 'active' : '' }}"><i
-                                class="fa fa-th me-2"></i>Receipts</a>
+                                class="fa fa-th me-2"></i>Payment History</a>
                     @endrole
 
                     @role('superadmin')

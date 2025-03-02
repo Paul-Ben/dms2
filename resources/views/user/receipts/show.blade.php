@@ -134,7 +134,7 @@
                 },
                 jsPDF: {
                     unit: 'mm',
-                    format: 'a3',
+                    format: 'a4',
                     orientation: 'portrait'
                 }
             };
@@ -148,7 +148,7 @@
             const buttons = printContent.querySelectorAll('button');
             buttons.forEach(button => button.remove());
 
-            const printWindow = window.open('', '', 'height=600,width=800');
+            const printWindow = window.open('', '', 'height=900,width=800');
             printWindow.document.write('<html><head><title>Print Receipt</title>');
             printWindow.document.write(
                 '<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
