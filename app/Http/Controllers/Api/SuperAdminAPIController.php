@@ -1056,7 +1056,7 @@ class SuperAdminAPIController extends Controller
         $authUser = Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:memo_templates,name',
-            'template' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'template' => 'required|file|mimes:pdf|max:2048',
             'user_id' => 'required|exists:users,id',
         ]);
 

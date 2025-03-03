@@ -1441,7 +1441,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser'));
+                return view('staff.memo.send', compact('recipients', 'memo', 'authUser'));
 
 
             default:
