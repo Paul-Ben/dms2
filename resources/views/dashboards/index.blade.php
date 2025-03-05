@@ -109,8 +109,17 @@
                         style="width: 80px; height: 80px;">
                 </a> --}}
                 <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                    @if ($userTenant->logo != null)
+                        <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
+                            style="width: 80px; height: 80px;">
+                    @elseif ($userTenant->logo == null)
+                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
                         style="width: 80px; height: 80px;">
+                    @else
+                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        style="width: 80px; height: 80px;">
+                    @endif
+                    
                     <div class="ms-3">
                         <h5 class="mb-0" style="font-weight: bold;">BSGIDMS </h5>
                         <small class="text-muted"> Doc Mgt</small>

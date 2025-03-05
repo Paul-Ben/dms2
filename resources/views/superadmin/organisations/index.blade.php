@@ -32,6 +32,7 @@
                         <thead>
                             <tr class="text-dark">
                                 <th scope="col">#</th>
+                                {{-- <th scope="col">Logo</th> --}}
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
@@ -43,6 +44,7 @@
                             @foreach ($organisations as $key => $tenant)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    {{-- <td><img src="{{ asset('logos/' . $tenant->logo) }}" alt="" width="50"></td> --}}
                                     <td>{{ $tenant->name }}</td>
                                     <td>{{ $tenant->email }}</td>
                                     <td>{{ $tenant->phone }}</td>

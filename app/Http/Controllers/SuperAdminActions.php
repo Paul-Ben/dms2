@@ -51,16 +51,19 @@ class SuperAdminActions extends Controller
     public function user_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        
         if (Auth::user()->default_role === 'superadmin') {
             $users = User::orderBy('id', 'desc')->paginate(5);
-            return view('superadmin.usermanager.index', compact('users', 'authUser'));
+            return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
             $users = UserDetails::with('user')->where('tenant_id', $id)->get();
 
-            return view('admin.usermanager.index', compact('users', 'authUser'));
+            return view('admin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
         return view('errors.404', compact('authUser'));
@@ -69,11 +72,13 @@ class SuperAdminActions extends Controller
     public function user_create()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
 
             list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
 
-            return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations', 'authUser'));
+            return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
@@ -81,7 +86,7 @@ class SuperAdminActions extends Controller
             $designations = Designation::all();
             $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
 
-            return view('admin.usermanager.create', compact('departments', 'designations', 'roles', 'authUser'));
+            return view('admin.usermanager.create', compact('departments', 'designations', 'roles', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser'));
     }
@@ -153,12 +158,14 @@ class SuperAdminActions extends Controller
     {
         try {
             $authUser = Auth::user();
+            $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+            $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
             if (Auth::user()->default_role === 'superadmin') {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
                 list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
-                $organisationName = optional($user->userDetail)->tenant->name;
+                $organisationName = optional($user->userDetail)->tenant->name ?? null;
                 $tenantDepartments = TenantDepartment::all();
-                return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'departments', 'designations', 'user_details', 'authUser'));
+                return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'departments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
             if (Auth::user()->default_role === 'Admin') {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
@@ -166,7 +173,7 @@ class SuperAdminActions extends Controller
                 $organisationName = optional($authUser->userDetail)->tenant->name;
                 $tenantDepartments = TenantDepartment::where('tenant_id', optional($authUser->userDetail)->tenant_id)->get();
                 // dd($tenantDepartments);
-                return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'designations', 'user_details', 'authUser'));
+                return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
             return view('errors.404', compact('authUser'));
             // $user_details = User::with('userDetail')->where('id', $user->id)->first();
@@ -257,26 +264,33 @@ class SuperAdminActions extends Controller
     public function org_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $organisations = Tenant::orderBy('id', 'desc')->paginate(10);
-            return view('superadmin.organisations.index', compact('organisations', 'authUser'));
+            return view('superadmin.organisations.index', compact('organisations', 'authUser', 'userTenant'));
         }
 
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
     public function org_create()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
-            return view('superadmin.organisations.create', compact('authUser'));
+            return view('superadmin.organisations.create', compact('authUser', 'userTenant'));
         }
 
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
     public function org_store(Request $request)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'code' => 'required|string|max:255|unique:tenants',
@@ -285,7 +299,17 @@ class SuperAdminActions extends Controller
                 'category' => 'required|string',
                 'address' => 'nullable|string',
                 'status' => 'required|string',
+                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
+
+            if ($request->hasFile('logo')) {
+                $logo = $request->file('logo');
+                $logoName = time() . '.' . $logo->getClientOriginalExtension();
+                $logo = $logo->move(public_path('logos/'), $logoName);
+                $logoPath = $logo->getRealPath();
+            } else {
+                $logoName = null;
+            }
 
             $tenant = new Tenant();
             $tenant->name = $request->input('name');
@@ -295,6 +319,7 @@ class SuperAdminActions extends Controller
             $tenant->category = $request->input('category');
             $tenant->address = $request->input('address');
             $tenant->status = $request->input('status');
+            $tenant->logo = $logoName;
 
             $tenant->save();
             $notification = [
@@ -303,24 +328,67 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('organisation.index')->with($notification);
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
     public function org_edit(Tenant $tenant)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
 
-            return view('superadmin.organisations.edit', compact('tenant', 'authUser'));
+            return view('superadmin.organisations.edit', compact('tenant', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
+    // public function org_update(Request $request, Tenant $tenant)
+    // {
+    //     $authUser = Auth::user();
+    //     if (Auth::user()->default_role === 'superadmin') {
+    //         $request->validate([
+    //             'name' => 'required|string|max:255',
+    //             'code' => 'required|string|max:255|unique:tenants,code,' . $tenant->id,
+    //             'email' => 'required|string|email|max:255|unique:tenants,email,' . $tenant->id,
+    //             'phone' => 'nullable|string|max:255',
+    //             'category' => 'required|string',
+    //             'address' => 'nullable|string',
+    //             'status' => 'required|string',
+    //             'logo' => 'nullable|mimes:jpg,jpeg,png,gif,svg|max:2048',
+    //         ]);
+
+    //         $logoName = null;
+    //         if ($request->hasFile('logo')) {
+    //             $logo = $request->file('logo');
+    //             $logoName = time() . '.' . $logo->getClientOriginalExtension();
+    //             $logo->move(public_path('logos/'), $logoName);
+    //         }
+
+    //         $tenant->name = $request->input('name');
+    //         $tenant->code = $request->input('code');
+    //         $tenant->email = $request->input('email');
+    //         $tenant->phone = $request->input('phone');
+    //         $tenant->category = $request->input('category');
+    //         $tenant->address = $request->input('address');
+    //         $tenant->status = $request->input('status');
+    //         $tenant->logo = $logoName;
+    //         $tenant->save();
+    //         $notification = [
+    //             'message' => 'Organisation updated successfully',
+    //             'alert-type' => 'success'
+    //         ];
+    //         return redirect()->route('organisation.index')->with($notification);
+    //     }
+    //     return view('errors.404', compact('authUser'));
+    // }
     public function org_update(Request $request, Tenant $tenant)
     {
-        $authUser = Auth::user();
+        $authUser  = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -330,7 +398,28 @@ class SuperAdminActions extends Controller
                 'category' => 'required|string',
                 'address' => 'nullable|string',
                 'status' => 'required|string',
+                'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
             ]);
+
+            // Check if the tenant has an existing logo
+            if ($tenant->logo) {
+                // Get the path to the existing logo
+                $existingLogoPath = public_path('logos/' . $tenant->logo);
+
+                // Check if the existing logo exists
+                if (file_exists($existingLogoPath)) {
+                    // Delete the existing logo
+                    unlink($existingLogoPath);
+                }
+            }
+
+            $logoName = null;
+            if ($request->hasFile('logo')) {
+                $logo = $request->file('logo');
+                $logoName = time() . '.' . $logo->getClientOriginalExtension();
+                $logo->move(public_path('logos/'), $logoName);
+            }
+
             $tenant->name = $request->input('name');
             $tenant->code = $request->input('code');
             $tenant->email = $request->input('email');
@@ -338,6 +427,7 @@ class SuperAdminActions extends Controller
             $tenant->category = $request->input('category');
             $tenant->address = $request->input('address');
             $tenant->status = $request->input('status');
+            $tenant->logo = $logoName;
             $tenant->save();
             $notification = [
                 'message' => 'Organisation updated successfully',
@@ -345,13 +435,15 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('organisation.index')->with($notification);
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
     public function org_delete(Tenant $tenant)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $tenant->delete();
             $notification = [
@@ -360,7 +452,7 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('organisation.index')->with($notification);
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
@@ -368,64 +460,70 @@ class SuperAdminActions extends Controller
     public function document_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $documents = DocumentStorage::myDocuments();
 
-            return view('superadmin.documents.index', compact('documents', 'authUser'));
+            return view('superadmin.documents.index', compact('documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $documents = DocumentStorage::myDocuments();
             $tenantName = optional($authUser->userDetail)->tenant->name;
-            return view('admin.documents.index', compact('documents', 'authUser', 'tenantName'));
+            return view('admin.documents.index', compact('documents', 'authUser', 'tenantName', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $documents = DocumentStorage::myDocuments();
-            return view('secretary.documents.index', compact('documents', 'authUser'));
+            return view('secretary.documents.index', compact('documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
             $documents = DocumentStorage::myDocuments();
-            return view('user.documents.index', compact('documents', 'authUser'));
+            return view('user.documents.index', compact('documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $documents = DocumentStorage::myDocuments();
 
-            return view('staff.documents.index', compact('documents', 'authUser'));
+            return view('staff.documents.index', compact('documents', 'authUser', 'userTenant'));
         }
 
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function document_create()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
-            return view('superadmin.documents.create', compact('authUser'));
+            return view('superadmin.documents.create', compact('authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
-            return view('admin.documents.create', compact('authUser'));
+            return view('admin.documents.create', compact('authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
-            return view('admin.documents.create', compact('authUser'));
+            return view('admin.documents.create', compact('authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
-            return view('user.documents.create', compact('authUser'));
+            return view('user.documents.create', compact('authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
-            return view('staff.documents.create', compact('authUser'));
+            return view('staff.documents.create', compact('authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
     public function user_file_document()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'User') {
             $recipients = DocumentStorage::getUserRecipients();
 
-            return view('user.documents.filedocument', compact('recipients', 'authUser'));
+            return view('user.documents.filedocument', compact('recipients', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function user_store_file_document(Request $request)
@@ -657,68 +755,72 @@ class SuperAdminActions extends Controller
     public function document_show($received, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
 
-            return view('superadmin.documents.show', compact('document_received', 'authUser'));
+            return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
 
-            return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser'));
+            return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
 
-            return view('secretary.documents.show', compact('document_received', 'document_locations', 'authUser'));
+            return view('secretary.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
 
-            return view('user.documents.show', compact('document_received', 'authUser'));
+            return view('user.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
 
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
 
-            return view('staff.documents.show', compact('document_received', 'document_locations', 'authUser'));
+            return view('staff.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
     public function document_show_sent($sent)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
-            return view('superadmin.documents.show', compact('document_received', 'authUser'));
+            return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
-            return view('admin.documents.show', compact('document_received', 'authUser'));
+            return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
-            return view('admin.documents.show', compact('document_received', 'authUser'));
+            return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
-            return view('user.documents.show', compact('document_received', 'authUser'));
+            return view('user.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
-            return view('staff.documents.show', compact('document_received', 'authUser'));
+            return view('staff.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
@@ -743,6 +845,8 @@ class SuperAdminActions extends Controller
     public function sent_documents()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
@@ -754,16 +858,16 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
             // dd($sent_documents);
-            return view('admin.documents.sent', compact('sent_documents', 'recipient', 'authUser'));
+            return view('admin.documents.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
-            return view('secretary.documents.sent', compact('sent_documents', 'recipient', 'authUser'));
+            return view('secretary.documents.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
 
@@ -777,7 +881,7 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
@@ -789,40 +893,42 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('staff.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function received_documents()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('superadmin.documents.received', compact('received_documents', 'authUser'));
+            return view('superadmin.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('admin.documents.received', compact('received_documents', 'authUser'));
+            return view('admin.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('secretary.documents.received', compact('received_documents', 'authUser'));
+            return view('secretary.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('user.documents.received', compact('received_documents', 'authUser'));
+            return view('user.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('staff.documents.received', compact('received_documents', 'authUser'));
+            return view('staff.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function viewDocument(Document $document)
@@ -846,6 +952,8 @@ class SuperAdminActions extends Controller
     public function getReplyform(Request $request, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'Admin') {
             $authUser = Auth::user();
 
@@ -853,7 +961,7 @@ class SuperAdminActions extends Controller
             $recipients = User::where('id', $getter[0]->sender_id)->get();
 
 
-            return view('staff.documents.reply', compact('recipients', 'document', 'authUser'));
+            return view('staff.documents.reply', compact('recipients', 'document', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $authUser = Auth::user();
@@ -862,7 +970,7 @@ class SuperAdminActions extends Controller
             $recipients = User::where('id', $getter[0]->sender_id)->get();
 
 
-            return view('staff.documents.reply', compact('recipients', 'document', 'authUser'));
+            return view('staff.documents.reply', compact('recipients', 'document', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $authUser = Auth::user();
@@ -871,14 +979,16 @@ class SuperAdminActions extends Controller
             $recipients = User::where('id', $getter[0]->sender_id)->get();
 
 
-            return view('staff.documents.reply', compact('recipients', 'document', 'authUser'));
+            return view('staff.documents.reply', compact('recipients', 'document', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function getSendExternalForm(Request $request, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'Admin') {
             $recipients = User::with(['userDetail.tenant' => function ($query) {
                 $query->select('id', 'name'); // Include only relevant columns
@@ -893,18 +1003,20 @@ class SuperAdminActions extends Controller
                 ];
                 return redirect()->back()->with($notification);
             }
-            return view('admin.documents.send_external', compact('recipients', 'document', 'authUser'));
+            return view('admin.documents.send_external', compact('recipients', 'document', 'authUser', 'userTenant'));
         }
         $notification = [
             'message' => 'You do not have permission to send external documents.',
             'alert-type' => 'error'
         ];
-        return view('errors.404', compact('authUser'))->with($notification);
+        return view('errors.404', compact('authUser', 'userTenant'))->with($notification);
     }
 
     public function getSendform(Request $request, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $role = $authUser->default_role;
 
         switch ($role) {
@@ -935,11 +1047,11 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with('error', 'No recipients found.');
                 }
 
-                return view('admin.documents.send', compact('recipients', 'document', 'document_locations', 'authUser'));
+                return view('admin.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
 
             case 'User':
                 $recipients = User::where('default_role', 'Admin')->get();
-                return view('user.documents.send', compact('recipients', 'document', 'authUser'));
+                return view('user.documents.send', compact('recipients', 'document', 'authUser', 'userTenant'));
 
             case 'Staff':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -962,7 +1074,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with('error', 'No recipients found.');
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser'));
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
 
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -991,7 +1103,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser'));
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
 
 
             default:
@@ -1097,49 +1209,57 @@ class SuperAdminActions extends Controller
     public function track_document(Request $request, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (in_array(Auth::user()->default_role, ['Admin', 'Staff', 'Secretary'])) {
             // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
 
-            return view('staff.documents.filemovement', compact('document_locations', 'document', 'authUser'));
+            return view('staff.documents.filemovement', compact('document_locations', 'document', 'authUser', 'userTenant'));
         }
 
         if (Auth::user()->default_role === 'User') {
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
-            return view('user.documents.filemovement', compact('document_locations', 'document', 'authUser'));
+            return view('user.documents.filemovement', compact('document_locations', 'document', 'authUser', 'userTenant'));
         }
     }
 
     public function get_attachments(Request $request, Document $document)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'Admin') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('admin.documents.attachments', compact('attachments', 'document', 'authUser'));
+            return view('admin.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('secretary.documents.attachments', compact('attachments', 'document', 'authUser'));
+            return view('secretary.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('staff.documents.attachments', compact('attachments', 'document', 'authUser'));
+            return view('staff.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     /**Memo Actions */
     public function memo_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $memos = Memo::where('user_id', $authUser->id)->orderBy('id', 'desc')->paginate(10);
-        return view('admin.memo.index', compact('memos', 'authUser'));
+        return view('admin.memo.index', compact('memos', 'authUser', 'userTenant'));
     }
 
     public function create_memo()
     {
         $authUser = Auth::user();
-        return view('admin.memo.create', compact('authUser'));
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('admin.memo.create', compact('authUser', 'userTenant'));
     }
 
     public function store_memo(Request $request)
@@ -1173,7 +1293,9 @@ class SuperAdminActions extends Controller
     public function edit_memo(Memo $memo)
     {
         $authUser = Auth::user();
-        return view('admin.memo.edit', compact('memo', 'authUser'));
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('admin.memo.edit', compact('memo', 'authUser', 'userTenant'));
     }
 
     public function update_memo(Request $request, Memo $memo)
@@ -1264,14 +1386,18 @@ class SuperAdminActions extends Controller
     public function get_memo(Request $request, Memo $memo)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         // $memo = Memo::where('id', $id)->first();
-        return view('admin.memo.show', compact('memo', 'authUser'));
+        return view('admin.memo.show', compact('memo', 'authUser', 'userTenant'));
     }
 
     public function createMemoTemplateForm()
     {
         $authUser = Auth::user();
-        return view('admin.memo.template', compact('authUser'));
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('admin.memo.template', compact('authUser', 'userTenant'));
     }
 
     public function storeMemoTemplate(Request $request)
@@ -1321,6 +1447,8 @@ class SuperAdminActions extends Controller
     public function getSendMemoExternalForm(Request $request, Memo $memo)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'Admin') {
             $recipients = User::with(['userDetail.tenant' => function ($query) {
                 $query->select('id', 'name'); // Include only relevant columns
@@ -1335,24 +1463,26 @@ class SuperAdminActions extends Controller
                 ];
                 return redirect()->back()->with($notification);
             }
-            return view('admin.memo.send_external', compact('recipients', 'memo', 'authUser'));
+            return view('admin.memo.send_external', compact('recipients', 'memo', 'authUser', 'userTenant'));
         }
         $notification = [
             'message' => 'You do not have permission to send external documents.',
             'alert-type' => 'error'
         ];
-        return view('errors.404', compact('authUser'))->with($notification);
+        return view('errors.404', compact('authUser', 'userTenant'))->with($notification);
     }
 
     public function getSendMemoform(Request $request, Memo $memo)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $role = $authUser->default_role;
 
         switch ($role) {
             case 'superadmin':
                 $recipients = User::all();
-                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser'));
+                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser', 'userTenant'));
 
             case 'Admin':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -1385,11 +1515,11 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('admin.memo.send', compact('recipients', 'memo', 'authUser'));
+                return view('admin.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
 
             case 'User':
                 $recipients = User::where('default_role', 'Admin')->get();
-                return view('user.documents.send', compact('recipients', 'document', 'authUser'));
+                return view('user.documents.send', compact('recipients', 'document', 'authUser', 'userTenant'));
 
             case 'Staff':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -1412,7 +1542,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with('error', 'No recipients found.');
                 }
 
-                return view('staff.memo.send', compact('recipients', 'memo', 'authUser'));
+                return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
 
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -1441,11 +1571,11 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('staff.memo.send', compact('recipients', 'memo', 'authUser'));
+                return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
 
 
             default:
-                return view('errors.404', compact('authUser'));
+                return view('errors.404', compact('authUser', 'userTenant'));
         }
     }
 
@@ -1479,6 +1609,8 @@ class SuperAdminActions extends Controller
     public function sent_memos()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
 
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
@@ -1490,16 +1622,16 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
 
-            return view('admin.memo.sent', compact('sent_documents', 'recipient', 'authUser'));
+            return view('admin.memo.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
-            return view('secretary.memo.sent', compact('sent_documents', 'recipient', 'authUser'));
+            return view('secretary.memo.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
 
@@ -1513,7 +1645,7 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
@@ -1525,49 +1657,53 @@ class SuperAdminActions extends Controller
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('staff.memo.sent', compact('sent_documents', 'recipient', 'mda', 'authUser'));
+            return view('staff.memo.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function received_memos()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('superadmin.documents.received', compact('received_documents', 'authUser'));
+            return view('superadmin.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedMemos();
             // dd($received_documents);
-            return view('admin.memo.received', compact('received_documents', 'authUser'));
+            return view('admin.memo.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             list($received_documents) = DocumentStorage::getReceivedMemos();
 
-            return view('secretary.memo.received', compact('received_documents', 'authUser'));
+            return view('secretary.memo.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('user.documents.received', compact('received_documents', 'authUser'));
+            return view('user.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             list($received_documents) = DocumentStorage::getReceivedMemos();
 
-            return view('staff.memo.received', compact('received_documents', 'authUser'));
+            return view('staff.memo.received', compact('received_documents', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     /**Department Management */
     public function department_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $departments = TenantDepartment::orderBy('id', 'desc')->paginate(10);
-            return view('superadmin.departments.index', compact('departments', 'authUser'));
+            return view('superadmin.departments.index', compact('departments', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             // Retrieve the tenant_id of the authenticated user
@@ -1577,24 +1713,26 @@ class SuperAdminActions extends Controller
             $departments = TenantDepartment::where('tenant_id', $tenantId)
                 ->orderBy('id', 'desc')
                 ->paginate(10);
-            return view('admin.departments.index', compact('departments', 'authUser'));
+            return view('admin.departments.index', compact('departments', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
     public function department_create()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $organisations = Tenant::all();
-            return view('superadmin.departments.create', compact('organisations', 'authUser'));
+            return view('superadmin.departments.create', compact('organisations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             // Retrieve the tenant_id of the authenticated user
             $tenantId = Auth::user()->userdetail->tenant_id;
             $organisations = Tenant::where('id', $tenantId)->first();
-            return view('admin.departments.create', compact('organisations', 'tenantId', 'authUser'));
+            return view('admin.departments.create', compact('organisations', 'tenantId', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
 
@@ -1622,20 +1760,24 @@ class SuperAdminActions extends Controller
     public function department_edit(TenantDepartment $department)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $organisations = Tenant::all();
             $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
-            return view('superadmin.departments.edit', compact('department', 'organisations', 'departmentName', 'authUser'));
+            return view('superadmin.departments.edit', compact('department', 'organisations', 'departmentName', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
-            return view('admin.departments.edit', compact('department', 'departmentName', 'authUser'));
+            return view('admin.departments.edit', compact('department', 'departmentName', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
     public function department_update(Request $request, TenantDepartment $department)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -1660,11 +1802,13 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('department.index')->with($notification);
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
     public function department_delete(TenantDepartment $department)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $department->delete();
             $notification = [
@@ -1681,33 +1825,37 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('department.index')->with($notification);
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     /**Receipts */
     public function receipt_index()
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'User') {
             $receipts = Payment::where('customerId', $authUser->id)->orderBy('id', 'desc')->paginate(10);
             // dd($receipts);
-            return view('user.receipts.index', compact('receipts', 'authUser'));
+            return view('user.receipts.index', compact('receipts', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     public function show_receipt($receipt)
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'User') {
 
             $user = User::with('userDetail')->where('id', $authUser->id)->first();
             $receipt = Payment::with('user')->where('id', $receipt)->first();
             // dd($receipt);
 
-            return view('user.receipts.show', compact('receipt', 'user', 'authUser'));
+            return view('user.receipts.show', compact('receipt', 'user', 'authUser', 'userTenant'));
         }
-        return view('errors.404', compact('authUser'));
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
 
     // public function downloadReceipt(Request $request)

@@ -37,14 +37,14 @@
                         @forelse ($received_documents as $key => $received)
                             <tr>
                                 <td>{{ $key+1}}</td>
-                                <td><a href="{{route('document.view', $received)}}">
-                                    {{$received->document->docuent_number}}
+                                <td><a href="{{ route('memo.generate', $received->memo->id) }}" target="__blank">
+                                    {{$received->memo->docuent_number}}
                                 </a></td>
-                                <td>{{$received->document->title}}</td>
+                                <td>{{$received->memo->title}}</td>
                                 <td>{{$received->sender_details->name}}</td>
-                                <td>{{$received->document->status}}</td>
+                                <td>{{$received->memo->status}}</td>
                                 <td>
-                                    {{$received->document->updated_at->format('M j, Y g:i A')}}
+                                    {{$received->memo->updated_at->format('M j, Y g:i A')}}
                                     {{-- <a href="{{route('document.view', $received)}}" class="nav-item">View</a> --}}
                                 </td>
                             </tr>

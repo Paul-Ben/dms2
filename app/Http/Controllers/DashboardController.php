@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DocumentStorage;
 use App\Models\Activity;
+use App\Models\Tenant;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +21,9 @@ class DashboardController extends Controller
     {
         $authUser = Auth::user();
         $role = $authUser->default_role;
-
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        
 
         $views = [
             'superadmin' => 'superadmin.index',
@@ -41,7 +45,6 @@ class DashboardController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-
-        return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'totalAmount',  'authUser'));
+        return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'userTenant', 'totalAmount',  'authUser'));
     }
 }

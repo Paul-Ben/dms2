@@ -24,7 +24,7 @@
 
                         </div>
 
-                        <form action="{{route('organisation.store')}}" method="POST">
+                        <form action="{{route('organisation.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
@@ -58,19 +58,22 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="address" class="form-label">Address</label>
-                                <textarea class="form-control" id="address" name="address"></textarea>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="status" class="form-label">Status</label>
                                     <select class="form-select" id="status" name="status">
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                     </select>
                                 </div>
-
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="status" class="form-label">Logo</label>
+                                    <input type="file" class="form-control" name="logo" id="logo" accept="image/*">
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" name="address"></textarea>
+                                </div>
                             </div>
                             <div style="text-align: center;">
                                 <button type="submit" class="btn btn-primary">Submit</button>

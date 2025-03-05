@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +23,12 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         return view('profile.edit', [
-            'user' => $request->user(), 'authUser' => $authUser,
+            'user' => $request->user(),
+            'authUser' => $authUser,
+            'userTenant' => $userTenant,
         ]);
     }
 
@@ -42,7 +47,7 @@ class ProfileController extends Controller
 
         $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->first();
-        
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'gender' => 'nullable|string|max:20',
@@ -50,7 +55,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
+
         if ($validator->fails()) {
             $firstError = $validator->errors()->first();
 
@@ -61,44 +66,40 @@ class ProfileController extends Controller
 
             return redirect()->back()->with($notification);
         }
-        
+
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
-        
+
         $userDetail = UserDetails::where('user_id', $user_id)->first();
         $userDetail->gender = $request->gender;
         $userDetail->phone_number = $request->phone_number;
-        
-       
-        if ($request->hasFile('avatar')) 
-        {
 
-        $file = $request->file('avatar');
-        $name = Str::of($user->name)->replace(' ', '')->toString();
-        $filename = $name . '_' . time() . '.' . $file->getClientOriginalExtension();
-    
-        $destinationPath = public_path('uploads/avatars');
-         
-        $file->move($destinationPath, $filename);
 
-        if (!empty($userDetail->avatar) && file_exists(public_path($userDetail->avatar))) 
-        {
-            unlink(public_path($userDetail->avatar));
+        if ($request->hasFile('avatar')) {
+
+            $file = $request->file('avatar');
+            $name = Str::of($user->name)->replace(' ', '')->toString();
+            $filename = $name . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+            $destinationPath = public_path('uploads/avatars');
+
+            $file->move($destinationPath, $filename);
+
+            if (!empty($userDetail->avatar) && file_exists(public_path($userDetail->avatar))) {
+                unlink(public_path($userDetail->avatar));
+            }
+            $userDetail->avatar =  $filename;
         }
-        $userDetail->avatar =  $filename;
-            
-        }
-        
+
         $userDetail->save();
 
         $notification = [
             'message' => 'Profile updated sucessfully',
             'alert-type' => 'success',
         ];
-        
+
         return Redirect::route('profile.edit')->with($notification);
-        
     }
     /**
      * Delete the user's account.

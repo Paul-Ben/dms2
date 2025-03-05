@@ -64,14 +64,24 @@ class UserAction
     public static function getOrganisationDetails()
     {
         try {
-            $organisations = Tenant::with('tenant_departments')->get();
-            $roles = Role::where('name', '!=', Auth::user()->default_role)->get();
-            $designations = Designation::all();
-            foreach ($organisations as $key => $value) {
-                $departments = TenantDepartment::where('tenant_id', $value->id)->get();
+            $authUser = Auth::user();
+            if ($authUser->default_role == 'superadmin') {
+                $organisations = Tenant::with('tenant_departments')->get();
+                $roles = Role::all();
+                $designations = Designation::all();
+                foreach ($organisations as $key => $value) {
+                    $departments = TenantDepartment::where('tenant_id', $value->id)->get();
+                }
+                return [$organisations, $roles, $departments, $designations];
+            } else {
+                $organisations = Tenant::with('tenant_departments')->get();
+                $roles = Role::where('name', '!=', Auth::user()->default_role)->get();
+                $designations = Designation::all();
+                foreach ($organisations as $key => $value) {
+                    $departments = TenantDepartment::where('tenant_id', $value->id)->get();
+                }
+                return [$organisations, $roles, $departments, $designations];
             }
-            // dd($organisations);
-            return [$organisations, $roles, $departments, $designations];
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json([
