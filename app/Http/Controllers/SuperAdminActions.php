@@ -999,7 +999,11 @@ class SuperAdminActions extends Controller
                     ->get();
 
                 if ($recipients->isEmpty()) {
-                    return redirect()->back()->with('error', 'No recipients found.');
+                    $notification = [
+                        'message' => 'No recipients found.',
+                        'alert-type' => 'error',
+                    ];
+                    return redirect()->back()->with($notification);
                 }
 
                 return view('admin.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));

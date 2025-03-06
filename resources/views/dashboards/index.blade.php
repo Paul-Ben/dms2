@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BSGIDMS</title>
+    <title>BENGEDMS</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -114,15 +114,15 @@
                             style="width: 80px; height: 80px;">
                     @elseif ($userTenant->logo == null)
                         <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
-                        style="width: 80px; height: 80px;">
+                            style="width: 80px; height: 80px;">
                     @else
                         <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
-                        style="width: 80px; height: 80px;">
+                            style="width: 80px; height: 80px;">
                     @endif
-                    
+
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BSGIDMS </h5>
-                        <small class="text-muted"> Doc Mgt</small>
+                        <h5 class="mb-0" style="font-weight: bold;">BENGEDMS </h5>
+                        <small class="text-muted"> {{ $userTenant->code }}</small>
                     </div>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
@@ -225,10 +225,18 @@
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a> --}}
                 <a href="/" class="navbar-brand d-flex d-lg-none me-4">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
-                        style="width: 80px; height: 80px;">
+                    @if ($userTenant->logo != null)
+                        <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
+                            style="width: 80px; height: 80px;">
+                    @elseif ($userTenant->logo == null)
+                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                            style="width: 80px; height: 80px;">
+                    @else
+                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                            style="width: 80px; height: 80px;">
+                    @endif
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BSGIDMS</h5>
+                        <h5 class="mb-0" style="font-weight: bold;">BENGEDMS</h5>
                         <small class="text-muted">Doc Mgt</small>
                     </div>
                 </a>

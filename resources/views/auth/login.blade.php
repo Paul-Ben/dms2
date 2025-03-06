@@ -24,7 +24,7 @@
                                 <div class="text-center">
                                     {{-- <img class="mb-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="130px" height="130px" alt=""> --}}
                                     <h2 class="text-success">LOGIN</h2>
-                                    <small class="text-muted">Benue State Government Integrated Document Management System</small>
+                                    <small class="text-muted">Benue State Government Electronic Document Management System</small>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     @if (session('errors'))
@@ -60,7 +60,7 @@
                                         </div>
                                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                                 <p class="text-center mb-0">Don't have an Account? <a href="{{route('register')}}">Register</a></p>
-                                <p class="text-center"><small class="text-center text-muted">BSGIDMS, Powered by BDIC</small></p>
+                                <p class="text-center"><small class="text-center text-muted">BENGEDMS, Powered by BDIC</small></p>
                             </div>
                         </div>
                     </div>

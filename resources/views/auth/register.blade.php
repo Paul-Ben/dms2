@@ -26,7 +26,7 @@
                                                 {{-- <img class="me-3" src="{{ asset('assets/demo-data/Logo1.png') }}" width="80px" height="80px" alt=""> --}}
                                                 <div>
                                                     <h2 class="text-success">REGISTER</h2>
-                                                    <small class="text-muted">Benue State Government Integrated Document Manangement System</small>
+                                                    <small class="text-muted">Benue State Government Electronic Document Manangement System</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,7 +239,7 @@
                                 <p class="text-center mb-0">Already have an Account?
                                     <a href="{{ route('login') }}">Sign In</a>
                                 </p>
-                                <p class="text-center"><small class="text-center text-muted">BSGIDMS Powered by
+                                <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by
                                         BDIC</small></p>
                             </form>
 
