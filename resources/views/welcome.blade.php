@@ -1,5 +1,5 @@
 @extends('layouts.homepage')
-@section('content')
+{{-- @section('content')
     <style>
         .pop-out {
             width: 300px;
@@ -153,4 +153,260 @@
             </div>
         </div>
     </section>
+@endsection --}}
+
+@section('content')
+<div class="container">
+
+    <!-- Section start -->
+    <section>
+        <div class="row">
+            <!-- First column, takes up 12 columns on extra small screens, 6 on medium and above -->
+            <div class="col-12 col-md-6">
+                <div class="p-3">
+                    <p class="subtitle">Benue State Government</p>
+                    <p class="title">Electronic Document Management System</p>
+                    <p class="slogan">Efficient Document Management System, tailored for modern workflows</p>
+                    <div class="d-flex">
+                        <a href="{{route('register')}}" class="btn btn-success ml-auto">Get Started</a>
+                    </div>
+                    <p class="account-text">Already have an account? <span class="account-text-login"
+                            style="color: #0C4F24 !important;"><a href="{{route('login')}}">Login</a></span></p>
+                </div>
+            </div>
+            <!-- Second column, takes up 12 columns on extra small screens, 6 on medium and above -->
+            <div class="col-12 col-md-6 text-center">
+                <div class="p-3  ">
+                    <!-- <img src="images/vector_shape1.svg"
+                        style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
+                    <img src="{{asset('landing/images/hero_image.png')}}" width="450">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Section end -->
+</div>
+
+
+<!-- Section start -->
+<section>
+    <div class="row" style="background-color: #F9F9F9; " id="abt">
+        <!-- First column, takes up 12 columns on extra small screens, 6 on medium and above -->
+        <div class="col-12 col-md-6">
+            <div class="p-5">
+                <img src="{{asset('landing/images/about_image.png')}}" width="550" style="">
+            </div>
+        </div>
+        <!-- Second column, takes up 12 columns on extra small screens, 6 on medium and above -->
+        <div class="col-12 col-md-6">
+            <div class="p-3">
+                <div style="font-weight: 492px; width: 492px;  padding: 100px;">
+                    <p class="title">About us</p>
+                    <p class="body-text" style="text-align: justify;">It gives me great pleasure to announce the launch of our new e-filing
+                        application, a revolutionary platform designed to make your interactions with the Benue
+                        State government more efficient and accessible.
+                    </p>
+
+                    <p class="body-text  text-justify" style="text-align: justify;">
+                        For too long, filing documents with ministries, departments, and agencies has been a
+                        cumbersome and time-consuming process. This new application streamlines the process,
+                        allowing you to submit your documents online, 24/7, from the comfort of your home or office.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Section end -->
+
+
+<div class="container">
+
+    <!-- Section start -->
+    <section>
+        <div class="row">
+            <!-- First column, takes up 12 columns on extra small screens, 6 on medium and above -->
+            <div class="col-12 col-md-7">
+                <div class="p-3">
+                    <p class="title">How it works</p>
+                    <p class="body-text text-justify" style="text-align: justify;">Submit a document for processing from the comfort of your home to any of
+                        the
+                        ministries or agencies within the Benue State Civil Service. This service ensures that your
+                        document gets the required attention in real time with dispatch and professionalism. Click
+                        on any of the items below to select a ministry or agency to contact.
+                    </p>
+
+                </div>
+            </div>
+            <!-- Second column, takes up 12 columns on extra small screens, 6 on medium and above -->
+            <div class="col-12 col-md-5">
+                <div class="p-3  ">
+                    <!-- style="background-color: #F2F2F2; height: 150px; border-radius: 8px;" -->
+
+                    <div style="height: 150px; border-radius: 8px; text-align: center;" class="center-text">
+                        <img src="{{asset('landing/images/how_it_works.jpg')}}" width="" style="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Section end -->
+
+</div>
+    <!-- Section start -->
+    <section class="">
+
+        <div class="container mt-5">
+            <div class="row g-3">
+                <div class="col-12 col-md-4"> 
+                    <div class="p-3">
+                        <a href="{{route('login')}}">
+                            <div class="py-4 card1-div"> </div> 
+                        </a>
+                                      
+                    </div>                     
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3">
+                        <a href="{{route('login')}}">
+                            <div class="py-4 card2-div"> </div>
+                        </a>              
+                    </div> 
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3">
+                        <a href="{{route('login')}}">
+                            <div class="py-4 card3-div"> </div>
+                        </a>              
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- Section end -->
+
+<div class="container " style="margin-top: 100px;">
+
+    <!-- Section start -->
+    <section class="">
+
+        <div class="row">
+
+            <!-- First column, takes up 12 columns on extra small screens, 4 on medium and above -->
+            <div class="col-12 col-md-4">
+                <div class="p-3">
+                    &nbsp;
+
+                </div>
+            </div>
+            <!-- Second column, takes up 12 columns on extra small screens, 4 on medium and above -->
+            <div class="col-12 col-md-8">
+                <div class="p-3 justify-start ">
+
+                    <span class="title " style="width: 700px;">What Our Users Are Saying</span>
+
+                </div>
+            </div>
+
+            <!-- Third column, takes up 12 columns on extra small screens, 4 on medium and above -->
+            <div class="col-12 col-md-4">
+                <div class="p-3  ">
+
+                    &nbsp;
+
+                </div>
+            </div>
+        </div>
+        <!-- ===== -->
+
+        <div class="container mt-5">
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="p-3 border "
+                        style="border: thin solid #dde7e6; background-color: #F9F9F9; border-radius: 2em;">
+
+                        <div class="py-4 ">
+                            <img src="{{asset('landing/images/rating.svg')}}" alt="">
+                        </div>
+                        <div>
+                            <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
+                                hesitant to try the e-filing system, but I'm so glad I did! This system is a
+                                game-changer for businesses like mine.”</p>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="text-align: right;">
+                                <img src="{{asset('landing/images/usr1.svg')}}" alt="" style="text-align: right;">
+                            </div>
+                            <div class="col">
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-weight: bold;">Ternenge Yina</span><br>
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-style: italic;">Business Owner</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3 border "
+                        style="border: thin solid #dde7e6; background-color: #F9F9F9; border-radius: 2em;">
+
+                        <div class="py-4 ">
+                            <img src="{{asset('landing/images/rating.svg')}}" alt="">
+                        </div>
+                        <div>
+                            <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
+                                hesitant to try the e-filing system, but I'm so glad I did! This system is a
+                                game-changer for businesses like mine.”</p>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="text-align: right;">
+                                <img src="{{asset('landing/images/user2.svg')}}" alt="" style="text-align: right;">
+                            </div>
+                            <div class="col">
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-weight: bold;">Paulinne Ogah</span><br>
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-style: italic;">Student</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3 border "
+                        style="border: thin solid #dde7e6; background-color: #F9F9F9; border-radius: 2em;">
+
+                        <div class="py-4 ">
+                            <img src="{{asset('landing/images/rating.svg')}}" alt="">
+                        </div>
+                        <div>
+                            <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
+                                hesitant to try the e-filing system, but I'm so glad I did! This system is a
+                                game-changer for businesses like mine.”</p>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="text-align: right;">
+                                <img src="{{asset('landing/images/user3.svg')}}" alt="" style="text-align: right;">
+                            </div>
+                            <div class="col">
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-weight: bold;">Ms. Linda E.</span><br>
+                                <span class="testimonial-text text-justify"
+                                    style="text-align: justify; font-style: italic;">Practice Manager</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <!-- Section end -->
+
+</div>
 @endsection

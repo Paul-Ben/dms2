@@ -2,7 +2,7 @@
 @section('content')
 
     <div>
-        @include('layouts.nav')
+        @include('layouts.newnav')
         <form action="{{ route('login') }}" method="POST">
             @csrf
             <div class="container-xxl position-relative bg-white d-flex p-0">

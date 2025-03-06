@@ -117,15 +117,15 @@ class SuperAdminActions extends Controller
         $user->default_role = $request->input('default_role');
         // Assign the user a role
         if ($request->input('default_role') === 'Admin') {
-            // dd($request->input('default_role'));
+            
             $user->assignRole('Admin');
         }
         if ($request->input('default_role') === 'Staff') {
-            // dd($request->input('default_role'));
+           
             $user->assignRole('Staff');
         }
         if ($request->input('default_role') === 'User') {
-            // dd($request->input('default_role'));
+           
             $user->assignRole('User');
         }
 
@@ -133,7 +133,7 @@ class SuperAdminActions extends Controller
         $user->save();
 
 
-        // if ($request->default_role === 'User') {
+        // Create a new user detail instance
         $user->userDetail()->create([
             'user_id' => $user->id,
             'department_id' => $request->input('department_id'),
@@ -176,12 +176,7 @@ class SuperAdminActions extends Controller
                 return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
             return view('errors.404', compact('authUser'));
-            // $user_details = User::with('userDetail')->where('id', $user->id)->first();
-
-
-            // list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
-
-            // return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'departments', 'designations', 'user_details'));
+            
         } catch (\Exception $e) {
             Log::error('Error while fetching user details: ' . $e->getMessage());
             $notification = [
@@ -344,46 +339,6 @@ class SuperAdminActions extends Controller
         return view('errors.404', compact('authUser', 'userTenant'));
     }
 
-
-    // public function org_update(Request $request, Tenant $tenant)
-    // {
-    //     $authUser = Auth::user();
-    //     if (Auth::user()->default_role === 'superadmin') {
-    //         $request->validate([
-    //             'name' => 'required|string|max:255',
-    //             'code' => 'required|string|max:255|unique:tenants,code,' . $tenant->id,
-    //             'email' => 'required|string|email|max:255|unique:tenants,email,' . $tenant->id,
-    //             'phone' => 'nullable|string|max:255',
-    //             'category' => 'required|string',
-    //             'address' => 'nullable|string',
-    //             'status' => 'required|string',
-    //             'logo' => 'nullable|mimes:jpg,jpeg,png,gif,svg|max:2048',
-    //         ]);
-
-    //         $logoName = null;
-    //         if ($request->hasFile('logo')) {
-    //             $logo = $request->file('logo');
-    //             $logoName = time() . '.' . $logo->getClientOriginalExtension();
-    //             $logo->move(public_path('logos/'), $logoName);
-    //         }
-
-    //         $tenant->name = $request->input('name');
-    //         $tenant->code = $request->input('code');
-    //         $tenant->email = $request->input('email');
-    //         $tenant->phone = $request->input('phone');
-    //         $tenant->category = $request->input('category');
-    //         $tenant->address = $request->input('address');
-    //         $tenant->status = $request->input('status');
-    //         $tenant->logo = $logoName;
-    //         $tenant->save();
-    //         $notification = [
-    //             'message' => 'Organisation updated successfully',
-    //             'alert-type' => 'success'
-    //         ];
-    //         return redirect()->route('organisation.index')->with($notification);
-    //     }
-    //     return view('errors.404', compact('authUser'));
-    // }
     public function org_update(Request $request, Tenant $tenant)
     {
         $authUser  = Auth::user();
