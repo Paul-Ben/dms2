@@ -1,41 +1,41 @@
 <!DOCTYPE html>
-<!--[if lte IE 9]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 9]><!-->
-<html class="no-js">
-<!--<![endif]-->
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>BSGIDMS</title>
-    <!--=================================
-Meta tags
-=================================-->
-    <meta name="description" content="">
-    <meta content="yes" name="apple-mobile-web-app-capable" />
-    <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" />
-    <!--=================================
-Style Sheets
-=================================-->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benue State Government Integrated Document Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon_io/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon_io/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ asset('favicon_io/site.webmanifest') }}">
-
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/animations.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/customcss.css') }}">
-
-
-    <script async src="{{ asset('assets/js/lib/modernizr-2.6.2-respond-1.1.0.min.js') }}"></script>
-    <script src="{{ asset('assets/js/app/custom.js') }}"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
     <style>
+        body {
+            margin: 0px;
+            font-family: Sora, Arial, sans-serif;
+        }
+
+        .active {
+            color: #0C4F24 !important;
+        }
+
+        .btn {
+
+            width: 169px;
+        }
+
+        .border {
+            border-width: 1px;
+            border-color: red;
+        }
+
+        .wrapper {
+            padding: 100px;
+        }
+
         .navbar {
             background: white;
             border: none;
@@ -70,18 +70,9 @@ Style Sheets
 
         .navbar-nav>li>a:hover {
             color: #30B34E !important;
-            transition: color 0.3s ease;
-        }
-
-        /* Fix: Apply active class color to the <a> inside the active <li> */
-        .navbar-nav li.active-link a {
-            color: #30B34E !important;
         }
 
         @media (max-width: 767px) {
-        .navbar-nav li.active-link a {
-            color: white !important;
-           }
             .navbar-header {
                 display: flex;
                 justify-content: space-between;
@@ -111,6 +102,8 @@ Style Sheets
                 top: 80px;
                 z-index: 1000;
                 padding: 10px 0;
+                text-align: left !important;
+
             }
 
             .navbar-nav {
@@ -137,156 +130,320 @@ Style Sheets
                 display: block !important;
             }
         }
+
+        section {
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .subtitle {
+            color: #2A323F;
+            font-family: Sora, sans-serif;
+            font-weight: 300;
+            font-size: 38px;
+            line-height: 47.88px;
+            letter-spacing: -3%;
+
+
+        }
+
+        .title {
+            font-family: Sora, sans-serif;
+            font-weight: 700;
+            font-size: 60px;
+            line-height: 76px;
+            letter-spacing: -3%;
+            color: #2A323F;
+            ;
+
+        }
+
+        .slogan {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 28px;
+            letter-spacing: -2%;
+            color: #8E98A8;
+
+        }
+
+        .account-text {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 21px;
+            letter-spacing: -2%;
+            color: #8E98A8;
+        }
+
+        .account-text-login {
+            font-family: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 21px;
+            letter-spacing: -2%;
+            text-decoration: underline;
+            text-decoration-style: solid;
+            text-decoration-offset: Auto;
+            text-decoration-thickness: Auto;
+            color: #0C4F24 !important;
+        }
+
+        .body-text {
+            font-family: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            letter-spacing: -2%;
+            color: #2A323F;
+        }
+
+        span>a {
+            color: #0C4F24 !important;
+            ;
+        }
+
+        .footer {
+            margin-top: 200px;
+            background-color: #0C4F24;
+            min-height: 346px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+            /* Align image and text vertically */
+        }
+
+        .footer-logo img {
+            display: inline-block;
+            margin-right: 100px;
+            /* Space between image and text */
+
+        }
+
+        div .text-white {
+            text-decoration: none;
+        }
+
+
+        div .footer-container {
+            margin-top: 200px;
+            background-color: #0C4F24;
+            min-height: 346px;
+            text-align: center;
+        }
+
+        testimonial-text {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            letter-spacing: -2%;
+            color: #697586;
+
+        }
+
+
+
+        @media (max-width: 576px) {
+            .navbar-collapse {
+                background-color: #28a745;
+                padding: 20px;
+                text-align: left;
+            }
+        }
+
+
+        @media (min-width: 577px) and (max-width: 992px) {
+            .navbar-collapse {
+                background-color: #28a745;
+                padding: 20px;
+                text-align: left;
+            }
+        }
+
+        .card1-div {
+            width: 100%;
+            height: 312px;
+            background-image: url('landing/images/Frame\ 1618872459.svg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card2-div {
+            width: 100%;
+            height: 312px;
+            background-image: url('landing/images/Frame\ 1618872462.svg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card3-div {
+            width: 100%;
+            height: 312px;
+            background-image: url('landing/images/Frame\ 1618872463.svg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 
-<body class="homes">
-
-    <!--========================================
-Body Content
-===========================================-->
-    {{-- <header>
+<body>
+    <!-- Navigation Start -->
+    <nav class="navbar navbar-expand-lg  lg bg-body-tertiary">
         <div class="container">
-            <a href="#" class="logo pull-left">
-                <figure><img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56" alt="/"></figure>
-            </a>
-            <p style="color: rgb(26, 164, 38);"></p>
-            <nav>
-                
-            <ul class="pull-right pt-5 justify-between">
-                <li><a href="/">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#contact">Contact</a></li>
-               @if (auth()->user())
-               <li><a href="{{route('dashboard')}}">Dashboard</a></li>
-               @else
-                    <li><a href="{{route('login')}}">Login</a></li>
-               @endif
-               
-            </ul>
-        </nav>
-           
-        </div>
-    </header> --}}
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand visible-lg" href="{{ route('home') }}">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56"
-                        alt="Large Screen Logo">
-                </a>
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu"
-                    aria-expanded="false">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand hidden-lg" href="#">
-                    <img src="{{ asset('assets/demo-data/Logo1.png') }}" width="56" height="56"
-                        alt="Small Screen Logo">
-                </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-menu">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="{{ request()->is('/') ? 'active-link' : '' }}"><a href="/">Home</a></li>
-                    <li class="{{ request()->is('about') ? 'active-link' : '' }}"><a href="#about">About</a></li>
-                    <li class="{{ request()->is('services') ? 'active-link' : '' }}"><a href="#services">Services</a></li>
-                    <li class="{{ request()->is('contact') ? 'active-link' : '' }}"><a href="#contact">Contact</a></li>
-                    
-                    @if (auth()->user())
-                        <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                    @else
-                        <li><a href="{{ route('login') }}">Login</a></li>
-                    @endif
+            <a class="navbar-brand" href="#"><img src="{{ asset('landing/images/logo.jpeg') }}"
+                    style="border-radius: 1em" alt="e-filling-logo" height="50"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#abt">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
                 </ul>
+
+
+                <ul class="navbar-nav ms-auto">
+                    <div class="d-flex">
+                        <a href="{{ route('login') }}">
+                            <button type="button" class="btn btn-success ml-auto">Login</button>
+                        </a>
+
+                    </div>
+                    <!-- <li class="nav-item "> <a class="nav-link "  href="#">Login</a> </li> -->
+                </ul>
+
             </div>
         </div>
     </nav>
+    <!-- Navigation End -->
 
-    <!--========================================
-Body Content
-===========================================-->
-    <div>
-        @yield('content')
-    </div>
+    @yield('content')
+
+    <!-- Footer start -->
+    <div class="row  text-white text-center">
+        <div class="footer-container">
+            <div class="row mt-4">
+                <!-- First row, three columns -->
+
+                <div class="col-md-4 p-5 text-center">
+
+                    <!-- <div class="d-flex align-items-center text-center" style="margin-left:40%">
+                        <img src="images/SEAL BENUE STATE GOV 1.svg" style="padding-right: 5px;">
+                        <p style="text-align: left;">Benue State Government
+                            Integrated Document Management System</p>
+                    </div> -->
+                    <div class="d-flex text-start" >
+                        <a href="#" class="text-light me-2"><img
+                                src="{{ asset('landing/images/SEAL BENUE STATE GOV 1.svg') }}"></a> Benue
+                        State Government
+                        Electronic Document Management System
+                    </div>
+
+                </div>
 
 
 
-    <footer>
-        <div class="container">
-            <span class="rights pull-left">All rights reserved Copyright © 2025 BSGIDMS</span>
-            <ul class="pull-right">
-                <!-- <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li> -->
-                <!-- <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                <li><a href="#"><i class="fa fa-envelope"></i></a></li> -->
-            </ul>
+                <div class="col-md-4 p-4">
+
+
+                    <h5>Quick Links</h5>
+                    <a href="/" class="text-light me-3">Home</a>
+                    <a href="#abt" class="text-light me-3">About us</a>
+                    <a href="#" class="text-light me-3">Contact us</a>
+                    <a href="#" class="text-light">Login</a>
+
+                    <!-- <div class="row">
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Home</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">About us</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Contact us</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Login</a>
+                        </div>
+                    </div> -->
+
+                </div>
+                <div class="col-md-4 p-4">
+                    <!-- <div class="row text-center" style="text-align: center; padding: 2%;">
+                        <div class="col-md-3">
+                            <img src="images/1.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/2.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/3.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/4.svg" >
+                        </div>
+                    </div> -->
+
+                    <h5>Follow Us</h5>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/1.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/2.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/3.svg') }}"></a>
+                    <a href="#" class="text-light"><img src="{{ asset('landing/images/4.svg') }}"></a><br><br>
+                    <span class="body-text">
+                        <a href="#" class="text-light me-3">Privacy Policy</a>
+                        <a href="#" class="text-light me-3">Terms & Conditions</a>
+                    </span>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row mt-4 p-4">
+
+                <div class="col-md-4">
+                    &nbsp;
+                </div>
+                <div class="col-md-4">
+                    <p>© Copyright 2025, All Rights Reserved</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center text-center" style="margin-left:40%">
+                        <p style="padding-right: 5px;">Powered by BDIC</p><img src="{{asset('landing/images/BDIC logo 1 1.svg')}}">
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
-    <!--=================================
-Script Source
-=================================-->
 
-    <script src="{{ asset('assets/js/lib/jquery.js') }}"></script>
-    <script src="{{ asset('assets/js/lib/jquery.stellar.min.js') }}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="{{ asset('assets/js/lib/css3-animate-it.js') }}"></script>
-    <script src="{{ asset('assets/js/app/main.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.navbar-toggle').click(function() {
-                $('#navbar-menu').collapse('toggle');
-            });
-        });
-    </script>
-    <script>
-        @if (Session::has('message'))
-            var type = "{{ Session::get('alert-type', 'info') }}"
-            switch (type) {
-                case 'info':
+    </div>
+    <!-- Footer end -->
 
-                    toastr.options.timeOut = 5000;
-                    toastr.options.progressBar = true;
-                    toastr.options.closeButton = true;
-                    toastr.info("{{ Session::get('message') }}");
-                    var audio = new Audio('audio.mp3');
-                    audio.play();
-                    break;
-                case 'success':
 
-                    toastr.options.timeOut = 5000;
-                    toastr.options.progressBar = true;
-                    toastr.options.closeButton = true;
-                    toastr.success("{{ Session::get('message') }}");
-                    var audio = new Audio('audio.mp3');
-                    audio.play();
 
-                    break;
-                case 'warning':
 
-                    toastr.options.timeOut = 10000;
-                    toastr.options.progressBar = true;
-                    toastr.options.closeButton = true;
-                    toastr.warning("{{ Session::get('message') }}");
-                    var audio = new Audio('audio.mp3');
-                    audio.play();
 
-                    break;
-                case 'error':
 
-                    toastr.options.timeOut = 10000;
-                    toastr.options.progressBar = true;
-                    toastr.options.closeButton = true;
-                    toastr.error("{{ Session::get('message') }}");
-                    var audio = new Audio('audio.mp3');
-                    audio.play();
 
-                    break;
-            }
-        @endif
-    </script>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
