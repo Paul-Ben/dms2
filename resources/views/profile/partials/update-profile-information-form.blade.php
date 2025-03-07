@@ -67,8 +67,35 @@
                                 <label for="exampleInputEmail1" class="form-label">NIN (National Identification Number)</label>
                                 <input type="text" value="{{ $user->userDetail->nin_number }}" class="form-control" disabled>
                             </div>
+                            @role(['Staff', 'Secretary', 'Admin'])
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">PSN</label>
+                                <input type="text" name="psn" value="{{ $user->userDetail->psn }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Grade Level</label>
+                                <input type="text" name="grade_level" value="{{ $user->userDetail->grade_level }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Rank</label>
+                                <input type="text" name="rank" value="{{ $user->userDetail->rank }}" class="form-control">
+                            </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Schedule</label>
+                                <input type="text" name="schedule" value="{{ $user->userDetail->schedule }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Employment Date</label>
+                                <input type="date" name="employment_date" value="{{ $user->userDetail->employment_date }}" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-xl-4 mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Date of Birth</label>
+                                <input type="date" name="date_of_birth" value="{{ $user->userDetail->date_of_birth }}" class="form-control">
+                            </div>
+                        </div>
+                        @endrole
                         <div style="text-align: left;">
                             <button type="submit" class="btn btn-primary">Update Profile</button>
                             @if (session('status') === 'profile-updated')

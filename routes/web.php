@@ -52,7 +52,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
     Route::post('/users/create', [SuperAdminActions::class, 'user_store'])->name('user.save');
     Route::get('/users/{user}/edit', [SuperAdminActions::class, 'user_edit'])->name('user.edit');
+    Route::get('/users/{user}/view', [SuperAdminActions::class, 'user_show'])->name('user.view');
     Route::put('/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
+    Route::delete('/users/{user}', [SuperAdminActions::class, 'user_destroy'])->name('user.delete');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
 
     

@@ -42,7 +42,7 @@
                         @foreach ($users as $key => $user)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $user->name }}</td>
+                                <td><a href="{{route('user.view', $user)}}">{{ $user->name }}</a></td>
                                 <td>{{ $user->email }}</td>
 
                                 <td>{{ $user->default_role }}</td>

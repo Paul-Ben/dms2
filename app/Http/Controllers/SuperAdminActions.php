@@ -53,7 +53,7 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
-        
+
         if (Auth::user()->default_role === 'superadmin') {
             $users = User::orderBy('id', 'desc')->paginate(5);
             return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
@@ -117,15 +117,15 @@ class SuperAdminActions extends Controller
         $user->default_role = $request->input('default_role');
         // Assign the user a role
         if ($request->input('default_role') === 'Admin') {
-            
+
             $user->assignRole('Admin');
         }
         if ($request->input('default_role') === 'Staff') {
-           
+
             $user->assignRole('Staff');
         }
         if ($request->input('default_role') === 'User') {
-           
+
             $user->assignRole('User');
         }
 
@@ -141,8 +141,15 @@ class SuperAdminActions extends Controller
             'phone_number' => $request->input('phone_number'),
             'designation' => $request->input('designation'),
             'avatar' => $request->input('avatar'),
+            'gender' => $request->input('gender'),
             'signature' => $request->input('signature'),
             'nin_number' => $request->input('nin_number'),
+            'psn' => $request->input('psn'),
+            'grade_level' => $request->input('grade_level'),
+            'rank' => $request->input('rank'),
+            'schedule' => $request->input('schedule'),
+            'employment_date' => $request->input('employment_date'),
+            'date_of_birth' => $request->input('date_of_birth'),
 
         ]);
 
@@ -152,6 +159,22 @@ class SuperAdminActions extends Controller
         ];
 
         return redirect()->route('users.index')->with($notification);
+    }
+
+    public function user_show(Request $request, User $user)
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        $user->load('userDetail');
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.usermanager.show', compact('user', 'authUser', 'userTenant'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            return view('admin.usermanager.show', compact('user', 'authUser', 'userTenant'));
+        }
+        return view('errors.404', compact('authUser', 'userTenant'));
+        
     }
 
     public function user_edit(User $user)
@@ -176,7 +199,6 @@ class SuperAdminActions extends Controller
                 return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
             return view('errors.404', compact('authUser'));
-            
         } catch (\Exception $e) {
             Log::error('Error while fetching user details: ' . $e->getMessage());
             $notification = [
@@ -231,18 +253,24 @@ class SuperAdminActions extends Controller
             'department_id' => $request->input('department_id'),
             'gender' => $request->input('gender'),
             'signature' => $request->input('signature'),
+            'psn' => $request->input('psn'),
+            'grade_level' => $request->input('grade_level'),
+            'rank' => $request->input('rank'),
+            'schedule' => $request->input('schedule'),
+            'employment_date' => $request->input('employment_date'),
+            'date_of_birth' => $request->input('date_of_birth'),
         ]);
 
         if ($request->input('default_role') === 'Admin') {
-            
+
             $user->assignRole('Admin');
         }
         if ($request->input('default_role') === 'Staff') {
-           
+
             $user->assignRole('Staff');
         }
         if ($request->input('default_role') === 'User') {
-           
+
             $user->assignRole('User');
         }
 
@@ -1203,15 +1231,15 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'Admin') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('admin.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
+            return view('admin.documents.attachments', compact('attachments', 'document', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('secretary.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
+            return view('secretary.documents.attachments', compact('attachments', 'document', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Staff') {
             $attachments = Attachments::where('document_id', $document->id)->paginate(5);
-            return view('staff.documents.attachments', compact('attachments', 'document', 'authUser' , 'userTenant'));
+            return view('staff.documents.attachments', compact('attachments', 'document', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
     }

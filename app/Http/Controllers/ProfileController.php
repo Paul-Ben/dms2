@@ -74,6 +74,12 @@ class ProfileController extends Controller
         $userDetail = UserDetails::where('user_id', $user_id)->first();
         $userDetail->gender = $request->gender;
         $userDetail->phone_number = $request->phone_number;
+        $userDetail->psn = $request->psn;
+        $userDetail->grade_level = $request->grade_level;
+        $userDetail->rank = $request->rank;
+        $userDetail->schedule = $request->schedule;
+        $userDetail->employment_date = $request->employment_date;
+        $userDetail->date_of_birth = $request->date_of_birth;
 
 
         if ($request->hasFile('avatar')) {

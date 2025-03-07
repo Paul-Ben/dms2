@@ -108,6 +108,42 @@
                                     <input type="text" name="signature" class="form-control">
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">PSN</label>
+                                    <input type="text" name="psn" class="form-control" placeholder="PSN">
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">Grade Level</label>
+                                    <input type="text" name="grade_level" class="form-control" placeholder="Grade Level">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">Rank</label>
+                                    <input type="text" name="rank" class="form-control" placeholder="Rank">
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">Schedule</label>
+                                    <input type="text" name="schedule" class="form-control" placeholder="Schedule">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">Employment Date</label>
+                                    <input type="date" name="employment_date" class="form-control" placeholder="dd/mm/yyyy">
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label
+                                        ">Date of Birth</label>
+                                    <input type="date" name="date_of_birth" class="form-control" placeholder="dd/mm/yyyy">
+                                </div>
+                            </div>
                             <div style="text-align: center;">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
