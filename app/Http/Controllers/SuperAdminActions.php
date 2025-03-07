@@ -233,6 +233,19 @@ class SuperAdminActions extends Controller
             'signature' => $request->input('signature'),
         ]);
 
+        if ($request->input('default_role') === 'Admin') {
+            
+            $user->assignRole('Admin');
+        }
+        if ($request->input('default_role') === 'Staff') {
+           
+            $user->assignRole('Staff');
+        }
+        if ($request->input('default_role') === 'User') {
+           
+            $user->assignRole('User');
+        }
+
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
