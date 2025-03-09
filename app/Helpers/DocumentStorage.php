@@ -61,6 +61,10 @@ class DocumentStorage
     public static function storeDocument($data)
     {
         $authUser = Auth::user();
+        $tenantId = $authUser->userDetail->tenant_id;
+        $uploadedBy = $data['uploaded_by'];
+        $departmentId = $authUser->userDetail->department_id;
+        
         $data->validate([
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
@@ -72,7 +76,8 @@ class DocumentStorage
         if ($data->hasFile('file_path')) {
             $filePath = $data->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $filePath->move(public_path('documents/'), $filename); // Save the file to the documents directory
+            // $filePath->move(public_path('documents/'), $filename); 
+            $filePath->storeAs('documents'. '/'. $tenantId .'/'. $uploadedBy , $filename, 'public');
             $data->file_path = $filename; // Update the file path in the data
         }
 
@@ -80,7 +85,8 @@ class DocumentStorage
         Document::create([
             'title' => $data->title,
             'docuent_number' => $data->document_number,
-            'file_path' => $data->file_path,
+            // 'file_path' => $data->file_path,
+            'file_path' => 'documents'. '/'. $tenantId .'/'. $uploadedBy .'/'. $filename,
             'uploaded_by' => $authUser->id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,

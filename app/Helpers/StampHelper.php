@@ -17,9 +17,9 @@ class StampHelper
         }
 
         // Paths for the original PDF and the output
-        $originalPdfPath = storage_path('app/public/documents/' . $document->file_path);
-        $documentPath = public_path('documents/' .  $document->file_path);
-        $outputPdfPath = storage_path('app/public/documents/stamped_' . $document->file_path);
+        $originalPdfPath = storage_path('storage/public/' . $document->file_path);
+        $documentPath = storage_path( 'app/public/' . $document->file_path);
+        $outputPdfPath = storage_path( $document->file_path);
 
         // Generate QR Code
         // $qrCodePath = storage_path('app/public/qr_codes/document_' . $document->id . '.png');

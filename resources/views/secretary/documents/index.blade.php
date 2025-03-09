@@ -41,7 +41,7 @@
                         @forelse ($documents as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank" href="{{asset('documents'.'/'.$document->tenant_id.'/'.$document->department_id.'/'.$document->file_path)}}">{{$document->docuent_number}}</a></td>
+                                <td><a target="_blank" href="{{asset($document->file_path)}}">{{$document->docuent_number}}</a></td>
                                 <td>{{$document->title}}</td>
                                 {{-- <td></td> --}}
                                 <td>Processing</td>

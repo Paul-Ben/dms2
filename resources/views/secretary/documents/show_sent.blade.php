@@ -225,7 +225,7 @@
                     <div class="close-preview" onclick="closePreview()">✕</div>
                     <h2>Document Preview</h2>
                     <div style="padding: 20px;">
-                        This is a sample preview of the Q4 Financial Report document content...
+                        This is a preview of the document content...
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
                             <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"

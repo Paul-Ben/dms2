@@ -535,9 +535,11 @@ class SuperAdminActions extends Controller
             'metadata' => 'nullable|json',
         ]);
         if ($request->hasFile('file_path')) {
+            $uploadedBy = $request->input('uploaded_by');
             $filePath = $request->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $file_path = $filePath->move(public_path('documents/'), $filename);
+            // $file_path = $filePath->move(public_path('documents/'), $filename);
+            $file_path = $filePath->storeAs('documents/users/'. $uploadedBy, $filename, 'public');
             $file = $request->merge(['file_path' => $filename]);
         }
 
@@ -546,7 +548,8 @@ class SuperAdminActions extends Controller
         $documentHold = DocumentHold::create([
             'title' => $request->title,
             'docuent_number' => $request->document_number,
-            'file_path' => $filename,
+            // 'file_path' => $filename,
+            'file_path' => 'documents/users/' . $uploadedBy . '/' . $filename,
             'uploaded_by' => Auth::user()->id,
             'status' => $request->status ?? 'pending',
             'description' => $request->description,
