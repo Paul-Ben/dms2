@@ -37,7 +37,6 @@
                             </div>
 
                         </div>
-
                         <form method="POST" action="{{ route('memo.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
@@ -46,8 +45,41 @@
                                     <input type="text" name="title" class="form-control" required>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    {{-- <label for="exampleInputEmail1" class="form-label">Upload Document</label>
-                                    <input type="file" name="file_path" class="form-control"> --}}
+                                    <label for="exampleInputEmail1" class="form-label">Document Number</label>
+                                    <input type="text" name="document_number" class="form-control"
+                                        value="{{ 'BN/doc/' . rand(0, 9999) . date('YmdHis') }}"
+                                        placeholder="document number" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Sender</label>
+                                    <input type="text" name="sender" class="form-control" value="{{ Auth::user()->name }}" readonly>
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Recipient</label>
+                                    <input type="text" name="recipient" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-12 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Message/Body</label>
+                                    <textarea class="form-control" name="content" id="exampleInputEmail1" cols="30" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                            <input type="text" name="user_id" class="form-control"
+                                value="{{ Auth::user()->id }}" placeholder="document number" hidden>
+                        </form>
+                        {{-- <form method="POST" action="{{ route('memo.store') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Title/Subject</label>
+                                    <input type="text" name="title" class="form-control" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -71,7 +103,7 @@
                                 <button type="submit" class="btn btn-primary">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
-                        </form>
+                        </form> --}}
                     </div>
                 </div>
 

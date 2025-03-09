@@ -522,6 +522,7 @@ class SuperAdminActions extends Controller
         return view('errors.404', compact('authUser', 'userTenant'));
     }
 
+    /**Free filing for users */
     public function user_store_file_document(Request $request)
     {
         $request->validate([
@@ -538,142 +539,18 @@ class SuperAdminActions extends Controller
             $uploadedBy = $request->input('uploaded_by');
             $filePath = $request->file('file_path');
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            // $file_path = $filePath->move(public_path('documents/'), $filename);
             $file_path = $filePath->storeAs('documents/users/'. $uploadedBy, $filename, 'public');
             $file = $request->merge(['file_path' => $filename]);
         }
 
-        $reference = Str::random(12);
-        $amount = 3000;
-        $documentHold = DocumentHold::create([
+        $document = Document::create([
             'title' => $request->title,
             'docuent_number' => $request->document_number,
-            // 'file_path' => $filename,
             'file_path' => 'documents/users/' . $uploadedBy . '/' . $filename,
-            'uploaded_by' => Auth::user()->id,
-            'status' => $request->status ?? 'pending',
-            'description' => $request->description,
-            'reference' => $reference,
-            'amount' => $amount,
-            'recipient_id' => $request->recipient_id,
-            'metadata' => json_encode($request->metadata),
-        ]);
-
-
-        $authUser = Auth::user();
-
-        try {
-
-            $response = Http::accept('application/json')->withHeaders([
-                'authorization' => env('CREDO_PUBLIC_KEY'),
-                'content_type' => "Content-Type: application/json",
-            ])->post(env("CREDO_URL") . "/transaction/initialize", [
-                "email" => $authUser->email,
-                "amount" => ($amount * 100),
-                "reference" => $reference,
-                "callbackUrl" => route("etranzact.callBack"),
-                "bearer" => 0,
-            ]);
-
-            $responseData = $response->collect("data");
-
-            if (isset($responseData['authorizationUrl'])) {
-                return redirect($responseData['authorizationUrl']);
-            }
-
-            $notification = [
-                'message' => 'Credo E-Tranzact gateway service took too long to respond.',
-                'alert-type' => 'error',
-            ];
-
-            return redirect()->back()->with($notification);
-        } catch (\Exception $e) {
-            report($e);
-            Log::error('Error initializing payment gateway: ' . $e->getMessage());
-            $notification = [
-                'message' => 'Error initializing payment gateway. Please try again.',
-                'alert-type' => 'error',
-            ];
-            return redirect()->back()->with($notification);
-        }
-    }
-    public function handleETranzactCallback(Request $request)
-    {
-
-        // Verify the transaction with the payment gateway
-        $response = Http::accept('application/json')->withHeaders([
-            'authorization' => env('CREDO_SECRET_KEY'),
-            'content-type' => 'application/json',
-        ])->get(env('CREDO_URL') . "/transaction/{$request->reference}/verify");
-
-        // Check if the response is successful
-        if (!$response->successful()) {
-            return $this->handleFailedPayment('Payment verification failed. Please try again.');
-        }
-
-        $payment = $response->json('data');
-
-        // Extract payment status and message
-        $status = $payment['status'];
-        $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
-
-        // Handle successful payment
-        if ($message == 'Successful') {
-            $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
-            $document_no = DocumentHold::where('reference', $request->reference)->first()->docuent_number;
-            $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
-
-            // Create a new payment record
-            Payment::create([
-                'businessName' => $payment['businessName'],
-                'document_no' => $document_no,
-                'reference' => $payment['businessRef'],
-                'transAmount' => $payment['transAmount'],
-                'transFee' => $payment['transFeeAmount'],
-                'transTotal' => $payment['debitedAmount'],
-                'transDate' => $payment['transactionDate'],
-                'settlementAmount' => $payment['settlementAmount'],
-                'status' => $payment['status'],
-                'statusMessage' => $payment['statusMessage'],
-                'customerEmail' => $payment['customerId'],
-                'customerId' => Auth::id(),
-                'channelId' => $payment['channelId'],
-                'currencyCode' => $payment['currencyCode'],
-                'recipient_id' => $recipient_id,
-                'tenant_id' => $tenant_id,
-            ]);
-            return $this->handleSuccessfulPayment($request->reference);
-        }
-
-        // Handle failed payment
-        return $this->handleFailedPayment('Payment failed. Please try again.');
-    }
-
-    /**
-     * Handle a successful payment.
-     */
-    protected function handleSuccessfulPayment($reference)
-    {
-        // Find the document hold record
-        $document = DocumentHold::where('reference', $reference)->first();
-
-        if (!$document) {
-            return $this->handleFailedPayment('Document not found.');
-        }
-
-        // Update document hold status
-        $document->status = 'Successful';
-        $document->save();
-
-        // Create a new document
-        $newDocument = Document::create([
-            'title' => $document->title,
-            'docuent_number' => $document->docuent_number,
-            'file_path' => $document->file_path,
-            'uploaded_by' => $document->uploaded_by,
+            'uploaded_by' => $request->uploaded_by,
             'status' => 'pending',
-            'description' => $document->description,
-            'metadata' => json_encode($document->metadata),
+            'description' => $request->description,
+            'metadata' => json_encode($request->metadata),
         ]);
 
         // Log document upload activity
@@ -684,16 +561,16 @@ class SuperAdminActions extends Controller
 
         // Create file movement record
         $fileMovement = FileMovement::create([
-            'recipient_id' => $document->recipient_id,
+            'recipient_id' => $request->recipient_id,
             'sender_id' => Auth::id(),
-            'message' => $document->description,
-            'document_id' => $newDocument->id,
+            'message' => $request->description,
+            'document_id' => $document->id,
         ]);
 
         // Create document recipient record
         DocumentRecipient::create([
             'file_movement_id' => $fileMovement->id,
-            'recipient_id' => $document->recipient_id,
+            'recipient_id' => $request->recipient_id,
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
@@ -707,20 +584,20 @@ class SuperAdminActions extends Controller
             ],
             [
                 'action' => 'Document Received',
-                'user_id' => $document->recipient_id,
+                'user_id' => $request->recipient_id,
                 'created_at' => now(),
             ],
         ]);
 
         $senderName = Auth::user()->name;
-        $receiverName = User::find($document->recipient_id)->name;
-        $documentName = $document->title;
-        $documentId = $document->docuent_number;
+        $receiverName = User::find($request->recipient_id)->name;
+        $documentName = $request->title;
+        $documentId = $request->docuent_number;
         $appName = config('app.name');
 
         try {
             Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
-            Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+            Mail::to(User::find($request->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
         } catch (\Exception $e) {
             Log::error('Failed to send Document notification');
         }
@@ -729,13 +606,222 @@ class SuperAdminActions extends Controller
         return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
     }
 
+    /**Paid filing */
+
+    // public function user_store_file_document(Request $request)
+    // {
+    //     $request->validate([
+    //         'title' => 'required|string|max:255',
+    //         'document_number' => 'required|string|max:255',
+    //         'file_path' => 'required|mimes:pdf|max:2048', // PDF file, max 2MB
+    //         'uploaded_by' => 'required|exists:users,id',
+    //         'status' => 'nullable|in:pending,processing,approved,rejected,kiv,completed',
+    //         'description' => 'nullable|string',
+    //         'recipient_id' => 'required|exists:users,id',
+    //         'metadata' => 'nullable|json',
+    //     ]);
+    //     if ($request->hasFile('file_path')) {
+    //         $uploadedBy = $request->input('uploaded_by');
+    //         $filePath = $request->file('file_path');
+    //         $filename = time() . '_' . $filePath->getClientOriginalName();
+    //         // $file_path = $filePath->move(public_path('documents/'), $filename);
+    //         $file_path = $filePath->storeAs('documents/users/'. $uploadedBy, $filename, 'public');
+    //         $file = $request->merge(['file_path' => $filename]);
+    //     }
+
+    //     $reference = Str::random(12);
+    //     $amount = 3000;
+    //     $documentHold = DocumentHold::create([
+    //         'title' => $request->title,
+    //         'docuent_number' => $request->document_number,
+    //         // 'file_path' => $filename,
+    //         'file_path' => 'documents/users/' . $uploadedBy . '/' . $filename,
+    //         'uploaded_by' => Auth::user()->id,
+    //         'status' => $request->status ?? 'pending',
+    //         'description' => $request->description,
+    //         'reference' => $reference,
+    //         'amount' => $amount,
+    //         'recipient_id' => $request->recipient_id,
+    //         'metadata' => json_encode($request->metadata),
+    //     ]);
+
+
+    //     $authUser = Auth::user();
+
+    //     try {
+
+    //         $response = Http::accept('application/json')->withHeaders([
+    //             'authorization' => env('CREDO_PUBLIC_KEY'),
+    //             'content_type' => "Content-Type: application/json",
+    //         ])->post(env("CREDO_URL") . "/transaction/initialize", [
+    //             "email" => $authUser->email,
+    //             "amount" => ($amount * 100),
+    //             "reference" => $reference,
+    //             "callbackUrl" => route("etranzact.callBack"),
+    //             "bearer" => 0,
+    //         ]);
+
+    //         $responseData = $response->collect("data");
+
+    //         if (isset($responseData['authorizationUrl'])) {
+    //             return redirect($responseData['authorizationUrl']);
+    //         }
+
+    //         $notification = [
+    //             'message' => 'Credo E-Tranzact gateway service took too long to respond.',
+    //             'alert-type' => 'error',
+    //         ];
+
+    //         return redirect()->back()->with($notification);
+    //     } catch (\Exception $e) {
+    //         report($e);
+    //         Log::error('Error initializing payment gateway: ' . $e->getMessage());
+    //         $notification = [
+    //             'message' => 'Error initializing payment gateway. Please try again.',
+    //             'alert-type' => 'error',
+    //         ];
+    //         return redirect()->back()->with($notification);
+    //     }
+    // }
+    // public function handleETranzactCallback(Request $request)
+    // {
+
+    //     // Verify the transaction with the payment gateway
+    //     $response = Http::accept('application/json')->withHeaders([
+    //         'authorization' => env('CREDO_SECRET_KEY'),
+    //         'content-type' => 'application/json',
+    //     ])->get(env('CREDO_URL') . "/transaction/{$request->reference}/verify");
+
+    //     // Check if the response is successful
+    //     if (!$response->successful()) {
+    //         return $this->handleFailedPayment('Payment verification failed. Please try again.');
+    //     }
+
+    //     $payment = $response->json('data');
+
+    //     // Extract payment status and message
+    //     $status = $payment['status'];
+    //     $message = $payment['statusMessage'] == 'Successfully processed' ? 'Successful' : 'Failed';
+
+    //     // Handle successful payment
+    //     if ($message == 'Successful') {
+    //         $recipient_id = DocumentHold::where('reference', $request->reference)->first()->recipient_id;
+    //         $document_no = DocumentHold::where('reference', $request->reference)->first()->docuent_number;
+    //         $tenant_id = User::with('userDetail')->where('id', $recipient_id)->first()->userDetail->tenant_id;
+
+    //         // Create a new payment record
+    //         Payment::create([
+    //             'businessName' => $payment['businessName'],
+    //             'document_no' => $document_no,
+    //             'reference' => $payment['businessRef'],
+    //             'transAmount' => $payment['transAmount'],
+    //             'transFee' => $payment['transFeeAmount'],
+    //             'transTotal' => $payment['debitedAmount'],
+    //             'transDate' => $payment['transactionDate'],
+    //             'settlementAmount' => $payment['settlementAmount'],
+    //             'status' => $payment['status'],
+    //             'statusMessage' => $payment['statusMessage'],
+    //             'customerEmail' => $payment['customerId'],
+    //             'customerId' => Auth::id(),
+    //             'channelId' => $payment['channelId'],
+    //             'currencyCode' => $payment['currencyCode'],
+    //             'recipient_id' => $recipient_id,
+    //             'tenant_id' => $tenant_id,
+    //         ]);
+    //         return $this->handleSuccessfulPayment($request->reference);
+    //     }
+
+    //     // Handle failed payment
+    //     return $this->handleFailedPayment('Payment failed. Please try again.');
+    // }
+
     /**
-     * Handle a failed payment.
+     * Handle a successful payment.
      */
-    protected function handleFailedPayment($message)
-    {
-        return $this->redirectWithNotification($message, 'error');
-    }
+    // protected function handleSuccessfulPayment($reference)
+    // {
+    //     // Find the document hold record
+    //     $document = DocumentHold::where('reference', $reference)->first();
+
+    //     if (!$document) {
+    //         return $this->handleFailedPayment('Document not found.');
+    //     }
+
+    //     // Update document hold status
+    //     $document->status = 'Successful';
+    //     $document->save();
+
+    //     // Create a new document
+    //     $newDocument = Document::create([
+    //         'title' => $document->title,
+    //         'docuent_number' => $document->docuent_number,
+    //         'file_path' => $document->file_path,
+    //         'uploaded_by' => $document->uploaded_by,
+    //         'status' => 'pending',
+    //         'description' => $document->description,
+    //         'metadata' => json_encode($document->metadata),
+    //     ]);
+
+    //     // Log document upload activity
+    //     Activity::create([
+    //         'action' => 'You uploaded a document',
+    //         'user_id' => Auth::id(),
+    //     ]);
+
+    //     // Create file movement record
+    //     $fileMovement = FileMovement::create([
+    //         'recipient_id' => $document->recipient_id,
+    //         'sender_id' => Auth::id(),
+    //         'message' => $document->description,
+    //         'document_id' => $newDocument->id,
+    //     ]);
+
+    //     // Create document recipient record
+    //     DocumentRecipient::create([
+    //         'file_movement_id' => $fileMovement->id,
+    //         'recipient_id' => $document->recipient_id,
+    //         'user_id' => Auth::id(),
+    //         'created_at' => now(),
+    //     ]);
+
+    //     // Log additional activities
+    //     Activity::insert([
+    //         [
+    //             'action' => 'Sent Document',
+    //             'user_id' => Auth::id(),
+    //             'created_at' => now(),
+    //         ],
+    //         [
+    //             'action' => 'Document Received',
+    //             'user_id' => $document->recipient_id,
+    //             'created_at' => now(),
+    //         ],
+    //     ]);
+
+    //     $senderName = Auth::user()->name;
+    //     $receiverName = User::find($document->recipient_id)->name;
+    //     $documentName = $document->title;
+    //     $documentId = $document->docuent_number;
+    //     $appName = config('app.name');
+
+    //     try {
+    //         Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+    //         Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
+    //     } catch (\Exception $e) {
+    //         Log::error('Failed to send Document notification');
+    //     }
+
+    //     // Redirect with success notification
+    //     return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
+    // }
+
+    // /**
+    //  * Handle a failed payment.
+    //  */
+    // protected function handleFailedPayment($message)
+    // {
+    //     return $this->redirectWithNotification($message, 'error');
+    // }
 
     /**
      * Redirect with a notification.
@@ -1272,6 +1358,8 @@ class SuperAdminActions extends Controller
             'document_number' => 'required|string|max:255|unique:memos,docuent_number',
             'content' => 'required|string',
             'user_id' => 'required|exists:users,id',
+            'sender' => 'required|string',
+            'receiver' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -1284,6 +1372,8 @@ class SuperAdminActions extends Controller
         $memo->docuent_number = $request->input('document_number');
         $memo->content = $request->input('content');
         $memo->user_id = $request->input('user_id');
+        $memo->sender = $request->input('sender');
+        $memo->receiver = $request->input('receiver');
         $memo->save();
 
         $notification = array(
@@ -1307,6 +1397,8 @@ class SuperAdminActions extends Controller
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
             'content' => 'required|string',
+            'sender' => 'required|string',
+            'receiver' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -1317,6 +1409,8 @@ class SuperAdminActions extends Controller
         $memo->title = $request->input('title');
         $memo->docuent_number = $request->input('document_number');
         $memo->content = $request->input('content');
+        $memo->sender = $request->input('sender');
+        $memo->receiver = $request->input('receiver');
         // $memo->user_id = $request->input('user_id');
         $memo->save();
 
@@ -1358,12 +1452,22 @@ class SuperAdminActions extends Controller
         // Set font and add dynamic content
         $pdf->SetFont('Arial', '', 14);
 
+        //Add sender
+        $pdf->SetXY(35, 28);
+        $pdf->Write(0, $memo['sender']);
+
+        //Add recipient
+        $pdf->SetXY(125, 28);
+        $pdf->Write(0, $memo['receiver']);
+        
+        $pdf->SetXY(130, 42);
+        $pdf->Write(0, $memo['created_at']);
         // Add title/subject information
-        $pdf->SetXY(25, 100); // Adjust X and Y coordinates as needed
+        $pdf->SetXY(25, 60); // Adjust X and Y coordinates as needed
         $pdf->Write(0, "Subject: " . $memo['title']);
 
         // Add body/content
-        $pdf->SetXY(25, 120); // Adjust Y coordinate for body text
+        $pdf->SetXY(25, 70); // Adjust Y coordinate for body text
         $pdf->MultiCell(0, 10, $memo['content']);
 
         //Add Salutation

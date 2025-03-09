@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome To E-Filing System</title>
+    <title>Welcome To BENGEDMS</title>
 
     <style>
         body {
@@ -116,7 +116,7 @@
 
         <div class="footer">
             &copy; {{ date('Y') }} {{ $appName }}. All rights reserved.<br>
-            Powered by: BDIC <img src="{{ asset('backend/assets/images/bdic-logo.svg') }}" alt="BDIC Logo">
+            Powered by: BDIC <img src="{{ asset('BDIC Logo with name PNG.png') }}" alt="BDIC Logo">
         </div>
     </div>
 </body>

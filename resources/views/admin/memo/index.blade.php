@@ -43,7 +43,7 @@
                         @forelse ($memos as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a href="{{ route('memo.generate', $document) }}">{{ $document->docuent_number }}</a>
+                                <td><a href="{{ route('memo.generate', $document) }}" target="__blank">{{ $document->docuent_number }}</a>
                                 </td>
                                 <td><a href="{{ route('memo.generate', $document)}}" target="__blank">{{ $document->title }}</a></td>
                                 {{-- <td></td> --}}
