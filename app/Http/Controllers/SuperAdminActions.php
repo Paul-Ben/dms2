@@ -525,6 +525,7 @@ class SuperAdminActions extends Controller
     /**Free filing for users */
     public function user_store_file_document(Request $request)
     {
+        $authUser = Auth::user();
         $request->validate([
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
@@ -601,7 +602,7 @@ class SuperAdminActions extends Controller
         } catch (\Exception $e) {
             Log::error('Failed to send Document notification');
         }
-
+        Log::alert('Document uploaded and sent by'. $authUser->name);
         // Redirect with success notification
         return $this->redirectWithNotification('Document uploaded and sent successfully.', 'success');
     }
