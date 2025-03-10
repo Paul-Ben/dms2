@@ -335,7 +335,7 @@ class TenantSeeder extends Seeder
                 'email' => 'bdicinfo@bdic.ng',
                 'phone' => '08034522453',
                 'category' => 'Agency',
-                'code' => 'RB',
+                'code' => 'BDIC',
                 'address' => 'Responsible for State Digital Infrastructure.',
                 'status' => 'Active',
             ],
