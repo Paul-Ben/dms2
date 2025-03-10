@@ -339,6 +339,7 @@ class TenantSeeder extends Seeder
                 'address' => 'Responsible for State Digital Infrastructure.',
                 'status' => 'Active',
             ],
+            
         ]);
     }
 }
