@@ -111,13 +111,13 @@
                 <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
                     @if ($userTenant->logo != null)
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
-                            style="width: 80px; height: 80px;">
+                            style="width: 70px; height: 70px;">
                     @elseif ($userTenant->logo == null)
                         <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
-                            style="width: 80px; height: 80px;">
+                            style="width: 70px; height: 70px;">
                     @else
                         <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
-                            style="width: 80px; height: 80px;">
+                            style="width: 70px; height: 70px;">
                     @endif
 
                     <div class="ms-3">
