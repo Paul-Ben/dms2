@@ -28,7 +28,7 @@
                     <div class="p-3  ">
                         <!-- <img src="images/vector_shape1.svg"
                                     style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
-                        <img src="{{ asset('landing/images/benue_new_logo.png') }}" width="443" height="482"
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="443" height="482"
                             class="w-300">
                     </div>
                 </div>
