@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benue State Government Integrated Document Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('landing/css/style.css')}}">
-    <link rel="icon" href="{{asset('landing/images/logo.jpeg')}}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{('landing/images/logo.jpeg')}}" type="image/x-icon" />
+    <link rel="stylesheet" href="{{ asset('landing/css/style.css') }}">
+    <link rel="icon" href="{{ asset('landing/images/logo.jpeg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ 'landing/images/logo.jpeg' }}" type="image/x-icon" />
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
@@ -33,8 +33,8 @@
     <!-- Navigation Start -->
     <nav class="navbar navbar-expand-lg  lg bg-body-tertiary ">
         <div class="container ">
-            <a class="navbar-brand" href="#"><img src="{{asset('landing/images/benue_new_logo.svg')}}" style="border-radius: 1em"
-                    alt="e-filling-logo" height="50"></a>
+            <a class="navbar-brand" href="#"><img src="{{ asset('landing/images/benue_new_logo.svg') }}"
+                    style="border-radius: 1em" alt="e-filling-logo" height="50"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0  ">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url('/')}}">Home</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#abt">About</a>
@@ -57,8 +57,18 @@
                 <div class="ms-auto">
                     <ul class="navbar-nav ">
                         <div class="">
-                            <a href="{{ route('login') }}" class="btn btn-success">Login</a>
-                            {{-- <button type="button" class="btn btn-success ">Login</button> --}}
+                            @auth
+                                <div class="d-flex flex-wrap justify-content-center mb-2">
+                                    <a href="{{ route('dashboard') }}" class="btn btn-success me-2 mb-2">Dashboard</a>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger mb-2">Logout</button>
+                                    </form>
+                                </div>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-success">Login</a>
+                            @endauth
+
                         </div>
                         <!-- <li class="nav-item "> <a class="nav-link "  href="#">Login</a> </li> -->
                     </ul>
@@ -85,10 +95,11 @@
                         <p style="text-align: left;">Benue State Government
                             Integrated Document Management System</p>
                     </div> -->
-                    <div class="d-flex text-start" >
-                    <a href="#" class="text-light me-2"><img src="{{asset('landing/images/SEAL BENUE STATE GOV 1.svg')}}"></a> Benue
-                    State Government
-                    Integrated Document Management System
+                    <div class="d-flex text-start">
+                        <a href="#" class="text-light me-2"><img
+                                src="{{ asset('landing/images/SEAL BENUE STATE GOV 1.svg') }}"></a> Benue
+                        State Government
+                        Integrated Document Management System
                     </div>
                 </div>
 
@@ -98,10 +109,10 @@
 
 
                     <h5>Quick Links</h5>
-                    <a href="{{url('/')}}" class="text-light me-3">Home</a>
+                    <a href="{{ url('/') }}" class="text-light me-3">Home</a>
                     <a href="#abt" class="text-light me-3">About us</a>
                     <a href="#" class="text-light me-3">Contact us</a>
-                    <a href="{{route('login')}}" class="text-light">Login</a>
+                    <a href="{{ route('login') }}" class="text-light">Login</a>
 
                     <!-- <div class="row">
                         <div class="col-md-3">
@@ -136,10 +147,10 @@
                     </div> -->
 
                     <h5>Follow Us</h5>
-                    <a href="#" class="text-light me-3"><img src="{{asset('landing/images/1.svg')}}"></a>
-                    <a href="#" class="text-light me-3"><img src="{{asset('landing/images/2.svg')}}"></a>
-                    <a href="#" class="text-light me-3"><img src="{{asset('landing/images/3.svg')}}"></a>
-                    <a href="#" class="text-light"><img src="{{asset('landing/images/4.svg')}}"></a><br><br>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/1.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/2.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/3.svg') }}"></a>
+                    <a href="#" class="text-light"><img src="{{ asset('landing/images/4.svg') }}"></a><br><br>
                     <span class="body-text">
                         <a href="#" class="text-light me-3">Privacy Policy</a>
                         <a href="#" class="text-light me-3">Terms & Conditions</a>
@@ -159,7 +170,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="d-flex align-items-center text-center" style="margin-left:40%">
-                        <p style="padding-right: 5px;">Powered by BDIC</p><img src="{{asset('landing/images/BDIC logo 1 1.svg')}}">
+                        <p style="padding-right: 5px;">Powered by BDIC</p><img
+                            src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
 
                     </div>
                 </div>

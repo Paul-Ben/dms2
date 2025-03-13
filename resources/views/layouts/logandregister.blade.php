@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -250,6 +250,130 @@
                 });
         });
     </script>
+</body>
+
+</html> --}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benue State Government Integrated Document Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('landing/css/style.css') }}">
+    <link rel="icon" href="{{ asset('landing/images/logo.jpeg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('landing/images/logo.jpeg') }}" type="image/x-icon" />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon_io/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon_io/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('favicon_io/site.webmanifest') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Sora:wght@100..800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
+    <style>
+        .iti {
+            width: 100%;
+            /* Ensure it takes full width */
+            height: 100%;
+
+        }
+
+        .iti__flag-container {
+            margin-right: 10px;
+            /* Adjust spacing */
+        }
+
+        .iti__selected-flag {
+            padding: 0 20px;
+            /* Adjust padding */
+        }
+
+        .iti__arrow {
+            border-top-color: #000;
+            /* Match arrow color */
+        }
+
+        .iti__country-list {
+            border-radius: 4px;
+            /* Match border radius */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add shadow */
+        }
+    </style>
+
+    <!---- ReCaptcha ------>
+    {!! htmlScriptTagJsApi() !!}
+
+</head>
+
+<body>
+
+    <!-- Navigation Start -->
+    <nav class="navbar navbar-expand-lg  lg bg-body-tertiary ">
+        <div class="container ">
+            <a class="navbar-brand" href="#"><img src="{{ asset('landing/images/benue_new_logo.svg') }}"
+                    style="border-radius: 1em" alt="e-filling-logo" height="50"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0  ">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#abt">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+
+                <div class="ms-auto">
+                    <ul class="navbar-nav ">
+                        <div class="">
+                            @if (Route::is('login'))
+                                <a href="{{ route('register') }}">
+                                    <button type="button" class="btn btn-success ">Register</button>
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}">
+                                    <button type="button" class="btn btn-success ">Login</button>
+                                </a>
+                            @endif
+                        </div>
+                        <!-- <li class="nav-item "> <a class="nav-link "  href="#">Login</a> </li> -->
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Navigation End -->
+    @yield('content')
+    <br><br><br>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
