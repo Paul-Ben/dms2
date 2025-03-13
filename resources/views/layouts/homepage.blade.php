@@ -50,7 +50,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="{{route('contact')}}">Contact</a>
                     </li>
                 </ul>
 
@@ -111,7 +111,7 @@
                     <h5>Quick Links</h5>
                     <a href="{{ url('/') }}" class="text-light me-3">Home</a>
                     <a href="#abt" class="text-light me-3">About us</a>
-                    <a href="#" class="text-light me-3">Contact us</a>
+                    <a href="{{route('contact')}}" class="text-light me-3">Contact us</a>
                     <a href="{{ route('login') }}" class="text-light">Login</a>
 
                     <!-- <div class="row">

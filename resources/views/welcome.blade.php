@@ -345,12 +345,9 @@
 
                 </div>
                 <div class="d-flex text-center justify-content-center align-items-center">
-                    <a href="#"><button type="button" class="btn btn-success ml-auto "
+                    <a href="{{route('contact')}}"><button type="button" class="btn btn-success ml-auto "
                             style="width: 230px; height: 48px;">Contact</button></a>
                 </div>
-
-
-
             </div>
         </div>
     </div>

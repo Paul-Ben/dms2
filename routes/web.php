@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminActions;
 use App\Models\Tenant;
@@ -29,6 +30,8 @@ Route::get('/agencies', function () {
     $agencies =  Tenant::where('category', 'Agency')->paginate(10);
     return view('agencylisting', compact('agencies'));
 })->name('agency');
+
+Route::get('/contact', [PagesController::class, 'contactPage'])->name('contact');
 
 
 Route::get('/test-verify', function () { 
