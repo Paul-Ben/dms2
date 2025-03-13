@@ -370,7 +370,104 @@
 
     <!-- Navigation End -->
     @yield('content')
-    <br><br><br>
+     <!-- Footer start -->
+     <div class="row  text-white text-center">
+        <div class="footer-container">
+            <div class="row mt-4">
+                <!-- First row, three columns -->
+
+                <div class="col-md-4 p-5 text-center">
+
+                    <!-- <div class="d-flex align-items-center text-center" style="margin-left:40%">
+                        <img src="images/SEAL BENUE STATE GOV 1.svg" style="padding-right: 5px;">
+                        <p style="text-align: left;">Benue State Government
+                            Integrated Document Management System</p>
+                    </div> -->
+                    <div class="d-flex text-start">
+                        <a href="#" class="text-light me-2"><img
+                                src="{{ asset('landing/images/SEAL BENUE STATE GOV 1.svg') }}"></a> Benue
+                        State Government
+                        Integrated Document Management System
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-4 p-4">
+
+
+                    <h5>Quick Links</h5>
+                    <a href="{{ url('/') }}" class="text-light me-3">Home</a>
+                    <a href="#abt" class="text-light me-3">About us</a>
+                    <a href="{{route('contact')}}" class="text-light me-3">Contact us</a>
+                    <a href="{{ route('login') }}" class="text-light">Login</a>
+
+                    <!-- <div class="row">
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Home</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">About us</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Contact us</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="text-white">Login</a>
+                        </div>
+                    </div> -->
+
+                </div>
+                <div class="col-md-4 p-4">
+                    <!-- <div class="row text-center" style="text-align: center; padding: 2%;">
+                        <div class="col-md-3">
+                            <img src="images/1.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/2.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/3.svg" >
+                        </div>
+                        <div class="col-md-3">
+                            <img src="images/4.svg" >
+                        </div>
+                    </div> -->
+
+                    <h5>Follow Us</h5>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/1.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/2.svg') }}"></a>
+                    <a href="#" class="text-light me-3"><img src="{{ asset('landing/images/3.svg') }}"></a>
+                    <a href="#" class="text-light"><img src="{{ asset('landing/images/4.svg') }}"></a><br><br>
+                    <span class="body-text">
+                        <a href="#" class="text-light me-3">Privacy Policy</a>
+                        <a href="#" class="text-light me-3">Terms & Conditions</a>
+                    </span>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row mt-4 p-4">
+
+                <div class="col-md-4">
+                    &nbsp;
+                </div>
+                <div class="col-md-4">
+                    <p>© Copyright 2025, All Rights Reserved</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center text-center" style="margin-left:40%">
+                        <p style="padding-right: 5px;">Powered by BDIC</p><img
+                            src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Footer end -->
     <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
