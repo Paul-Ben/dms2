@@ -59,7 +59,11 @@
                     <p class="account-text py-3">Don't have an account? <span class="account-text-login"
                             style="color: #0C4F24 !important;"><a
                                 href="{{ route('register') }}">Register</a></span></p>
-                    <p class="text-center sub-title">BENGEDMS, Powered by BDIC</p>
+                    {{-- <p class="text-center sub-title">BENGEDMS, Powered by BDIC</p> --}}
+                    <div class="d-flex justify-content-center mt-2">
+                        <p class="text-center sub-title">BENGEDMS, Powered by </p><img
+                   src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
+                   </div>
                 </form>
             </div>
         </div>

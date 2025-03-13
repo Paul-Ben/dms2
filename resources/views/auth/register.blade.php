@@ -506,9 +506,13 @@
 
                         <p class="text-center mb-0">Already have an Account? <a href="{{ route('login') }}">Sign In</a>
                         </p>
-                        <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by BDIC</small></p>
+                        {{-- <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by BDIC</small></p> --}}
                     </form>
-                    <p class="text-center sub-title">BENGEDMS, Powered by BDIC</p>
+                    <div class="d-flex justify-content-center mt-2">
+                         <p class="text-center sub-title">BENGEDMS, Powered by </p><img
+                    src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
+                    </div>
+                   
                 </div>
             </div>
         </div>

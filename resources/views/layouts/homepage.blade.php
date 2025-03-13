@@ -41,16 +41,20 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0  ">
-                    <li class="nav-item">
+                <ul class="navbar-nav mb-2 mb-lg-0  " >
+                    {{-- <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Home</a>
+                    </li> --}}
+                    <li class="nav-item @if(request()->is('/')) active @endif">
+                        <a class="nav-link @if(request()->is('/')) active @endif" aria-current="page" href="{{ url('/') }}">Home</a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link" href="#abt">About</a>
+                        <a class="nav-link" aria-current="page" href="/#abt">About</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('contact')}}">Contact</a>
+                        <a class="nav-link @if(request()->is('/contact')) active @endif" aria-current="page" href="{{route('contact')}}">Contact</a>
                     </li>
                 </ul>
 
