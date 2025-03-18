@@ -67,7 +67,7 @@
                                     <label for="exampleInputEmail1" class="form-label">Document Number</label>
                                     <input type="text" name="document_number" class="form-control"
                                         value="{{ 'BN/doc/' . rand(0, 9999) . date('YmdHis') }}"
-                                        placeholder="document number">
+                                        placeholder="document number" readonly>
                                     <input type="text" name="uploaded_by" class="form-control"
                                         value="{{ Auth::user()->id }}" placeholder="document number" hidden>
                                     <input type="text" name="department_id" class="form-control"
