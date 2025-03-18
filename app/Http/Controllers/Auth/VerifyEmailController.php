@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMailNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class VerifyEmailController extends Controller
 {
@@ -32,7 +33,12 @@ class VerifyEmailController extends Controller
             $recipientName = $user->name;
             $appName = config('app.name');
             $contactMail = 'efiling@bdic.ng';
-            Mail::to($recipientMail)->send(new WelcomeMailNotification($recipientName, $appName,  $contactMail));
+            try{
+                 Mail::to($recipientMail)->send(new WelcomeMailNotification($recipientName, $appName,  $contactMail));
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+            }
+           
         }
         $notification = [
             'message' => 'Email Verification Successful.',
