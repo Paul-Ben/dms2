@@ -183,9 +183,8 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
-                                    hesitant to try the e-filing system, but I'm so glad I did! This system is a
-                                    game-changer for businesses like mine.”</p>
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“The automation and collaboration features of BENGEDMS have helped our company stay organized and productive. 
+                                    Our team can now access and share documents securely from anywhere.”</p>
                             </div>
                             <div class="row">
                                 <div class="col" style="text-align: right;">
@@ -194,9 +193,9 @@
                                 </div>
                                 <div class="col">
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-weight: bold;">Ternenge Yina</span><br>
+                                        style="text-align: justify; font-weight: bold;">David Ochanya</span><br>
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-style: italic;">Business Owner</span>
+                                        style="text-align: justify; font-style: italic;">CEO of Tonjons Ventures</span>
                                 </div>
                             </div>
 
@@ -210,9 +209,9 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
-                                    hesitant to try the e-filing system, but I'm so glad I did! This system is a
-                                    game-changer for businesses like mine.”</p>
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“As a government agency, handling massive paperwork was a challenge. With BENGEDMS, 
+                                    we’ve digitized our records, making retrieval and approvals seamless. 
+                                    It’s truly a game-changer!.”</p>
                             </div>
                             <div class="row">
                                 <div class="col" style="text-align: right;">
@@ -221,9 +220,10 @@
                                 </div>
                                 <div class="col">
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-weight: bold;">Paulinne Ogah</span><br>
+                                        style="text-align: justify; font-weight: bold;">Grace Nguveren</span><br>
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-style: italic;">Student</span>
+                                        style="text-align: justify; font-style: italic;">
+                                        Government Administrator</span>
                                 </div>
                             </div>
 
@@ -238,9 +238,9 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“I was initially
-                                    hesitant to try the e-filing system, but I'm so glad I did! This system is a
-                                    game-changer for businesses like mine.”</p>
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“BENGEDMS has completely transformed the way we manage documents.
+                                     The ease of access, security, and efficiency have significantly improved our workflow. 
+                                    No more lost files or delays!.”</p>
                             </div>
                             <div class="row">
                                 <div class="col" style="text-align: right;">
@@ -249,9 +249,10 @@
                                 </div>
                                 <div class="col">
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-weight: bold;">Ms. Linda E.</span><br>
+                                        style="text-align: justify; font-weight: bold;">John Adekunle</span><br>
                                     <span class="testimonial-text text-justify"
-                                        style="text-align: justify; font-style: italic;">Practice Manager</span>
+                                        style="text-align: justify; font-style: italic;">
+                                        IT Manager Simplex Co.</span>
                                 </div>
                             </div>
 
