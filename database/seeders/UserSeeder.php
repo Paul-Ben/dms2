@@ -42,17 +42,19 @@ class UserSeeder extends Seeder
             'name' => 'Godfrey Ejeh',
             'email' => 'testuser2@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Staff',
+            'default_role' => 'Admin',
+            'status' => 'active',
             'email_verified_at' => Carbon::now()
         ]);
-        $admin->assignRole('Staff');
+        $admin->assignRole('Admin');
 
         // Create a Regular User
         $user = User::create([
-            'name' => 'Shima Adi',
+            'name' => 'Zita Ajine',
             'email' => 'testuser3@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'User',
+            'status' => 'active',
             'email_verified_at' => Carbon::now()
         ]);
         $user->assignRole('User');
@@ -70,8 +72,8 @@ class UserSeeder extends Seeder
 
          // Create an Admin User
          $admin = User::create([
-            'name' => 'Ephraim Tar',
-            'email' => 'admin3@bdic.com',
+            'name' => 'John Tar',
+            'email' => 'testuser5@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -81,8 +83,8 @@ class UserSeeder extends Seeder
 
         // Create an Admin User
         $admin = User::create([
-            'name' => 'Ephraim Tange',
-            'email' => 'admin4@bdic.com',
+            'name' => 'Terwase Gbande',
+            'email' => 'testuser6@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -93,7 +95,7 @@ class UserSeeder extends Seeder
          // Create an Admin User
          $admin = User::create([
             'name' => 'Solomon Tange',
-            'email' => 'admin5@bdic.com',
+            'email' => 'testuser7@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -104,7 +106,7 @@ class UserSeeder extends Seeder
          // Create an Admin User
          $admin = User::create([
             'name' => 'Shishi Tange',
-            'email' => 'admin6@bdic.com',
+            'email' => 'testuser8@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -115,7 +117,7 @@ class UserSeeder extends Seeder
            // Create an Admin User
            $admin = User::create([
             'name' => 'Shishi Tarnge',
-            'email' => 'admin7@bdic.com',
+            'email' => 'testuser9@bdic.ng',
             'password' => bcrypt('BdicDev2025'),
             'default_role' => 'Admin',
             'status' => 'active',
@@ -124,113 +126,113 @@ class UserSeeder extends Seeder
         $admin->assignRole('Admin');
 
         // Create an Admin User
-        $admin = User::create([
-            'name' => 'Shishi Shima',
-            'email' => 'admin8@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        // $admin = User::create([
+        //     'name' => 'Shishi Shima',
+        //     'email' => 'admin8@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-        // Create an Admin User
-        $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin9@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        // // Create an Admin User
+        // $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin9@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Admin User
-         $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin10@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        //  // Create an Admin User
+        //  $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin10@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Admin User
-         $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin11@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        //  // Create an Admin User
+        //  $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin11@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Admin User
-         $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin12@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        //  // Create an Admin User
+        //  $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin12@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Admin User
-         $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin13@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        //  // Create an Admin User
+        //  $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin13@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Admin User
-         $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin14@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        //  // Create an Admin User
+        //  $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin14@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-        // Create an Admin User
-        $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin15@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        // // Create an Admin User
+        // $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin15@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-        // Create an Admin User
-        $admin = User::create([
-            'name' => 'Sunday Shima',
-            'email' => 'admin16@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Admin',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Admin');
+        // // Create an Admin User
+        // $admin = User::create([
+        //     'name' => 'Sunday Shima',
+        //     'email' => 'admin16@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Admin',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Admin');
 
-         // Create an Secretary User
-         $admin = User::create([
-            'name' => 'Grace Shima',
-            'email' => 'sec@bdic.com',
-            'password' => bcrypt('BdicDev2025'),
-            'default_role' => 'Secretary',
-            'status' => 'active',
-            'email_verified_at' => Carbon::now()
-        ]);
-        $admin->assignRole('Secretary');
+        //  // Create an Secretary User
+        //  $admin = User::create([
+        //     'name' => 'Grace Shima',
+        //     'email' => 'sec@bdic.com',
+        //     'password' => bcrypt('BdicDev2025'),
+        //     'default_role' => 'Secretary',
+        //     'status' => 'active',
+        //     'email_verified_at' => Carbon::now()
+        // ]);
+        // $admin->assignRole('Secretary');
     }
 }

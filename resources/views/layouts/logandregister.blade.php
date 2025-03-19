@@ -342,8 +342,8 @@
                         <a class="nav-link" href="/#abt">About</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('contact')}}">Contact</a>
+                    <li class="nav-item @if(request()->is('/contact')) active @endif">
+                        <a class="nav-link @if(Route::is('contact')) active @endif" aria-current="page" href="{{route('contact')}}">Contact</a>
                     </li>
                 </ul>
 

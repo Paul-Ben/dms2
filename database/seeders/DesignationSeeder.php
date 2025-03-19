@@ -59,6 +59,9 @@ class DesignationSeeder extends Seeder
             [
                 'name' => 'Clerical Officer',
             ],
+            [
+                'name' => 'Statistician General',
+            ],
             
         ]);
         // $designations = [

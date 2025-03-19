@@ -49,6 +49,69 @@ class TenantDepartmentSeeder extends Seeder
             'tenant_id' => 3
 
         ]);
-        
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Head of Service',
+            'email' => 'bmdt@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 3
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the MD Benue Hospitals Management Board',
+            'email' => 'hmb@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 31
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the MD Benue Primary Healthcare Board',
+            'email' => 'hmb@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 34
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Commissioner MOE',
+            'email' => 'hmb@bnsg.com',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 14
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the MD BDIC',
+            'email' => 'md@bdic.ng',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 36
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Statistician General',
+            'email' => 'sg@bdic.ng',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 33
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the MD BEQA',
+            'email' => 'beqa@bdic.ng',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 37
+
+        ]);
+        $tenant = TenantDepartment::create([
+            'name' => 'Office of the Commissioner MWHUD',
+            'email' => 'mwhud@bdic.ng',
+            'phone' => '09087767543',
+            'status' => 'active',
+            'tenant_id' => 9
+
+        ]);
     }
 }

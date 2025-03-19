@@ -137,7 +137,7 @@ class TenantSeeder extends Seeder
                 'email' => 'me2@bnsg.com',
                 'phone' => '08034522453',
                 'category' => 'Ministry',
-                'code' => 'MEKM',
+                'code' => 'MOEKM',
                 'address' => 'Responsible for Education and Knowledge Management.',
                 'status' => 'Active',
             ],
@@ -339,7 +339,15 @@ class TenantSeeder extends Seeder
                 'address' => 'Responsible for State Digital Infrastructure.',
                 'status' => 'Active',
             ],
-            
+            [
+                'name' => 'Benue Bureau for Education Quality Assurance.',
+                'email' => 'beqa@bdic.ng',
+                'phone' => '08034522453',
+                'category' => 'Agency',
+                'code' => 'BEQA',
+                'address' => 'Responsible for State Education Quality Assurance.',
+                'status' => 'Active',
+            ],
         ]);
     }
 }
