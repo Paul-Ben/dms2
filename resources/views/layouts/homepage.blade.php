@@ -174,8 +174,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="d-flex align-items-center text-center" style="margin-left:40%">
-                        <p style="padding-right: 5px;">Powered by BDIC</p><img
-                            src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
+                        <p style="padding-right: 5px;">Powered by BDIC</p><a href="https://bdic.ng/" target="__blank"><img
+                            src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
 
                     </div>
                 </div>

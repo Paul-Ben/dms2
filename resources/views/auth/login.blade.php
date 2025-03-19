@@ -61,8 +61,8 @@
                                 href="{{ route('register') }}">Register</a></span></p>
                     {{-- <p class="text-center sub-title">BENGEDMS, Powered by BDIC</p> --}}
                     <div class="d-flex justify-content-center mt-2">
-                        <p class="text-center sub-title">BENGEDMS, Powered by </p><img
-                   src="{{ asset('landing/images/BDIC logo 1 1.svg') }}">
+                        <p class="text-center sub-title">BENGEDMS, Powered by </p><a href="https://bdic.ng/" target="__blank"><img
+                   src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                    </div>
                 </form>
             </div>
