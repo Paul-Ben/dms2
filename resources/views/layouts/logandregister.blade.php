@@ -385,7 +385,7 @@
                     </div> -->
                     <div class="d-flex text-start">
                         <a href="#" class="text-light me-2"><img
-                                src="{{ asset('landing/images/SEAL BENUE STATE GOV 1.svg') }}"></a> Benue
+                                src="{{ asset('landing/images/benue_new_logo.svg') }}" width="65"></a> Benue
                         State Government
                         Integrated Document Management System
                     </div>
