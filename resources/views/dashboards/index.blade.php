@@ -113,10 +113,10 @@
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @elseif ($userTenant->logo == null)
-                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @else
-                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @endif
 
@@ -242,10 +242,10 @@
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
                             style="width: 80px; height: 80px;">
                     @elseif ($userTenant->logo == null)
-                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 80px; height: 80px;">
                     @else
-                        <img src="{{ asset('assets/demo-data/Logo1.png') }}" alt="logo"
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 80px; height: 80px;">
                     @endif
                     <div class="ms-3">
