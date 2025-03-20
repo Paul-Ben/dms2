@@ -256,13 +256,13 @@
     <div class="container text-center d-none d-sm-block">
         <div class="row no-wrap">
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/doc_mgt4.jpg') }}" alt=""></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/hero_image1.png')}}" alt="" style="border-radius: 1em;" width="220"></div>
             </div>
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/doc_mgt1.jpg') }}" alt=""></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/landing_image_2.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
             </div>
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/doc_mgt5.jpg') }}" alt=""></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/landing_image1.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
             </div>
         </div>
     </div>
@@ -361,9 +361,9 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingNIN"
-                                        placeholder="34556566778" name="nin_number" value="{{ old('nin_number') }}"
+                                    placeholder="Type your 11-digit NIN" name="nin_number" value="{{ old('nin_number') }}"
                                         required pattern="[0-9]{11}" maxlength="11">
-                                    <label for="floatingNIN">NIN Number</label>
+                                    <label for="floatingNIN">NIN: Type your 11-digit NIN</label>
                                 </div>
                             </div>
                         </div>

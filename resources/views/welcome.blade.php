@@ -7,10 +7,10 @@
         <section>
             <div class="row">
                 <!-- First column, takes up 12 columns on extra small screens, 6 on medium and above -->
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-8">
                     <div class="">
                         <p class="subtitle ">Benue State Government</p>
-                        <p class="title font-400">Integrated Document Management System</p>
+                        <p class="title font-400">Electronic Document Management System</p>
                         <p class="slogan">Efficient Document Management System, tailored for modern workflows</p>
                         <div class="d-flex mtop-4">
                             <a href="{{ route('register') }}">
@@ -24,11 +24,11 @@
                     </div>
                 </div>
                 <!-- Second column, takes up 12 columns on extra small screens, 6 on medium and above -->
-                <div class="col-12 col-md-6 text-center">
+                <div class="col-12 col-md-4 text-center">
                     <div class="p-3  ">
                         <!-- <img src="images/vector_shape1.svg"
-                                    style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
-                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="443" height="482"
+                                                style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
+                        <img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="343" height="382"
                             class="w-300">
                     </div>
                 </div>
@@ -52,16 +52,17 @@
                 <div class="col-12 col-md-6">
                     <div class="p-3 ">
                         <p class="title">About us</p>
-                        <p class="body-text" style="">It gives me great pleasure to announce the
-                            launch of our new e-filing
-                            application, a revolutionary platform designed to make your interactions with the Benue
-                            State government more efficient and accessible.
+                        <p class="body-text" style="">The Benue State Electronic Document Management System (BENGEDMS)
+                            is a cutting-edge digital platform designed to revolutionize document processing, storage, and
+                            retrieval across government ministries, departments, and agencies (MDAs) in Benue State. Our
+                            system enhances efficiency, transparency, and security in government operations by transitioning
+                            from manual documentation to a fully automated, paperless system.
                         </p>
 
                         <p class="body-text  text-left mtop-4" style="">
-                            For too long, filing documents with ministries, departments, and agencies has been a
+                            {{-- For too long, filing documents with ministries, departments, and agencies has been a
                             cumbersome and time-consuming process. This new application streamlines the process,
-                            allowing you to submit your documents online, 24/7, from the comfort of your home or office.
+                            allowing you to submit your documents online, 24/7, from the comfort of your home or office. --}}
                         </p>
                     </div>
                 </div>
@@ -183,7 +184,9 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“The automation and collaboration features of BENGEDMS have helped our company stay organized and productive. 
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“The automation and
+                                    collaboration features of BENGEDMS have helped our company stay organized and
+                                    productive.
                                     Our team can now access and share documents securely from anywhere.”</p>
                             </div>
                             <div class="row">
@@ -209,8 +212,9 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“As a government agency, handling massive paperwork was a challenge. With BENGEDMS, 
-                                    we’ve digitized our records, making retrieval and approvals seamless. 
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“As a government
+                                    agency, handling massive paperwork was a challenge. With BENGEDMS,
+                                    we’ve digitized our records, making retrieval and approvals seamless.
                                     It’s truly a game-changer!.”</p>
                             </div>
                             <div class="row">
@@ -238,8 +242,9 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“BENGEDMS has completely transformed the way we manage documents.
-                                     The ease of access, security, and efficiency have significantly improved our workflow. 
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“BENGEDMS has
+                                    completely transformed the way we manage documents.
+                                    The ease of access, security, and efficiency have significantly improved our workflow.
                                     No more lost files or delays!.”</p>
                             </div>
                             <div class="row">
@@ -278,7 +283,7 @@
             <div class="col-md-8">
                 <div class="faqs-head-div">
                     <h2 class="mb-4 text-center faqs-title">FAQs</h2>
-                    <p class="text-center">Get your concerns address in this Frequently Asked Questions section</p>
+                    {{-- <p class="text-center">Get your concerns address in this Frequently Asked Questions section</p> --}}
                 </div>
                 <div class="accordion" id="faqAccordion">
                     <div class="accordion-item">
@@ -290,7 +295,7 @@
                         </h2>
                         <div id="faq1" class="accordion-collapse collapse " data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Yes, it will, and on time - at the click of the button.
+                                <p>Yes, it will, and on time - at the click of the button.</p>
                             </div>
                         </div>
                     </div>
@@ -316,9 +321,9 @@
                         </h2>
                         <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                We treat your personal details only for the purpose of ensuring that your document reach
-                                the desired destination (read our privacy policy below). Moreover, our system is secured
-                                with technologies like SSL to keep your transactions safe.
+                                BENGEDMS uses advanced encryption, role-based access controls, and secure cloud storage to
+                                ensure the confidentiality and integrity of government documents. Only authorized personnel
+                                can access restricted files, and audit trails are maintained for tracking document changes.
                             </div>
                         </div>
                     </div>
@@ -331,8 +336,12 @@
                         </h2>
                         <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                No, just a token for maintaining this service/processing fee, as may be seen at the point of
-                                payment.
+                                <p>
+                                    The use of BENGEDMS for government agencies and departments may be free or
+                                subscription-based, depending on the level of access required. Individuals or external
+                                organizations seeking access to certain services may need to pay a fee as stipulated by the
+                                Benue State Government.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -346,7 +355,7 @@
 
                 </div>
                 <div class="d-flex text-center justify-content-center align-items-center">
-                    <a href="{{route('contact')}}"><button type="button" class="btn btn-success ml-auto "
+                    <a href="{{ route('contact') }}"><button type="button" class="btn btn-success ml-auto "
                             style="width: 230px; height: 48px;">Contact</button></a>
                 </div>
             </div>

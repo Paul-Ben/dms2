@@ -633,7 +633,7 @@ class SuperAdminActions extends Controller
         }
 
         $reference = Str::random(12);
-        $filingCharge = 1000;
+        $filingCharge = 100;
         $charge = $pageCount * $filingCharge;
         $amount = $charge;
         $documentHold = DocumentHold::create([
