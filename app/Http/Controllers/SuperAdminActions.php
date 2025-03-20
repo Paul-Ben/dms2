@@ -61,13 +61,7 @@ class SuperAdminActions extends Controller
 
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
-            // $users = UserDetails::with('user')->where('tenant_id', $id)->get();
-            $users = UserDetails::with('user')
-                ->where('tenant_id', $id)
-                ->whereHas('user', function ($query) {
-                    $query->where('role', '!=', 'super admin');
-                })
-                ->get();
+            $users = UserDetails::with('user')->where('tenant_id', $id)->get();
 
             return view('admin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
