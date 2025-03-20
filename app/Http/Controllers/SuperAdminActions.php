@@ -61,7 +61,13 @@ class SuperAdminActions extends Controller
 
         if (Auth::user()->default_role === 'Admin') {
             $id = Auth::user()->userDetail->tenant_id;
-            $users = UserDetails::with('user')->where('tenant_id', $id)->get();
+            // $users = UserDetails::with('user')->where('tenant_id', $id)->get();
+            $users = UserDetails::with('user')
+                ->where('tenant_id', $id)
+                ->whereHas('user', function ($query) {
+                    $query->where('role', '!=', 'super admin');
+                })
+                ->get();
 
             return view('admin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
@@ -174,7 +180,6 @@ class SuperAdminActions extends Controller
             return view('admin.usermanager.show', compact('user', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
-        
     }
 
     public function user_edit(User $user)
@@ -621,14 +626,14 @@ class SuperAdminActions extends Controller
             'recipient_id' => 'required|exists:users,id',
             'metadata' => 'nullable|json',
         ]);
-        
+
         if ($request->hasFile('file_path')) {
             $uploadedBy = $request->input('uploaded_by');
             $filePath = $request->file('file_path');
             $pdf = new Fpdi();
             $pageCount = $pdf->setSourceFile($filePath->getPathname());
             $filename = time() . '_' . $filePath->getClientOriginalName();
-            $file_path = $filePath->storeAs('documents/users/'. $uploadedBy, $filename, 'public');
+            $file_path = $filePath->storeAs('documents/users/' . $uploadedBy, $filename, 'public');
             $file = $request->merge(['file_path' => $filename]);
         }
 
@@ -1463,7 +1468,7 @@ class SuperAdminActions extends Controller
         //Add recipient
         $pdf->SetXY(125, 28);
         $pdf->Write(0, $memo['receiver']);
-        
+
         $pdf->SetXY(130, 42);
         $pdf->Write(0, $memo['created_at']);
         // Add title/subject information
