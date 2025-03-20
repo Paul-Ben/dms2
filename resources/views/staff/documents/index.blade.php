@@ -50,7 +50,7 @@
                                 <td>Processing</td>
                                 <td>
                                     <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">...</a>
+                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Action</a>
                                         <div class="dropdown-menu">
                                             {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
                                             <a href="" onclick="showSendOptions(event)"

@@ -51,7 +51,9 @@
 
                 <div class="col-12 col-md-6">
                     <div class="p-3 ">
-                        <p class="title">About us</p>
+                        <div class="">
+                            <p class="title" style="display: inline;">About </p><span style="display: inline; font-size:45px; font-weight:500">BENGEDMS</span>
+                        </div>
                         <p class="body-text" style="">The Benue State Electronic Document Management System (BENGEDMS)
                             is a cutting-edge digital platform designed to revolutionize document processing, storage, and
                             retrieval across government ministries, departments, and agencies (MDAs) in Benue State. Our

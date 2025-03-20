@@ -32,7 +32,7 @@ class VerifyEmailController extends Controller
             $recipientMail = $user->email;
             $recipientName = $user->name;
             $appName = config('app.name');
-            $contactMail = 'efiling@bdic.ng';
+            $contactMail = 'info@edms.benuestate.gov.ng';
             try{
                  Mail::to($recipientMail)->send(new WelcomeMailNotification($recipientName, $appName,  $contactMail));
             }catch(\Exception $e){

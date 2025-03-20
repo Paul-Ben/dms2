@@ -38,7 +38,7 @@ class WelcomeMailNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome To E-Filing System',
+            subject: 'Welcome To Benue State Electronic Document Management System',
         );
     }
 

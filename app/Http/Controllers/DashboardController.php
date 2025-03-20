@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $role = $authUser->default_role;
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
-        
+
 
         $views = [
             'superadmin' => 'superadmin.index',
@@ -40,9 +40,11 @@ class DashboardController extends Controller
 
 
         list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count, $totalAmount) = DocumentStorage::documentCount();
+        // $activities = Activity::where('user_id', $authUser->id)->latest()->take(20);
         $activities = Activity::with('user')
             ->where('user_id', $authUser->id)
             ->orderBy('id', 'desc')
+            ->limit(20) // Retrieve only the last 20 records
             ->paginate(10);
 
         return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'userTenant', 'totalAmount',  'authUser'));

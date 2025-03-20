@@ -103,7 +103,7 @@
                         <a href="#" class="text-light me-2"><img
                                 src="{{ asset('landing/images/benue_new_logo.svg') }}" width="65"></a> Benue
                         State Government
-                        Integrated Document Management System
+                        Electronic Document Management System
                     </div>
                 </div>
 

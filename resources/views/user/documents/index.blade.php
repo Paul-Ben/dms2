@@ -53,7 +53,7 @@
                                 <td>Processing</td>
                                 <td>
                                     <div class="nav-item">
-                                        <a target="_blank" href="{{asset('documents'.'/'.$document->file_path)}}" class="nav-link">View</a>
+                                        <a target="_blank" href="{{asset($document->file_path)}}" class="nav-link">View</a>
                         
                                     </div>
                                 </td>

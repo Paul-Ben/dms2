@@ -43,7 +43,12 @@
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6>
+                                @if (date('d') >= 28 && date('d') <= 31)
+                                    <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6>
+                                @else
+                                    <h6 class="mb-0">NGN 0.00</h6>
+                                @endif
+                                {{-- <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6> --}}
                             </div>
                         </div>
                     </a>
