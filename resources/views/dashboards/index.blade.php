@@ -148,6 +148,9 @@
                     <div class="ms-3">
                         <h6 class="mb-0">{{ $authUser->name }}</h6>
                         <span>{{ $authUser->userDetail->designation }}</span>
+                        @role('Admin')
+                        <span class="badge bg-primary ms-2">Admin</span>
+                        @endrole
                     </div>
                 </div>
                 <div class="navbar-nav w-100">

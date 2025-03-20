@@ -1,6 +1,6 @@
 @extends('layouts.homepage')
 @section('content')
-    <h2 class=" " style="text-align: center; margin-top: 100px;">Benue State Government Integrated Document
+    <h2 class=" " style="text-align: center; margin-top: 100px;">Benue State Government Electronic Document
         Management System</h2>
 
     <div class="container mt-5 ">
