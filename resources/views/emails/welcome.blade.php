@@ -71,7 +71,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('BDIC Logo with name PNG.png')}}" alt="Logo">
+            <img src="https://edms.benuestate.gov.ng/landing/images/benue_new_logo.svg" style="border-radius: 1em" height="50" alt="Logo">
         </div>
         <div class="content">
             <p>Dear {{ $recipientName }},</p>
@@ -97,7 +97,7 @@
         </div>
         <div class="footer">
             &copy; {{ date('Y') }} {{ $appName }}. All rights reserved.<br>
-            Powered by: BDIC <img src="{{ asset('BDIC Logo with name PNG.png') }}" alt="BDIC Logo">
+            Powered by: BDIC <img src="https://edms.benuestate.gov.ng/landing/images/BDIC%20logo%201%201.svg" alt="BDIC Logo">
         </div>
     </div>
 </body>
