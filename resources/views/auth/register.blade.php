@@ -327,6 +327,11 @@
                                 <div class="form-floating mb-4">
                                     <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
                                         required name="password">
+                                        {{-- <span class="input-group-text" id="togglePassword1"
+                                            style="cursor: pointer;">
+                                            <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                                           
+                                        </span> --}}
                                     <label for="floatingPassword">Password</label>
                                     @if ($errors->has('password'))
                                         <small class="text-danger">{{ $errors->first('password') }}</small>
