@@ -30,6 +30,7 @@ use App\Mail\ReceiveNotificationMail;
 use App\Models\Activity;
 use App\Models\Attachments;
 use App\Models\DocumentHold;
+use App\Models\FileCharge;
 use App\Models\Memo;
 use App\Models\MemoTemplate;
 use App\Models\Payment;
@@ -591,6 +592,106 @@ class SuperAdminActions extends Controller
         return view('errors.404', compact('authUser', 'userTenant'));
     }
 
+    public function setCharge()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        $fileCharges = FileCharge::where('status', 'active')->get();
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.documents.filecharge', compact('authUser', 'userTenant', 'fileCharges'));
+        } else {
+            return view('errors.404', compact('authUser', 'userTenant'));
+        }
+    }
+
+    public function storeFileCharge(Request $request)
+    {
+        $request->validate([
+            'file_charge' => 'required|numeric',
+            'status' => 'required|string|in:active,inactive',
+        ]);
+
+        // Check if there is an active file charge
+        $activeFileCharge = FileCharge::where('status', 'active')->first();
+
+        if ($activeFileCharge) {
+            // Notify the user that an active file charge exists
+            $notification = [
+                'message' => 'There is already an active file charge. The new charge has been set to inactive.',
+                'alert-type' => 'warning'
+            ];
+
+            // Set the new charge status to inactive
+            $request->merge(['status' => 'inactive']);
+        } else {
+            // Success message if no active charge exists
+            $notification = [
+                'message' => 'File Charge has been successfully created',
+                'alert-type' => 'success'
+            ];
+        }
+
+        // Create the new file charge
+        FileCharge::create($request->all());
+
+        return redirect()->back()->with($notification);
+    }
+
+
+    // public function storeFileCharge(Request $request)
+    // {
+    //     $request->validate([
+    //         'file_charge' => 'required|numeric',
+    //         'status' => 'required|string|in:active,inactive',
+    //     ]);
+
+    //     FileCharge::create($request->all());
+    //     $notification = [
+    //         'message' => 'File Charge has been successfully created',
+    //         'alert-type' => 'success'
+    //     ];
+    //     return redirect()->back()->with($notification);
+    // }
+
+    public function editFileCharge(FileCharge $fileCharge)
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.documents.edit_filecharge', compact('fileCharge', 'authUser', 'userTenant'));
+        } else {
+            return view('errors.404', compact('authUser', 'userTenant'));
+        }
+    }
+
+    public function updateFileCharge(Request $request, FileCharge $fileCharge)
+    {
+        $request->validate([
+            'file_charge' => 'required|numeric',
+            'status' => 'required|string|in:active,inactive',
+        ]);
+
+        $fileCharge->update($request->all());
+
+        $notification = [
+            'message' => 'File Charge has been successfully updated',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('set.charge')->with($notification);
+    }
+
+    public function deleteFileCharge(FileCharge $fileCharge)
+    {
+        $fileCharge->delete();
+        $notification = [
+            'message' => 'File Charge has been successfully deleted',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('set.charge')->with($notification);
+    }
+
     public function document_create()
     {
         $authUser = Auth::user();
@@ -739,8 +840,9 @@ class SuperAdminActions extends Controller
         }
 
         $reference = Str::random(12);
-        $filingCharge = 100;
-        $charge = $pageCount * $filingCharge;
+        $filingCharge = FileCharge::where('status', 'active')->first('file_charge');
+
+        $charge = $pageCount * $filingCharge->file_charge;
         $amount = $charge;
         $documentHold = DocumentHold::create([
             'title' => $request->title,

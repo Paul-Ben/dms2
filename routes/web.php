@@ -60,6 +60,11 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
     Route::get('/upload', [SuperAdminActions::class, 'showUserUploadForm'])->name('userUpload.form');
     Route::post('/upload', [SuperAdminActions::class, 'userUploadCsv'])->name('userUpload.csv');
+    Route::get('/document/charge', [SuperAdminActions::class, 'setCharge'])->name('set.charge');
+    Route::post('/document/charge', [SuperAdminActions::class, 'storeFileCharge'])->name('store.fileCharge');
+    Route::get('/document/charge/{fileCharge}', [SuperAdminActions::class, 'editFileCharge'])->name('edit.fileChargeForm');
+    Route::put('/document/charge/{fileCharge}', [SuperAdminActions::class, 'updateFileCharge'])->name('update.fileCharge');
+    Route::delete('/document/charge/{fileCharge}', [SuperAdminActions::class, 'deleteFileCharge'])->name('delete.fileCharge');
 
 
     /**Organisation Management realated links */

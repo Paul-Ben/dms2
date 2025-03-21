@@ -210,8 +210,8 @@
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
-                        <a href="{{ route('users.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                        <a href="{{ route('set.charge') }}"
+                            class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Set File Charge</a>
 
                         <div class="nav-item dropdown">
