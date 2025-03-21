@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
- 
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -34,13 +34,12 @@ Route::get('/agencies', function () {
 Route::get('/contact', [PagesController::class, 'contactPage'])->name('contact');
 
 
-Route::get('/test-verify', function () { 
+Route::get('/test-verify', function () {
     return view('test-verify');
 });
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
 });
 
 Route::middleware('auth')->group(function () {
@@ -59,8 +58,10 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::put('/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::delete('/users/{user}', [SuperAdminActions::class, 'user_destroy'])->name('user.delete');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
+    Route::get('/upload', [SuperAdminActions::class, 'showUserUploadForm'])->name('userUpload.form');
+    Route::post('/upload', [SuperAdminActions::class, 'userUploadCsv'])->name('userUpload.csv');
 
-    
+
     /**Organisation Management realated links */
     Route::get('/superadmin/organisations', [SuperAdminActions::class, 'org_index'])->name('organisation.index');
     Route::get('/superadmin/organisations/create', [SuperAdminActions::class, 'org_create'])->name('organisation.create');
@@ -119,7 +120,6 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/receipts', [SuperAdminActions::class, 'receipt_index'])->name('receipt.index');
     Route::get('/document/{receipt}/receipt', [SuperadminActions::class, 'show_receipt'])->name('receipt.show');
     Route::get('/download-receipt', [SuperadminActions::class, 'downloadReceipt'])->name('download.receipt');
-
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

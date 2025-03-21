@@ -33,9 +33,11 @@ use App\Models\DocumentHold;
 use App\Models\Memo;
 use App\Models\MemoTemplate;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Response;
 use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Facades\DB;
 
 class SuperAdminActions extends Controller
 {
@@ -293,6 +295,111 @@ class SuperAdminActions extends Controller
     {
         $user->delete();
         return redirect()->route('user.index')->with('success', 'User  deleted successfully.');
+    }
+
+    public function showUserUploadForm()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('superadmin.usermanager.uploadUser', compact('authUser', 'userTenant'));
+    }
+
+    public function userUploadCsv(Request $request)
+    {
+        // Validate the uploaded file
+        $validator = Validator::make($request->all(), [
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Get the uploaded file
+        $file = $request->file('csv_file');
+
+        // Read the CSV file
+        $csvData = array_map('str_getcsv', file($file->getRealPath()));
+
+        // Remove the header row (if present)
+        $header = array_shift($csvData);
+
+        $duplicates = [];
+        $uniqueEntries = [];
+
+        // Process and insert data into the database
+        try {
+            DB::beginTransaction();
+            $csvData = array_chunk($csvData, 100);
+            foreach ($csvData as $chunk) {
+                foreach ($chunk as $row) {
+                    // Validate and process each row
+                    if (count($row) === count($header)) {
+                        $data = array_combine($header, $row);
+                        $existingUser = User::where('email', $data['email'])->first();
+
+                        if ($existingUser) {
+                            // Add to duplicates array
+                            $duplicates[] = $data;
+                        } else {
+                            // Add to unique entries array
+                            $uniqueEntries[] = $data;
+
+                            // Create the user
+                            $user = User::create([
+                                'name' => $data['name'],
+                                'email' => $data['email'],
+                                'password' => Hash::make($data['password']), // Hash the password
+                                'default_role' => $data['role'],
+                                'email_verified_at' => Carbon::now()
+                            ]);
+
+                            // Create the user details
+                            UserDetails::create([
+                                'user_id' => $user->id,
+                                'nin_number' => $data['nin'],
+                                'gender' => $data['gender'],
+                                'phone_number' => $data['phone'],
+                                'tenant_id' => $data['tenant_id'],
+                                'designation' => $data['designation'],
+                                'department_id' => $data['department'],
+                                'account_type' => $data['account_type'],
+                                'state' => $data['state'],
+                                'lga' => $data['lga'],
+                                'country' => $data['country'],
+                            ]);
+
+                            // Assign the role to the user
+                            $role = Role::where('name', $data['role'])->first();
+                            if ($role) {
+                                $user->assignRole($role);
+                            }
+                        }
+                    }
+                }
+                DB::commit();
+                $notification = [
+                    'message' => 'Users uploaded successfully',
+                    'type' => 'success',
+                ];
+                if (!empty($duplicates)) {
+                    $notification = [
+                        'message' => 'Users uploaded successfully. However, the following entries were duplicates and skipped: ' . implode(', ', array_column($duplicates, 'email')),
+                        'type' => 'warning'
+                    ];
+                    return redirect()->back()->with($notification);
+                }
+                return redirect()->back()->with($notification);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $notification = [
+                'message' => 'Error uploading users: ' . $e->getMessage(),
+                'type' => 'error',
+            ];
+            return redirect()->back()->with($notification);
+        }
     }
 
     /**Organisation Management */
