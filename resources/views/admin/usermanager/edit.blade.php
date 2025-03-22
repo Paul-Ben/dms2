@@ -97,13 +97,15 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Organisation</label>
-                                    <select id="organisationSelect" name="tenant_id" onchange="getDepartments(this.value)"
-                                        class="form-select">
+                                    <input type="text" value="{{$user_details->userDetail->tenant->name}}"  class="form-control" readonly>
+                                    <input type="text" value="{{$user_details->userDetail->tenant->id}}" name="tenant_id" class="form-control" hidden>
+                                    {{-- <select id="organisationSelect" name="tenant_id" onchange="getDepartments(this.value)"
+                                        class="form-select" readonly>
                                         <option value="{{$user_details->userDetail->tenant_id}}">{{$organisationName}}</option>
                                         @foreach ($organisations as $organisation)
                                             <option value="{{ $organisation->id }}">{{ $organisation->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>

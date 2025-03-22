@@ -145,7 +145,7 @@ class SuperAdminActions extends Controller
             'designation' => $request->input('designation'),
             'avatar' => $request->input('avatar'),
             'gender' => $request->input('gender'),
-            'signature' => $request->input('signature'),
+            'signature' => $request->input('signature')?: null,
             'nin_number' => $request->input('nin_number'),
             'psn' => $request->input('psn'),
             'grade_level' => $request->input('grade_level'),
@@ -195,6 +195,9 @@ class SuperAdminActions extends Controller
             if (Auth::user()->default_role === 'Admin') {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
                 list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
+                // $designations = Designation::all();
+                // $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
+                // $organisations = optional($authUser->userDetail)->tenant;
                 $organisationName = optional($authUser->userDetail)->tenant->name;
                 $tenantDepartments = TenantDepartment::where('tenant_id', optional($authUser->userDetail)->tenant_id)->get();
                 // dd($tenantDepartments);
@@ -225,7 +228,7 @@ class SuperAdminActions extends Controller
             'tenant_id' => 'required|integer',
             'department_id' => 'required|integer',
             'gender' => 'required|string',
-            'signature' => 'sometimes|string',
+            'signature' => 'nullable|string',
         ]);
 
         $user->update([
@@ -254,7 +257,7 @@ class SuperAdminActions extends Controller
             'tenant_id' => $request->input('tenant_id'),
             'department_id' => $request->input('department_id'),
             'gender' => $request->input('gender'),
-            'signature' => $request->input('signature'),
+            'signature' => $request->input('signature')?: null,
             'psn' => $request->input('psn'),
             'grade_level' => $request->input('grade_level'),
             'rank' => $request->input('rank'),
