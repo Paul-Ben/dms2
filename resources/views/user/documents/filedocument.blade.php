@@ -76,9 +76,9 @@
                                         value="{{ Auth::user()->tenant_id }}" placeholder="document number" hidden>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Upload Document</label>
-                                    <input type="file" name="file_path" id="fileInput" class="form-control"
-                                        accept="image/*,.pdf">
+                                    <label for="exampleInputEmail1" class="form-label">Upload Document, <span>PDF file allowed.</span></label>
+                                    <input type="file" name="file_path" id="fileInput" class="form-control" 
+                                        accept=".pdf">
                                 </div>
                             </div>
                             <div class="row">
@@ -112,6 +112,13 @@
         <!-- Form End -->
 
         <script>
+            document.getElementById("fileInput").addEventListener("change", function() {
+                var file = this.files[0];
+                if (file && file.type !== "application/pdf") {
+                    alert("Only PDF files are allowed!");
+                    this.value = ""; // Clear the file input
+                }
+            });
             // Example metadata object
             const metadata = {
                 author: "John Doe",
