@@ -44,7 +44,7 @@
 
                 <div class="col-12 col-md-6">
                     <div class="p-3">
-                        <img src="{{ asset('landing/images/Governor-Hyacinth-Alia.jpg') }}" width="443" height=""
+                        <img src="{{ asset('landing/images/Gov Alia-2.png') }}" width="443" height=""
                             class="w-300" style="border-radius: 1em;">
                     </div>
                 </div>
