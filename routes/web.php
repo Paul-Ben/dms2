@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SuperAdminActions;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/users/{user}/view', [SuperAdminActions::class, 'user_show'])->name('user.view');
     Route::put('/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::delete('/users/{user}', [SuperAdminActions::class, 'user_destroy'])->name('user.delete');
+Route::get('/users/search', [SearchController::class, 'searchUser'])->name('search.user');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
     Route::get('/upload', [SuperAdminActions::class, 'showUserUploadForm'])->name('userUpload.form');
     Route::post('/upload', [SuperAdminActions::class, 'userUploadCsv'])->name('userUpload.csv');
@@ -74,6 +76,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_edit'])->name('organisation.edit');
     Route::put('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_update'])->name('organisation.update');
     Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminActions::class, 'org_delete'])->name('organisation.delete');
+Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->name('search.org');
+
 
     /**Department Management related links */
     Route::get('/departments', [SuperAdminActions::class, 'department_index'])->name('department.index');
@@ -82,6 +86,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/departments/{department}/edit', [SuperAdminActions::class, 'department_edit'])->name('department.edit');
     Route::put('/departments/{department}/edit', [SuperAdminActions::class, 'department_update'])->name('department.update');
     Route::delete('/departments/{department}/delete', [SuperAdminActions::class, 'department_delete'])->name('department.delete');
+    Route::get('/departments/search', [SearchController::class, 'searchDept'])->name('search.dept');
 
 
     /**Document management related links */
@@ -89,6 +94,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/document/create', [SuperAdminActions::class, 'document_create'])->name('document.create');
     Route::post('/document/create', [SuperAdminActions::class, 'document_store'])->name('document.store');
     Route::get('/document/sent', [SuperAdminActions::class, 'sent_documents'])->name('document.sent');
+    Route::get('/document/search', [SearchController::class, 'searchDoc'])->name('search.doc');
+
     Route::get('/document/received', [SuperAdminActions::class, 'received_documents'])->name('document.received');
     // Route::get('/document/{document}/view', [SuperAdminActions::class, 'viewDocument'])->name('document.view');
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');

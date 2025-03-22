@@ -39,6 +39,7 @@ use Exception;
 use Illuminate\Support\Facades\Response;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class SuperAdminActions extends Controller
 {
@@ -51,14 +52,14 @@ class SuperAdminActions extends Controller
     /**
      * User management Actions Index/create/edit/show/delete
      */
-    public function user_index()
+    public function user_index(Request $request)
     {
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
         if (Auth::user()->default_role === 'superadmin') {
-            $users = User::orderBy('id', 'desc')->paginate(5);
+            $users = User::orderBy('id', 'desc')->paginate(10);
             return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
@@ -71,6 +72,7 @@ class SuperAdminActions extends Controller
 
         return view('errors.404', compact('authUser'));
     }
+   
 
     public function user_create()
     {
@@ -145,7 +147,7 @@ class SuperAdminActions extends Controller
             'designation' => $request->input('designation'),
             'avatar' => $request->input('avatar'),
             'gender' => $request->input('gender'),
-            'signature' => $request->input('signature')?: null,
+            'signature' => $request->input('signature') ?: null,
             'nin_number' => $request->input('nin_number'),
             'psn' => $request->input('psn'),
             'grade_level' => $request->input('grade_level'),
@@ -257,7 +259,7 @@ class SuperAdminActions extends Controller
             'tenant_id' => $request->input('tenant_id'),
             'department_id' => $request->input('department_id'),
             'gender' => $request->input('gender'),
-            'signature' => $request->input('signature')?: null,
+            'signature' => $request->input('signature') ?: null,
             'psn' => $request->input('psn'),
             'grade_level' => $request->input('grade_level'),
             'rank' => $request->input('rank'),

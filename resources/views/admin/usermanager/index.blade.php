@@ -22,13 +22,23 @@
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">User Management</h6>
                 <div>
+                    <form method="GET" action="{{route('search.user')}}">
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search items..."
+                                value="">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('user.create') }}">Add User</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
+                    <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
+                            class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 
             </div>
             <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <table id="users-table" class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
                             <th scope="col">#</th>
@@ -42,16 +52,17 @@
                         @foreach ($users as $key => $user)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a href="{{route('user.view', $user)}}">{{ $user->user->name }}</a></td>
+                                <td><a href="{{ route('user.view', $user) }}">{{ $user->user->name }}</a></td>
                                 <td>{{ $user->user->email }}</td>
 
                                 <td>{{ $user->user->default_role }}</td>
                                 <td>
                                     <div class="nav-item dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
+                                        <a href="#" class="nav-link dropdown-toggle"
+                                            data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="{{route('user.edit', $user)}}" class="dropdown-item">Edit</a>
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
+                                            <a href="{{ route('user.edit', $user) }}" class="dropdown-item">Edit</a>
+
                                         </div>
                                     </div>
                                 </td>
@@ -61,6 +72,7 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
     <!-- Table End -->
