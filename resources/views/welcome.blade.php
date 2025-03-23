@@ -52,9 +52,9 @@
                 <div class="col-12 col-md-6">
                     <div class="p-3 ">
                         <div class="">
-                            <p class="title" style="display: inline;">About </p><span style="display: inline; font-size:45px; font-weight:500">BENGEDMS</span>
+                            <p class="title" style="display: inline;">About </p><span style="display: inline; font-size:45px; font-weight:500">BENEDMS</span>
                         </div>
-                        <p class="body-text" style="">The Benue State Electronic Document Management System (BENGEDMS)
+                        <p class="body-text" style="">The Benue State Electronic Document Management System (BENEDMS)
                             is a cutting-edge digital platform designed to revolutionize document processing, storage, and
                             retrieval across government ministries, departments, and agencies (MDAs) in Benue State. Our
                             system enhances efficiency, transparency, and security in government operations by transitioning
@@ -187,7 +187,7 @@
                             </div>
                             <div>
                                 <p class="testimonial-text text-justify" style="text-align: justify;">“The automation and
-                                    collaboration features of BENGEDMS have helped our company stay organized and
+                                    collaboration features of BENEDMS have helped our company stay organized and
                                     productive.
                                     Our team can now access and share documents securely from anywhere.”</p>
                             </div>
@@ -215,7 +215,7 @@
                             </div>
                             <div>
                                 <p class="testimonial-text text-justify" style="text-align: justify;">“As a government
-                                    agency, handling massive paperwork was a challenge. With BENGEDMS,
+                                    agency, handling massive paperwork was a challenge. With BENEDMS,
                                     we’ve digitized our records, making retrieval and approvals seamless.
                                     It’s truly a game-changer!.”</p>
                             </div>
@@ -244,7 +244,7 @@
                                 <img src="{{ asset('landing/images/rating.svg') }}" alt="">
                             </div>
                             <div>
-                                <p class="testimonial-text text-justify" style="text-align: justify;">“BENGEDMS has
+                                <p class="testimonial-text text-justify" style="text-align: justify;">“BENEDMS has
                                     completely transformed the way we manage documents.
                                     The ease of access, security, and efficiency have significantly improved our workflow.
                                     No more lost files or delays!.”</p>
@@ -323,7 +323,7 @@
                         </h2>
                         <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                BENGEDMS uses advanced encryption, role-based access controls, and secure cloud storage to
+                                BENEDMS uses advanced encryption, role-based access controls, and secure cloud storage to
                                 ensure the confidentiality and integrity of government documents. Only authorized personnel
                                 can access restricted files, and audit trails are maintained for tracking document changes.
                             </div>
@@ -339,7 +339,7 @@
                         <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
                                 <p>
-                                    The use of BENGEDMS for government agencies and departments may be free or
+                                    The use of BENEDMS for government agencies and departments may be free or
                                 subscription-based, depending on the level of access required. Individuals or external
                                 organizations seeking access to certain services may need to pay a fee as stipulated by the
                                 Benue State Government.

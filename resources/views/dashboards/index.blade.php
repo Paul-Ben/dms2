@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BENGEDMS</title>
+    <title>BENEDMS</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -124,7 +124,7 @@
                     @endif
 
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BENGEDMS </h5>
+                        <h5 class="mb-0" style="font-weight: bold;">BENEDMS </h5>
                         <small class="text-muted"> {{ $userTenant->code }}</small>
                     </div>
                 </a>
@@ -255,7 +255,7 @@
                             style="width: 80px; height: 80px;">
                     @endif
                     <div class="ms-3">
-                        <h5 class="mb-0" style="font-weight: bold;">BENGEDMS</h5>
+                        <h5 class="mb-0" style="font-weight: bold;">BENEDMS</h5>
                         <small class="text-muted">Doc Mgt</small>
                     </div>
                 </a>
@@ -372,7 +372,8 @@
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Powered By <a href="#">BDIC</a>
+                            Powered By <a href="#">BDIC <img
+                                src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                             </br>
                         </div>
                     </div>
