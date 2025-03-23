@@ -112,10 +112,10 @@
                         style="width: 80px; height: 80px;">
                 </a> --}}
                 <a href="/" class="navbar-brand mx-4 mb-3 d-flex align-items-center">
-                    @if ($userTenant->logo != null)
+                    @if (isset($userTenant) && $userTenant->logo != null)
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
                             style="width: 70px; height: 70px;">
-                    @elseif ($userTenant->logo == null)
+                    @elseif (isset($userTenant) && $userTenant->logo == null)
                         <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 70px; height: 70px;">
                     @else
