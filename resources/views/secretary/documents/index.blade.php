@@ -59,7 +59,7 @@
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
                                             <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a>
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
+                                            {{-- <a href="edit_studet.html" class="dropdown-item">Edit</a> --}}
                                             {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
