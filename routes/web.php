@@ -96,6 +96,9 @@ Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->nam
     Route::get('/document/sent', [SuperAdminActions::class, 'sent_documents'])->name('document.sent');
     Route::get('/document/search', [SearchController::class, 'searchDoc'])->name('search.doc');
 
+    Route::get('/document/search', [SearchController::class, 'searchRecived'])->name('search.received');
+
+
     Route::get('/document/received', [SuperAdminActions::class, 'received_documents'])->name('document.received');
     // Route::get('/document/{document}/view', [SuperAdminActions::class, 'viewDocument'])->name('document.view');
     Route::get('/document/{document}/send', [SuperAdminActions::class, 'getSendform'])->name('document.send');

@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <table id="userReceipts" class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
                             <th scope="col">#</th>
@@ -71,4 +71,28 @@
         </div>
     </div>
     <!-- Table End -->
+    <script>
+        $(document).ready(function() {
+            $('#userReceipts').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true, // Enable pagination
+                searching: true, // Enable search
+                ordering: true, // Enable sorting
+                lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
+                columnDefs: [{
+                        orderable: false,
+                        targets: -1
+                    } // Disable sorting on last column (Actions)
+                ],
+                language: {
+                    searchPlaceholder: "Search here...",
+                    zeroRecords: "No matching records found",
+                    lengthMenu: "Show entries",
+                    // info: "Showing START to END of TOTAL entries",
+                    infoFiltered: "(filtered from MAX total entries)",
+                }
+            });
+        });
+    </script>
 @endsection

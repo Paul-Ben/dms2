@@ -14,7 +14,7 @@
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Incoming Mails</h6>
+                <h6 class="mb-0">Incoming Memos</h6>
                 <div>
                     {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
@@ -22,7 +22,7 @@
 
             </div>
             <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <table id="incomingMemo" class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
                             <th scope="col">#</th>
@@ -60,4 +60,29 @@
         </div>
     </div>
     <!-- Table End -->
+
+    <script>
+        $(document).ready(function() {
+            $('#incomingMemo').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true, // Enable pagination
+                searching: true, // Enable search
+                ordering: true, // Enable sorting
+                lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
+                columnDefs: [{
+                        orderable: false,
+                        targets: -1
+                    } // Disable sorting on last column (Actions)
+                ],
+                language: {
+                    searchPlaceholder: "Search here...",
+                    zeroRecords: "No matching records found",
+                    lengthMenu: "Show entries",
+                    // info: "Showing START to END of TOTAL entries",
+                    infoFiltered: "(filtered from MAX total entries)",
+                }
+            });
+        });
+    </script>
 @endsection
