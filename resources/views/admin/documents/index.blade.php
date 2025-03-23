@@ -56,7 +56,6 @@
                                         href="{{ asset($document->file_path) }}">{{ $document->docuent_number }}</a>
                                 </td>
                                 <td>{{ $document->title }}</td>
-                                {{-- <td></td> --}}
                                 <td>{{$document->status}}</td>
                                 <td>
                                     <div class="nav-item dropdown">
@@ -74,7 +73,11 @@
                             </tr>
                         @empty
                             <tr class="text-center">
-                                <td colspan="6">No Data Found</td>
+                                <td></td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
                             </tr>
                         @endforelse
 

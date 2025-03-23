@@ -56,7 +56,11 @@
                             </tr>
                             @empty
                             <tr class="text-center">
-                                <td colspan="6">No Data Found</td>
+                                <td></td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
                                 </tr>
                         @endforelse
 

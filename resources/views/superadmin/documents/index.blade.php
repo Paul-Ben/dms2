@@ -20,22 +20,14 @@
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Document Management</h6>
-                <div>
-                    <form method="GET" action="{{route('search.doc')}}">
-                        <div class="input-group mb-3">
-                            <input type="text" name="search" class="form-control" placeholder="Search items..."
-                                value="">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                    </form>
-                </div>
+                
                 <div>
                     <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <table id="superDock" class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
                             <th scope="col">#</th>
@@ -67,7 +59,11 @@
                             </tr>
                             @empty
                             <tr class="text-center">
-                                <td colspan="6">No Data Found</td>
+                                <td></td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
                                 </tr>
                         @endforelse
 
@@ -81,5 +77,29 @@
         </div>
     </div>
     <!-- Table End -->
+    <script>
+        $(document).ready(function() {
+            $('#superDock').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true, // Enable pagination
+                searching: true, // Enable search
+                ordering: true, // Enable sorting
+                lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
+                columnDefs: [{
+                        orderable: false,
+                        targets: -1
+                    } // Disable sorting on last column (Actions)
+                ],
+                language: {
+                    searchPlaceholder: "Search here...",
+                    zeroRecords: "No matching records found",
+                    lengthMenu: "Show entries",
+                    // info: "Showing START to END of TOTAL entries",
+                    infoFiltered: "(filtered from MAX total entries)",
+                }
+            });
+        });
+    </script>
 @endsection
 

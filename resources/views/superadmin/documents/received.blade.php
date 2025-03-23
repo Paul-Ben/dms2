@@ -22,7 +22,7 @@
 
             </div>
             <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <table id="superDocRecieved" class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
                             <th scope="col">#</th>
@@ -53,7 +53,12 @@
                             </tr> 
                             @empty
                             <tr class="text-center">
-                                <td colspan="6">No Data Found</td>
+                                <td></td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
+                                <td>No Data Found</td>
                                 </tr>
                         @endforelse
 
@@ -63,4 +68,28 @@
         </div>
     </div>
     <!-- Table End -->
+    <script>
+        $(document).ready(function() {
+            $('#superDocRecieved').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true, // Enable pagination
+                searching: true, // Enable search
+                ordering: true, // Enable sorting
+                lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
+                columnDefs: [{
+                        orderable: false,
+                        targets: -1
+                    } // Disable sorting on last column (Actions)
+                ],
+                language: {
+                    searchPlaceholder: "Search here...",
+                    zeroRecords: "No matching records found",
+                    lengthMenu: "Show entries",
+                    // info: "Showing START to END of TOTAL entries",
+                    infoFiltered: "(filtered from MAX total entries)",
+                }
+            });
+        });
+    </script>
 @endsection
