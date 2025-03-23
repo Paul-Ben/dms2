@@ -1217,7 +1217,6 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Secretary') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-
             return view('secretary.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'User') {
@@ -1235,11 +1234,14 @@ class SuperAdminActions extends Controller
 
     public function viewDocument(Document $document)
     {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $tenantId = $document->tenant_id;
         $departmentId = $document->department_id;
         $filePath = $document->file_path;
 
-        $file = public_path('documents/' . $tenantId . '/' . $departmentId . '/' . $filePath);
+        $file = storage_path('documents/' . $tenantId . '/' . $departmentId . '/' . $filePath);
 
         if (file_exists($file)) {
             return response()->file($file, [

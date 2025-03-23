@@ -244,10 +244,10 @@
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a> --}}
                 <a href="/" class="navbar-brand d-flex d-lg-none me-4">
-                    @if ($userTenant->logo != null)
+                    @if (isset($userTenant) && $userTenant->logo != null)
                         <img src="{{ asset('logos/' . $userTenant->logo) }}" alt="logo"
                             style="width: 80px; height: 80px;">
-                    @elseif ($userTenant->logo == null)
+                    @elseif (isset($userTenant) && $userTenant->logo == null)
                         <img src="{{ asset('landing/images/benue_new_logo.svg') }}" alt="logo"
                             style="width: 80px; height: 80px;">
                     @else
