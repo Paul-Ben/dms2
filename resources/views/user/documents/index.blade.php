@@ -55,13 +55,13 @@
                         @forelse ($documents as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank" href="{{asset($document->file_path)}}">{{$document->docuent_number}}</a></td>
+                                <td><a target="_blank" href="{{asset('storage/'. $document->file_path)}}">{{$document->docuent_number}}</a></td>
                                 <td>{{$document->title}}</td>
                                 {{-- <td></td> --}}
                                 <td>Processing</td>
                                 <td>
                                     <div class="nav-item">
-                                        <a target="_blank" href="{{asset($document->file_path)}}" class="nav-link">View</a>
+                                        <a target="_blank" href="{{asset('storage/'. $document->file_path)}}" class="nav-link">View</a>
                         
                                     </div>
                                 </td>

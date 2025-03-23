@@ -346,14 +346,14 @@
                     <div class="file-details">
                         <strong>Attachment:</strong>
                         <div class="file-name">
-                            <a href="{{ asset( $document_received->document->file_path) }}" target="_blank">
+                            <a href="{{ asset('storage/'. $document_received->document->file_path) }}" target="_blank">
                                 {{ e($document_received->document->file_path) }}
                             </a>
                         </div>
                         
                         <div id="previewContainer">
                             <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0"
-                                src="{{ asset( $document_received->document->file_path) }}"></iframe>
+                                src="{{ asset('storage/'. $document_received->document->file_path) }}"></iframe>
                         </div>
                     </div>
                 </div>

@@ -209,7 +209,7 @@
                         </svg>
                     </div>
                     <div class="file-details">
-                        <div class="file-name"><a href="{{asset($document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
+                        <div class="file-name"><a href="{{asset('storage/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
                         <div class="file-meta">PDF Document</div>
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />

@@ -209,8 +209,8 @@
                         </svg>
                     </div>
                     <div class="file-details">
-                        <div class="file-name"><a href="{{asset('documents/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
-                        <div class="file-meta">PDF Document • 2.4 MB • Added Mar 15</div>
+                        <div class="file-name"><a href="{{asset('storage/'.$document_received->document->file_path)}}" target="__blank">{{ $document_received->document->file_path }}</a></div>
+                        <div class="file-meta">PDF Document • Added</div>
                         <div id="previewContainer">
                             <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
                             <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"

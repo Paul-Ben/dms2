@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="col-sm-12 col-xl-6 mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Upload Document</label>
-                                        <input type="file" name="file_path" class="form-control">
+                                        <input type="file" id="fileInput" name="file_path" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -64,6 +64,13 @@
                                     <div class="col-sm-12 col-xl-6 mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Description</label>
                                             <textarea class="form-control" name="description" id="exampleInputEmail1" cols="30" rows="5"></textarea>
+                                    </div>
+                                    <div class="col-sm-12 col-xl-6 mb-3">
+                                        <div id="previewContainer">
+                                            <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
+                                            <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
+                                                frameborder="0"></iframe>
+                                        </div>
                                     </div>
                                     <div class="col-sm-12 col-xl-6 mb-3" hidden>
                                         <label for="exampleInputEmail1" class="form-label">Metadata</label>
@@ -83,6 +90,13 @@
             <!-- Form End -->
         
         <script>
+            document.getElementById("fileInput").addEventListener("change", function() {
+                var file = this.files[0];
+                if (file && file.type !== "application/pdf") {
+                    alert("Only PDF files are allowed!");
+                    this.value = ""; // Clear the file input
+                }
+            });
             // Example metadata object
             const metadata = {
                 author: "John Doe",
@@ -92,6 +106,42 @@
         
             // Convert the metadata object to a JSON string and set it to the hidden input
             document.getElementById('metadataField').value = JSON.stringify(metadata);
+        </script>
+         <script>
+            // Get the file input element
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const previewContainer = document.getElementById('previewContainer');
+                const imagePreview = document.getElementById('imagePreview');
+                const pdfPreview = document.getElementById('pdfPreview');
+
+                // Clear previous previews
+                imagePreview.style.display = 'none';
+                pdfPreview.style.display = 'none';
+                imagePreview.src = '';
+                pdfPreview.src = '';
+
+                if (file) {
+                    const fileType = file.type;
+
+                    if (fileType.startsWith('image/')) {
+                        // Display image preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.src = e.target.result;
+                            imagePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (fileType === 'application/pdf') {
+                        // Display PDF preview
+                        const fileURL = URL.createObjectURL(file);
+                        pdfPreview.src = fileURL;
+                        pdfPreview.style.display = 'block';
+                    } else {
+                        alert('Unsupported file type. Please upload an image or a PDF.');
+                    }
+                }
+            });
         </script>
     </div>
 @endsection

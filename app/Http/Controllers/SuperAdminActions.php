@@ -1104,7 +1104,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
-
+            // dd($document_received);
             return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {

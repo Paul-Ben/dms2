@@ -53,7 +53,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td><a target="_blank"
-                                        href="{{ asset($document->file_path) }}">{{ $document->docuent_number }}</a>
+                                        href="{{ asset('storage/'.$document->file_path) }}">{{ $document->docuent_number }}</a>
                                 </td>
                                 <td>{{ $document->title }}</td>
                                 <td>{{$document->status}}</td>
@@ -65,7 +65,7 @@
                                             {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
                                             <a href="" onclick="showSendOptions(event)"
                                                 class="dropdown-item">Send</a>
-                                            <a href="edit_studet.html" class="dropdown-item">Edit</a>
+                                            {{-- <a href="edit_studet.html" class="dropdown-item">Edit</a> --}}
                                             {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
