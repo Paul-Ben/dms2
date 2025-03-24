@@ -72,7 +72,7 @@ class SuperAdminActions extends Controller
 
         return view('errors.404', compact('authUser'));
     }
-   
+
 
     public function user_create()
     {
@@ -414,6 +414,65 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->back()->with($notification);
         }
+    }
+
+    /**Designation Management */
+    public function designationIndex()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        $designations = Designation::all();
+        return view('superadmin.designations.index', compact('authUser', 'userTenant', 'designations'));
+    }
+    public function designationCreate()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('superadmin.designations.create', compact('authUser', 'userTenant'));
+    }
+    public function designationStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+        $designation = Designation::create($request->all());
+        $notification = [
+            'message' => 'Designation created successfully',
+            'type' => 'success',
+        ];
+        return redirect()->route('designation.index')->with($notification);
+    }
+
+    public function designationEdit(Designation $designation)
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('superadmin.designations.edit', compact('authUser', 'userTenant', 'designation'));
+    }
+    public function designationUpdate(Request $request, Designation $designation)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+        $designation->update($request->all());
+        $notification = [
+            'message' => 'Designation updated successfully',
+            'type' => 'success',
+        ];
+        return redirect()->route('designation.index')->with($notification);
+    }
+
+    public function designationDestroy(Designation $designation)
+    {
+        $designation->delete();
+        $notification = [
+            'message' => 'Designation deleted successfully',
+            'type' => 'sucess',
+        ];
+        return redirect()->route('designation.index')->with($notification);
     }
 
     /**Organisation Management */

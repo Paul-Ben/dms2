@@ -67,7 +67,14 @@ Route::get('/users/search', [SearchController::class, 'searchUser'])->name('sear
     Route::get('/document/charge/{fileCharge}', [SuperAdminActions::class, 'editFileCharge'])->name('edit.fileChargeForm');
     Route::put('/document/charge/{fileCharge}', [SuperAdminActions::class, 'updateFileCharge'])->name('update.fileCharge');
     Route::delete('/document/charge/{fileCharge}', [SuperAdminActions::class, 'deleteFileCharge'])->name('delete.fileCharge');
-
+    
+    /**Designation mangement */
+    Route::get('/superadmin/designations', [SuperAdminActions::class, 'designationIndex'])->name('designation.index');
+    Route::get('/superadmin/designations/create', [SuperAdminActions::class, 'designationCreate'])->name('designation.create');
+    Route::post('/superadmin/designations/create', [SuperAdminActions::class, 'designationStore'])->name('designation.store');
+    Route::get('/superadmin/designations/{designation}/edit', [SuperAdminActions::class, 'designationEdit'])->name('designation.edit');
+    Route::put('/superadmin/designations/{designation}/edit', [SuperAdminActions::class, 'designationUpdate'])->name('designation.update');
+    Route::delete('/superadmin/{designation}/delete', [SuperAdminActions::class, 'designationDestroy'])->name('designation.delete');
 
     /**Organisation Management realated links */
     Route::get('/superadmin/organisations', [SuperAdminActions::class, 'org_index'])->name('organisation.index');

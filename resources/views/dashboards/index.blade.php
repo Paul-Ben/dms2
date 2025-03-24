@@ -126,7 +126,7 @@
                     <div class="ms-3">
                         <h5 class="mb-0" style="font-weight: bold;">BENEDMS </h5>
                         @if (isset($userTenant) && $userTenant->code != null)
-                         <small class="text-muted"> {{ $userTenant->code }}</small> 
+                            <small class="text-muted"> {{ $userTenant->code }}</small>
                         @endif
                     </div>
                 </a>
@@ -218,6 +218,9 @@
                         <a href="{{ route('set.charge') }}"
                             class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Set File Charge</a>
+                        <a href="{{ route('designation.index') }}"
+                            class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
+                                class="fa fa-user-circle me-2"></i>Designations</a>
 
                         <div class="nav-item dropdown">
                             <a href="#"
@@ -260,7 +263,7 @@
                         <h5 class="mb-0" style="font-weight: bold;">BENEDMS</h5>
                         {{-- <small class="text-muted">Doc Mgt</small> --}}
                         @if (isset($userTenant) && $userTenant->code != null)
-                         <small class="text-muted"> {{ $userTenant->code }}</small> 
+                            <small class="text-muted"> {{ $userTenant->code }}</small>
                         @endif
                     </div>
                 </a>
@@ -378,7 +381,7 @@
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             Powered By <a href="#">BDIC <img
-                                src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
+                                    src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                             </br>
                         </div>
                     </div>
