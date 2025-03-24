@@ -33,7 +33,7 @@
                         <p>Fill All Fields Required</p>
                        </div>
                         <div>
-                            <a class="btn btn-sm btn-primary" href="{{ route('document.index') }}"><i
+                            <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                                     class="fa fa-arrow-left me-2"></i>Back</a>
                         </div>
 
@@ -47,7 +47,7 @@
                                 <input type="text" name="title" class="form-control" required>
                             </div>
                             <div class="col-sm-12 col-xl-6 mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Upload Document</label>
+                                <label for="exampleInputEmail1" class="form-label">Upload Document, <span>PDF file allowed.</span></label>
                                 <input type="file" name="file_path" id="fileInput" class="form-control">
                             </div>
                         </div>

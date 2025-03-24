@@ -47,7 +47,7 @@
                                         <input type="text" name="title" class="form-control" required>
                                     </div>
                                     <div class="col-sm-12 col-xl-6 mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Upload Document</label>
+                                        <label for="exampleInputEmail1" class="form-label">Upload Document, <span>PDF file allowed.</span></label>
                                         <input type="file" id="fileInput" name="file_path" class="form-control">
                                     </div>
                                 </div>
