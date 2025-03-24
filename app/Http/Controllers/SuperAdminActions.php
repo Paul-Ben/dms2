@@ -125,6 +125,10 @@ class SuperAdminActions extends Controller
 
             $user->assignRole('Admin');
         }
+        if ($request->input('default_role') === 'Secretary') {
+
+            $user->assignRole('Secretary');
+        }
         if ($request->input('default_role') === 'Staff') {
 
             $user->assignRole('Staff');
