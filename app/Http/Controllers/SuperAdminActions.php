@@ -276,6 +276,10 @@ class SuperAdminActions extends Controller
 
             $user->assignRole('Staff');
         }
+        if ($request->input('default_role') === 'Secretary') {
+
+            $user->assignRole('Secretary');
+        }
         if ($request->input('default_role') === 'User') {
 
             $user->assignRole('User');
@@ -1400,7 +1404,7 @@ class SuperAdminActions extends Controller
                     })
                     ->where('id', '!=', $authUser->id)
                     ->get();
-                    
+
 
                 if ($recipients->isEmpty()) {
                     $notification = [
