@@ -25,7 +25,7 @@
                             <option value="" disabled>Select recipients</option>
                             @foreach ($recipients as $user)
                                 <option value="{{ $user->id }}">
-                                    {{ $user->userDetail->tenant->name ?? 'Citizen User' }} | {{ $user->userDetail->designation ?? $user->name }}
+                                    {{ $user->userDetail->tenant->name ?? 'Citizen User' }}| {{$user->name}} | {{ $user->userDetail->designation ?? $user->name }}
                                 </option>
                             @endforeach
                         </select>

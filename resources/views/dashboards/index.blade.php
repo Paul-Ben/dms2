@@ -258,7 +258,10 @@
                     @endif
                     <div class="ms-3">
                         <h5 class="mb-0" style="font-weight: bold;">BENEDMS</h5>
-                        <small class="text-muted">Doc Mgt</small>
+                        {{-- <small class="text-muted">Doc Mgt</small> --}}
+                        @if (isset($userTenant) && $userTenant->code != null)
+                         <small class="text-muted"> {{ $userTenant->code }}</small> 
+                        @endif
                     </div>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">

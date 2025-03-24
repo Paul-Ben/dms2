@@ -8,7 +8,7 @@
                     <span class="alert alert-danger" role="alert">{{ $errors->all() }}</span>
                 @endif
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
                     <button
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -33,7 +33,7 @@
                             <option value="" disabled>Select recipients</option>
                             @foreach ($recipients as $user)
                                 <option value="{{ $user->id }}">
-                                    {{ $user->userDetail->tenant_department->name ?? $user->userDetail->tenant->name }} | {{ $user->userDetail->designation ?? $user->name }}
+                                    {{ $user->userDetail->tenant_department->name ?? $user->userDetail->tenant->name }} | {{$user->name}} |{{ $user->userDetail->designation ?? $user->name }}
                                 </option>
                             @endforeach
                         </select>

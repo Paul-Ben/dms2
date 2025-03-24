@@ -33,7 +33,7 @@
                             <option value="" disabled>Select recipients</option>
                             @foreach ($recipients as $user)
                                 <option value="{{ $user->id }}">
-                                    {{ $user->userDetail->tenant_department->name ?? $user->userDetail->tenant->name }} |
+                                    {{ $user->userDetail->tenant_department->name ?? $user->userDetail->tenant->name }} | {{$user->name}} |
                                     {{ $user->userDetail->designation ?? $user->name }}
                                 </option>
                             @endforeach

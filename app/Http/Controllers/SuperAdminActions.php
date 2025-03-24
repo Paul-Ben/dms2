@@ -1400,7 +1400,7 @@ class SuperAdminActions extends Controller
                     })
                     ->where('id', '!=', $authUser->id)
                     ->get();
-
+                    
 
                 if ($recipients->isEmpty()) {
                     $notification = [
@@ -1411,7 +1411,7 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
+                return view('secretary.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
 
 
             default:
