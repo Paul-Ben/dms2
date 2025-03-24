@@ -231,12 +231,12 @@
                     {{ $document_received->sender->name }}
                 </div>
                 <div>
-                    {{-- @if ($document_received->attachments->isNotEmpty())
+                    @if ($document_received->attachments->isNotEmpty())
                         <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
                             target="__blank">Attachment by {{ $document_received->sender->name }}</a>
                     @else 
                         
-                    @endif --}}
+                    @endif
 
                 </div>
 

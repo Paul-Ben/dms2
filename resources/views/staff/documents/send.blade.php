@@ -8,7 +8,7 @@
                     <span class="alert alert-danger" role="alert">{{ $errors->all() }}</span>
                 @endif
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
+                    {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
                     <button
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -24,7 +24,7 @@
             </div>
             <div class="container">
                 <h1></h1>
-                <form action="{{ route('document.senddoc', $document) }}" method="POST">
+                <form action="{{ route('document.senddoc', $document) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-3">
                         <label for="recipient_email">Recipient</label>
@@ -48,6 +48,10 @@
                     <div class="form-group">
                         <label for="message">Message/Minuting</label>
                         <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <div class="col-sm-12 col-xl-6 mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Attach Document</label>
+                        <input type="file" name="attachment" class="form-control">
                     </div>
                     <button type="submit" class="btn btn-primary mt-4">Send</button>
                 </form>

@@ -4,28 +4,35 @@
         <div class="bg-light rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Send Document</h6>
-                @if (session('errors'))
-                    <span class="alert alert-danger" role="alert">{{ $errors->all() }}</span>
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a>
-                    <a class="btn btn-sm btn-primary" href="{{ route('dashboard') }}"><i
+                    {{-- <a class="btn btn-sm btn-primary" href="{{ route('document.create') }}">Add Document</a> --}}
+                    <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                             class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
 
             </div>
             <div class="container">
                 <h1></h1>
-                <form action="{{ route('document.senddoc', $document) }}" method="POST">
+                <form action="{{ route('document.senddoc', $document) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-3">
                         <label for="recipient_email">Recipient</label>
-                       
+
                         <select class="form-control selectpicker" name="recipient_id[]" id="recipients" multiple="multiple">
                             <option value="" disabled>Select recipients</option>
                             @foreach ($recipients as $user)
                                 <option value="{{ $user->id }}">
-                                    {{ $user->userDetail->tenant->name ?? 'Citizen User' }}| {{$user->name}} | {{ $user->userDetail->designation ?? $user->name }}
+                                    {{ $user->userDetail->tenant->name ?? 'Citizen User' }}| {{ $user->name }} |
+                                    {{ $user->userDetail->designation ?? $user->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -39,6 +46,10 @@
                     <div class="form-group">
                         <label for="message">Message</label>
                         <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <div class="col-sm-12 col-xl-6 mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Attach Document</label>
+                        <input type="file" name="attachment" class="form-control" accept=".pdf">
                     </div>
                     <button type="submit" class="btn btn-primary mt-4">Send</button>
                 </form>

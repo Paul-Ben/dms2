@@ -198,7 +198,7 @@ class DocumentStorage
             'recipient_id' => 'required|array',
             'recipient_id.*' => 'exists:users,id',
             'message' => 'nullable|string',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         $recipients = array_unique($data->recipient_id);
