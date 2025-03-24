@@ -6,17 +6,16 @@
             <div class="col-12">
                 <div class="bg-light rounded h-100 p-4">
                     @if (session('errors'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        
-                        <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                    </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                
-            @endif
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -35,7 +34,7 @@
 
                         </div>
 
-                        <form method="POST" action="{{route('user.save')}}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('user.save') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
@@ -79,7 +78,7 @@
                                     <select name="default_role" class="form-select">
                                         <option selected>select menu</option>
                                         @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -106,7 +105,8 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Designation</label>
-                                    <input type="text" name="tenant_id" class="form-control" value="{{Auth::user()->userDetail->tenant_id}}" hidden>
+                                    <input type="text" name="tenant_id" class="form-control"
+                                        value="{{ Auth::user()->userDetail->tenant_id }}" hidden>
                                     <select id="organisationSelect" name="designation" class="form-select">
                                         <option selected>select menu</option>
                                         @foreach ($designations as $designation)
@@ -121,38 +121,47 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">PSN</label>
                                     <input type="text" name="psn" class="form-control" placeholder="PSN">
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">Grade Level</label>
-                                    <input type="text" name="grade_level" class="form-control" placeholder="Grade Level">
+                                    <input type="text" name="grade_level" class="form-control"
+                                        placeholder="Grade Level">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">Rank</label>
                                     <input type="text" name="rank" class="form-control" placeholder="Rank">
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">Schedule</label>
                                     <input type="text" name="schedule" class="form-control" placeholder="Schedule">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">Employment Date</label>
-                                    <input type="date" name="employment_date" class="form-control" placeholder="dd/mm/yyyy">
+                                    <input type="date" name="employment_date" class="form-control"
+                                        placeholder="dd/mm/yyyy">
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label
+                                    <label for="exampleInputEmail1"
+                                        class="form-label
                                         ">Date of Birth</label>
-                                    <input type="date" name="date_of_birth" class="form-control" placeholder="dd/mm/yyyy">
+                                    <input type="date" name="date_of_birth" class="form-control"
+                                        placeholder="dd/mm/yyyy">
                                 </div>
                             </div>
                             <div style="text-align: center;">
