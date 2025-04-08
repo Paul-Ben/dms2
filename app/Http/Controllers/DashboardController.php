@@ -31,6 +31,7 @@ class DashboardController extends Controller
             'Secretary' => 'secretary.index',
             'Staff' => 'staff.index',
             'User' => 'user.index',
+            'IT Admin'=> 'staff.index',
         ];
 
 

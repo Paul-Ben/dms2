@@ -19,53 +19,37 @@
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Department Management</h6>
-                    {{-- <div>
-                        <form method="GET" action="{{route('search.dept')}}">
-                            <div class="input-group mb-3">
-                                <input type="text" name="search" class="form-control" placeholder="Search items..."
-                                    value="">
-                                <button class="btn btn-primary" type="submit">Search</button>
-                            </div>
-                        </form>
-                    </div> --}}
+                    <h6 class="mb-0">Designation Management</h6>
+                   
                     <div>
-                        <a class="btn btn-sm btn-primary" href="{{ route('department.create') }}">Add Department</a>
+                        <a class="btn btn-sm btn-primary" href="{{ route('role.create') }}">Add Role</a>
                         <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                                 class="fa fa-arrow-left me-2"></i>Back</a>
                     </div>
 
                 </div>
                 <div class="table-responsive">
-                    <table id="adminDepts" class="table text-start align-middle table-bordered table-hover mb-0">
+                    <table id="designationIndex" class="table text-start align-middle table-bordered table-hover mb-0">
                         <thead>
                             <tr class="text-dark">
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Phone</th>
-                                <th scope="col">Status</th>
-                                @role('IT Amin')
                                 <th scope="col">Action</th>
-                                @endrole
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($departments as $key => $department)
+                            @foreach ($roles as $key => $role)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $department->name }}</td>
-                                    <td>{{ $department->email }}</td>
-                                    <td>{{ $department->phone }}</td>
-                                    <td>{{ $department->status }}</td>
-                                    @role('IT Amin')
+                                    <td>{{ $role->name }}</td>
+                                    
                                     <td>
                                         <div class="nav-item dropdown">
                                             <a href="#" class="nav-link dropdown-toggle"
                                                 data-bs-toggle="dropdown">Details</a>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('department.edit', $department)}}" class="dropdown-item">Edit</a>
-                                                <form action="{{ route('department.delete', $department) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                                <a href="{{route('designation.edit', $role)}}" class="dropdown-item">Edit</a>
+                                                <form action="{{ route('designation.delete', $role) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                     @csrf
                                                     @method('DELETE')
                                                    
@@ -74,21 +58,19 @@
                                             </div>
                                         </div>
                                     </td>
-                                    @endrole
                                 </tr>
                             @endforeach
 
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4">{{$departments->links('pagination::bootstrap-5')}}</div>
+                {{-- <div class="mt-4">{{$departments->links('pagination::bootstrap-5')}}</div> --}}
             </div>
         </div>
         <!-- Table End -->
-
         <script>
             $(document).ready(function() {
-                $('#adminDepts').DataTable({
+                $('#designationIndex').DataTable({
                     responsive: true,
                     autoWidth: false,
                     paging: true, // Enable pagination

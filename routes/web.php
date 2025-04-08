@@ -68,6 +68,11 @@ Route::get('/users/search', [SearchController::class, 'searchUser'])->name('sear
     Route::put('/document/charge/{fileCharge}', [SuperAdminActions::class, 'updateFileCharge'])->name('update.fileCharge');
     Route::delete('/document/charge/{fileCharge}', [SuperAdminActions::class, 'deleteFileCharge'])->name('delete.fileCharge');
     
+    /**Role management related links */
+    Route::get('/roles/index', [SuperAdminActions::class, 'roleIndex'])->name('role.index');
+    Route::get('/roles/create', [SuperAdminActions::class, 'roleCreate'])->name('role.create');
+    Route::post('/roles/create', [SuperAdminActions::class, 'roleStore'])->name('role.store');
+
     /**Designation mangement */
     Route::get('/superadmin/designations', [SuperAdminActions::class, 'designationIndex'])->name('designation.index');
     Route::get('/superadmin/designations/create', [SuperAdminActions::class, 'designationCreate'])->name('designation.create');

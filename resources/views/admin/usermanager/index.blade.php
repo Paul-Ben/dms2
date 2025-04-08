@@ -31,7 +31,9 @@
                     </form>
                 </div> --}}
                 <div>
+                    @role('IT Amin')
                     <a class="btn btn-sm btn-primary" href="{{ route('user.create') }}">Add User</a>
+                    @endrole
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                             class="fa fa-arrow-left me-2"></i>Back</a>
                 </div>
@@ -45,7 +47,9 @@
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
+                            @role('IT Amin')
                             <th scope="col">Action</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -56,16 +60,19 @@
                                 <td>{{ $user->user->email }}</td>
 
                                 <td>{{ $user->user->default_role }}</td>
+                                @role('IT Amin')
                                 <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle"
                                             data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
+                                            
                                             <a href="{{ route('user.edit', $user) }}" class="dropdown-item">Edit</a>
-
+                                            
                                         </div>
                                     </div>
                                 </td>
+                                @endrole
                             </tr>
                         @endforeach
 

@@ -63,7 +63,7 @@ class SuperAdminActions extends Controller
             return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $id = Auth::user()->userDetail->tenant_id;
             $users = UserDetails::with('user')->where('tenant_id', $id)->get();
 
@@ -85,11 +85,11 @@ class SuperAdminActions extends Controller
 
             return view('superadmin.usermanager.create', compact('organisations', 'roles', 'departments', 'designations', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $id = Auth::user()->userDetail->tenant_id;
             $departments = TenantDepartment::where('tenant_id', $id)->get();
             $designations = Designation::all();
-            $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
+            $roles = Role::whereNotIn('name', ['superadmin', 'User'])->get();
 
             return view('admin.usermanager.create', compact('departments', 'designations', 'roles', 'authUser', 'userTenant'));
         }
@@ -137,6 +137,10 @@ class SuperAdminActions extends Controller
 
             $user->assignRole('User');
         }
+        if ($request->input('default_role') === 'IT Admin') {
+
+            $user->assignRole('IT Admin');
+        }
 
 
         $user->save();
@@ -179,7 +183,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'superadmin') {
             return view('superadmin.usermanager.show', compact('user', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             return view('admin.usermanager.show', compact('user', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
@@ -198,11 +202,11 @@ class SuperAdminActions extends Controller
                 $tenantDepartments = TenantDepartment::all();
                 return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'departments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
-            if (Auth::user()->default_role === 'Admin') {
+            if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
                 list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
                 // $designations = Designation::all();
-                // $roles = Role::whereNotIn('name', [Auth::user()->default_role, 'superadmin', 'User'])->get();
+                $roles = Role::whereNotIn('name', ['superadmin', 'User'])->get();
                 // $organisations = optional($authUser->userDetail)->tenant;
                 $organisationName = optional($authUser->userDetail)->tenant->name;
                 $tenantDepartments = TenantDepartment::where('tenant_id', optional($authUser->userDetail)->tenant_id)->get();
@@ -287,6 +291,10 @@ class SuperAdminActions extends Controller
         if ($request->input('default_role') === 'User') {
 
             $user->assignRole('User');
+        }
+        if ($request->input('default_role') === 'IT Admin') {
+
+            $user->assignRole('IT Admin');
         }
 
         if ($request->hasFile('avatar')) {
@@ -415,6 +423,39 @@ class SuperAdminActions extends Controller
             return redirect()->back()->with($notification);
         }
     }
+
+    /**Role Management */
+    public function roleIndex()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        $roles = Role::all();
+        return view('superadmin.roles.index', compact('authUser', 'userTenant', 'roles'));
+    }
+    public function roleCreate()
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        return view('superadmin.roles.create', compact('authUser', 'userTenant'));
+    }
+    public function roleStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles',
+        ]);
+        $role = Role::create([
+            'name'=> $request->name,
+            'guard_name' => 'web',
+        ]);
+        $notification = [
+            'message' => 'Role created successfully',
+            'type' => 'success',
+        ];
+        return redirect()->route('role.index')->with($notification);
+    }
+
 
     /**Designation Management */
     public function designationIndex()
@@ -2098,7 +2139,7 @@ class SuperAdminActions extends Controller
             $departments = TenantDepartment::orderBy('id', 'desc')->paginate(10);
             return view('superadmin.departments.index', compact('departments', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             // Retrieve the tenant_id of the authenticated user
             $tenantId = Auth::user()->userdetail->tenant_id;
 
@@ -2119,7 +2160,7 @@ class SuperAdminActions extends Controller
             $organisations = Tenant::all();
             return view('superadmin.departments.create', compact('organisations', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             // Retrieve the tenant_id of the authenticated user
             $tenantId = Auth::user()->userdetail->tenant_id;
             $organisations = Tenant::where('id', $tenantId)->first();
@@ -2140,7 +2181,7 @@ class SuperAdminActions extends Controller
 
             return redirect()->route('department.index')->with('success', 'Department created successfully.');
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'tenant_id' => 'required|exists:tenants,id',
@@ -2160,7 +2201,7 @@ class SuperAdminActions extends Controller
             $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
             return view('superadmin.departments.edit', compact('department', 'organisations', 'departmentName', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $departmentName = Tenant::where('id', $department->tenant_id)->first('name');
             return view('admin.departments.edit', compact('department', 'departmentName', 'authUser', 'userTenant'));
         }
@@ -2183,7 +2224,7 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('department.index')->with($notification);
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'tenant_id' => 'required|exists:tenants,id',
@@ -2210,7 +2251,7 @@ class SuperAdminActions extends Controller
             ];
             return redirect()->route('department.index')->with($notification);
         }
-        if (Auth::user()->default_role === 'Admin') {
+        if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
             $department->delete();
             $notification = [
                 'message' => 'Department deleted successfully',

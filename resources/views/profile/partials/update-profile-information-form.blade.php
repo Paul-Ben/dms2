@@ -67,7 +67,7 @@
                                 <label for="exampleInputEmail1" class="form-label">NIN (National Identification Number)</label>
                                 <input type="text" value="{{ $user->userDetail->nin_number }}" class="form-control" disabled>
                             </div>
-                            @role(['Staff', 'Secretary', 'Admin'])
+                            @role(['Staff', 'Secretary', 'Admin', 'IT Admin'])
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <label for="exampleInputEmail1" class="form-label">PSN</label>
                                 <input type="text" name="psn" value="{{ $user->userDetail->psn }}" class="form-control">

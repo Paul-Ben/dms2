@@ -77,6 +77,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function staffProfile()
     {
-        return $this->hasOne(StaffProfile::class);
+        return $this->hasOne(staffProfile::class);
         }
 }

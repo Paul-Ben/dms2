@@ -192,12 +192,10 @@
                             </div>
                         </div>
                     @endrole
-
-
-                    @role('Admin')
-                        {{-- <a href="{{ route('users.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Pending Incoming</a> --}}
+                    @role('Admin|IT Admin')
+                    <a href="{{ route('designation.index') }}"
+                    class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
+                        class="fa fa-user-circle me-2"></i>Designations</a>
                         <a href="{{ route('users.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Manage User</a>
@@ -221,7 +219,9 @@
                         <a href="{{ route('designation.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
                                 class="fa fa-user-circle me-2"></i>Designations</a>
-
+                                <a href="{{ route('role.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('role.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Roles</a>
                         <div class="nav-item dropdown">
                             <a href="#"
                                 class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}"
