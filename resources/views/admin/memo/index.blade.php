@@ -74,7 +74,7 @@
                     </tbody>
                 </table>
                 <div class="pt-4">
-                    {{ $memos->links('pagination::bootstrap-5') }}
+                    {{-- {{ $memos->links('pagination::bootstrap-5') }} --}}
                 </div>
             </div>
         </div>

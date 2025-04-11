@@ -79,9 +79,8 @@
                     </tbody>
                 </table>
                 <div class="pt-4">
-                    {{$documents->links('pagination::bootstrap-5')}}
+                    
                 </div>
-                
             </div>
         </div>
     </div>

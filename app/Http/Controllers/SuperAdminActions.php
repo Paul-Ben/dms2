@@ -59,7 +59,8 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
         if (Auth::user()->default_role === 'superadmin') {
-            $users = User::orderBy('id', 'desc')->paginate(10);
+            $users = User::orderBy('id', 'desc')->get();
+
             return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
@@ -446,7 +447,7 @@ class SuperAdminActions extends Controller
             'name' => 'required|string|max:255|unique:roles',
         ]);
         $role = Role::create([
-            'name'=> $request->name,
+            'name' => $request->name,
             'guard_name' => 'web',
         ]);
         $notification = [
@@ -523,7 +524,7 @@ class SuperAdminActions extends Controller
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
-            $organisations = Tenant::orderBy('id', 'desc')->paginate(10);
+            $organisations = Tenant::orderBy('id', 'desc')->get();
             return view('superadmin.organisations.index', compact('organisations', 'authUser', 'userTenant'));
         }
 
@@ -696,7 +697,7 @@ class SuperAdminActions extends Controller
             $documents = DocumentStorage::myDocuments();
             return view('user.documents.index', compact('documents', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array($authUser->default_role, ['Staff', 'IT Admin'])) {
             $documents = DocumentStorage::myDocuments();
 
             return view('staff.documents.index', compact('documents', 'authUser', 'userTenant'));
@@ -751,21 +752,6 @@ class SuperAdminActions extends Controller
         return redirect()->back()->with($notification);
     }
 
-
-    // public function storeFileCharge(Request $request)
-    // {
-    //     $request->validate([
-    //         'file_charge' => 'required|numeric',
-    //         'status' => 'required|string|in:active,inactive',
-    //     ]);
-
-    //     FileCharge::create($request->all());
-    //     $notification = [
-    //         'message' => 'File Charge has been successfully created',
-    //         'alert-type' => 'success'
-    //     ];
-    //     return redirect()->back()->with($notification);
-    // }
 
     public function editFileCharge(FileCharge $fileCharge)
     {
@@ -822,7 +808,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'User') {
             return view('user.documents.create', compact('authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array($authUser->default_role, ['Staff', 'IT Admin'])) {
             return view('staff.documents.create', compact('authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
@@ -1122,6 +1108,10 @@ class SuperAdminActions extends Controller
                 'created_at' => now(),
             ],
         ]);
+        $userOrg = User::with('userDetail.tenant')->where('id', $document->recipient_id)->first();
+        $userDepartment = UserDetails::with('tenant_department')->where('id', $document->recipient_id)->first();
+        $userDepartment = $userDepartment->tenant_department->name ?? null;
+        $userTenant = $userOrg->userDetail->tenant->name ?? null;
 
         $senderName = Auth::user()->name;
         $receiverName = User::find($document->recipient_id)->name;
@@ -1130,7 +1120,7 @@ class SuperAdminActions extends Controller
         $appName = config('app.name');
 
         try {
-            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName));
+            Mail::to(Auth::user()->email)->send(new SendNotificationMail($senderName, $receiverName,  $documentName, $appName, $userTenant, $userDepartment));
             Mail::to(User::find($document->recipient_id)?->email)->send(new ReceiveNotificationMail($senderName, $receiverName, $documentName, $documentId, $appName));
         } catch (\Exception $e) {
             Log::error('Failed to send Document notification');
@@ -1189,7 +1179,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
 
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
@@ -1225,7 +1215,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
 
             return view('staff.documents.show', compact('document_received', 'authUser', 'userTenant'));
@@ -1293,7 +1283,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
 
             if (!empty($recipient) && isset($recipient[0])) {
@@ -1332,7 +1322,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
             return view('staff.documents.received', compact('received_documents', 'authUser', 'userTenant'));
@@ -1384,7 +1374,7 @@ class SuperAdminActions extends Controller
 
             return view('staff.documents.reply', compact('recipients', 'document', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             $authUser = Auth::user();
 
             $getter = FileMovement::where('document_id', $document->id)->where('recipient_id', $authUser->id)->get();
@@ -1491,7 +1481,28 @@ class SuperAdminActions extends Controller
                 }
 
                 return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
+            case 'IT Admin':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+                $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
 
+                if ($recipients->isEmpty()) {
+                    return redirect()->back()->with('error', 'No recipients found.');
+                }
+
+                return view('staff.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
                 $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
@@ -1530,6 +1541,12 @@ class SuperAdminActions extends Controller
     public function sendDocument(Request $request)
     {
         $data = $request;
+        $userOrg = User::with('userDetail.tenant')->where('id', $data->recipient_id)->first();
+        $userDepartment = UserDetails::with('tenant_department')->where('id', $data->recipient_id)->first();
+        $userDepartment = $userDepartment->tenant_department->name ?? null;
+        $userTenant = $userOrg->userDetail->tenant->name ?? null;
+        $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
+        
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()
@@ -1537,7 +1554,7 @@ class SuperAdminActions extends Controller
                 ->withInput();
         }
         try {
-            SendMailHelper::sendNotificationMail($data, $request);
+            SendMailHelper::sendNotificationMail($data, $request, $userDepartment, $userTenant);
         } catch (\Exception $e) {
             Log::error('Failed to send review notification email: ' . $e->getMessage());
             return redirect()->route('document.index')->with([
@@ -1591,9 +1608,10 @@ class SuperAdminActions extends Controller
             ->whereHas('userDetail', function ($query) use ($tenantId) {
                 $query->where('tenant_id', $tenantId);
             })
-            ->get();
+            ->first();
+            
 
-        if ($recipient->isEmpty()) {
+        if ($recipient === null) {
             return redirect()->back()->with([
                 'message' => 'No admin users found for the tenant.',
                 'alert-type' => 'error',
@@ -1604,9 +1622,14 @@ class SuperAdminActions extends Controller
         $stamp = StampHelper::stampIncomingMail($documentID);
         $result = DocumentStorage::reviewedDocument($documentData, $recipient);
 
+        $userOrg = User::with('userDetail.tenant')->where('id', $recipient->id)->first();
+        $userDepartment = UserDetails::with('tenant_department')->where('id', $recipient->id)->first();
+        $userDepartment = $userDepartment->tenant_department->name ?? null;
+        $userTenant = $userOrg->userDetail->tenant->name ?? null;
+        
         // Send notification email
         try {
-            SendMailHelper::sendReviewNotificationMail($documentData, $recipient);
+            SendMailHelper::sendReviewNotificationMail($documentData, $recipient, $userTenant, $userDepartment);
         } catch (\Exception $e) {
             Log::error('Failed to send review notification email: ' . $e->getMessage());
             return redirect()->back()->with([
@@ -1627,7 +1650,7 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
-        if (in_array(Auth::user()->default_role, ['Admin', 'Staff', 'Secretary'])) {
+        if (in_array(Auth::user()->default_role, ['Admin', 'Staff', 'Secretary', 'IT Admin'])) {
             // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant.tenant_departments'])->where('document_id', $document->id)->get();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
 
@@ -1666,7 +1689,7 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
-        $memos = Memo::where('user_id', $authUser->id)->orderBy('id', 'desc')->paginate(10);
+        $memos = Memo::where('user_id', $authUser->id)->orderBy('id', 'desc')->get();
         return view('admin.memo.index', compact('memos', 'authUser', 'userTenant'));
     }
 
@@ -1977,7 +2000,28 @@ class SuperAdminActions extends Controller
                 }
 
                 return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
-
+                case 'IT Admin':
+                    $tenantId = $authUser->userDetail->tenant_id ?? null;
+                    // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+                    if (!$tenantId) {
+                        return redirect()->back()->with('error', 'Tenant information is missing.');
+                    }
+                    $recipients = User::select('id', 'name')
+                        ->with(['userDetail' => function ($query) {
+                            $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                                ->with('tenant_department:id,name'); // Load department name
+                        }])
+                        ->whereHas('userDetail', function ($query) use ($tenantId) {
+                            $query->where('tenant_id', $tenantId);
+                        })
+                        ->where('id', '!=', $authUser->id)
+                        ->get();
+    
+                    if ($recipients->isEmpty()) {
+                        return redirect()->back()->with('error', 'No recipients found.');
+                    }
+    
+                    return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
                 // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
@@ -2016,6 +2060,10 @@ class SuperAdminActions extends Controller
     public function sendMemo(Request $request)
     {
         $data = $request;
+        $userOrg = User::with('userDetail.tenant')->where('id', $data->recipient_id)->first();
+        $userDepartment = UserDetails::with('tenant_department')->where('id', $data->recipient_id)->first();
+        $userDepartment = $userDepartment->tenant_department->name ?? null;
+        $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $result = DocumentStorage::sendMemo($data);
         if ($result['status'] === 'error') {
             return redirect()->back()
@@ -2023,7 +2071,7 @@ class SuperAdminActions extends Controller
                 ->withInput();
         }
         try {
-            SendMailHelper::sendNotificationMail($data, $request);
+            SendMailHelper::sendNotificationMail($data, $request, $userTenant, $userDepartment);
         } catch (\Exception $e) {
             Log::error('Failed to send review notification email: ' . $e->getMessage());
             return redirect()->route('document.index')->with([
@@ -2081,7 +2129,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role,['Staff', 'IT Admin'])) {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
 
             if (!empty($recipient) && isset($recipient[0])) {
@@ -2121,7 +2169,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
-        if (Auth::user()->default_role === 'Staff') {
+        if (in_array(Auth::user()->default_role,['Staff', 'IT Admin'])) {
             list($received_documents) = DocumentStorage::getReceivedMemos();
 
             return view('staff.memo.received', compact('received_documents', 'authUser', 'userTenant'));
@@ -2136,7 +2184,7 @@ class SuperAdminActions extends Controller
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
-            $departments = TenantDepartment::orderBy('id', 'desc')->paginate(10);
+            $departments = TenantDepartment::orderBy('id', 'desc')->get();
             return view('superadmin.departments.index', compact('departments', 'authUser', 'userTenant'));
         }
         if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
@@ -2146,7 +2194,7 @@ class SuperAdminActions extends Controller
             // Filter TenantDepartment by tenant_id and paginate the results
             $departments = TenantDepartment::where('tenant_id', $tenantId)
                 ->orderBy('id', 'desc')
-                ->paginate(10);
+                ->get();
             return view('admin.departments.index', compact('departments', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
@@ -2285,7 +2333,6 @@ class SuperAdminActions extends Controller
 
             $user = User::with('userDetail')->where('id', $authUser->id)->first();
             $receipt = Payment::with('user')->where('id', $receipt)->first();
-            // dd($receipt);
 
             return view('user.receipts.show', compact('receipt', 'user', 'authUser', 'userTenant'));
         }

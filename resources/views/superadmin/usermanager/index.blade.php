@@ -71,9 +71,9 @@
                     </tbody>
                 </table>
                 <div class="mt-4">
-                    @if ($users->count() > 0)
+                    {{-- @if ($users->count() > 0)
                         {{ $users->links('pagination::bootstrap-5') }}
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>

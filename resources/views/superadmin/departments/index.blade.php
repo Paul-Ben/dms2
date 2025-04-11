@@ -77,7 +77,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4">{{$departments->links('pagination::bootstrap-5')}}</div>
+                {{-- <div class="mt-4">{{$departments->links('pagination::bootstrap-5')}}</div> --}}
             </div>
         </div>
         <!-- Table End -->

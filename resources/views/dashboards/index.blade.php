@@ -176,7 +176,7 @@
                                     class="fa fa-paper-plane"></i>Outgoing Mails</a>
                         </div>
                     </div>
-                    @role('Admin|Secretary|Staff')
+                    @role('Admin|Secretary|Staff|IT Admin')
                         <a href="{{ route('memo.index') }}"
                             class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
                                 class="fa fa-th me-2"></i>Memos</a>

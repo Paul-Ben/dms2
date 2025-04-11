@@ -46,11 +46,11 @@ class DocumentStorage
     /**
      * Get all documents for the logged in user
      */
-    public static function myDocuments($perpage = 10)
+    public static function myDocuments()
     {
         $documents = Document::with('user')->where('uploaded_by', Auth::user()->id)
             ->orderBy('id', 'desc')
-            ->paginate($perpage);
+            ->get();
 
 
         return $documents;
@@ -465,7 +465,7 @@ class DocumentStorage
 
     public static function reviewedDocument(array $data, $recipient)
     {
-        $recipientID = $recipient[0]->id;
+        $recipientID = $recipient->id;
 
         // Validate input data
         $validator = Validator::make($data, [
@@ -549,7 +549,7 @@ class DocumentStorage
     /**
      * Get all sent documents
      */
-    public static function getSentDocuments($perPage = 5)
+    public static function getSentDocuments()
     {
         $authUser = Auth::user();
         try {
@@ -557,7 +557,7 @@ class DocumentStorage
             $sent_documents = FileMovement::with(['document_recipients', 'document'])
                 ->where('sender_id',  $authUser->id)
                 ->orderBy('id', 'desc')
-                ->paginate($perPage);
+                ->get();
 
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
@@ -578,14 +578,14 @@ class DocumentStorage
     /**
      * Get all received documents
      */
-    public static function getReceivedDocuments($perPage = 5)
+    public static function getReceivedDocuments()
     {
         try {
             // Eager load both relationships and paginate the results
             $received_documents = FileMovement::with(['document_recipients', 'document', 'sender.userDetail.tenant_department'])
                 ->where('recipient_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
-                ->paginate($perPage);
+                ->get();
 
             // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {
@@ -631,7 +631,7 @@ class DocumentStorage
         return $adminWithTenantDetails;
     }
 
-    public static function getSentMemos($perPage = 5)
+    public static function getSentMemos()
     {
         $authUser = Auth::user();
         try {
@@ -639,7 +639,7 @@ class DocumentStorage
             $sent_documents = MemoMovement::with(['memo_recipients', 'memo'])
                 ->where('sender_id',  $authUser->id)
                 ->orderBy('id', 'desc')
-                ->paginate($perPage);
+                ->get();
 
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
@@ -657,14 +657,14 @@ class DocumentStorage
         }
     }
 
-    public static function getReceivedMemos($perPage = 5)
+    public static function getReceivedMemos()
     {
         try {
             // Eager load both relationships and paginate the results
             $received_documents = MemoMovement::with(['memo_recipients', 'memo', 'sender.userDetail.tenant_department'])
                 ->where('recipient_id', Auth::user()->id)
                 ->orderBy('id', 'desc')
-                ->paginate($perPage);
+                ->get();
             // dd($received_documents);
             // Fetch sender details for each received document
             foreach ($received_documents as $key => $value) {

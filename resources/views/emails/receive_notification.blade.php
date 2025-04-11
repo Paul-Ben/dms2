@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome To BENGEDMS</title>
+    <title>Welcome To BENEDMS</title>
 
     <style>
         body {
@@ -104,7 +104,7 @@
                 Kindly access your dashboard to review the document.
             </p>
             <div class="button">
-                <a href="">Login Dashboard</a>
+                <a href="https://edms.benuestate.gov.ng/login">Login to Dashboard</a>
             </div>
             <p>
                 Thank you for choosing <strong>{{ $appName }}</strong>.

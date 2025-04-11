@@ -77,7 +77,7 @@
             <p>Dear {{ $senderName }},</p>
             <p>
                 We are pleased to inform you that your document <strong>{{ $documentName }}</strong> 
-                has been successfully sent to <strong>{{ $receiverName }}</strong>. 
+                has been successfully sent to <strong>{{ $userTenant.", ".$userDepartment }}</strong>. 
             </p>
             <p>
                 <i>

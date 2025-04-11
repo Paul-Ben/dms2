@@ -66,11 +66,11 @@
                     </tbody>
                 </table>
             </div>
-            @if($sent_documents->count() > 0)
+            {{-- @if($sent_documents->count() > 0)
             <div class="mt-3">
                 {{$sent_documents->links('pagination::bootstrap-5')}}
             </div>
-            @endif
+            @endif --}}
         </div>
     </div>
     <!-- Table End -->
