@@ -10,7 +10,7 @@
                     <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 popout-effect">
                             <i class="fa fa-inbox fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <p class="mb-2">Received Files</p>
+                            <p class="mb-2">Received Mails</p>
                             <h6 class="mb-0">{{$recieved_documents_count}}</h6>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                     <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 popout-effect">
                             <i class="fa fa-paper-plane fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <p class="mb-2">Sent Files</p>
+                            <p class="mb-2">Sent Mails</p>
                             <h6 class="mb-0">{{$sent_documents_count}}</h6>
                         </div>
                     </div>

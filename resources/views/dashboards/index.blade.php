@@ -153,19 +153,46 @@
                     <div class="ms-3">
                         <h6 class="mb-0">{{ $authUser->name }}</h6>
                         <span>{{ $authUser->userDetail->designation }}</span>
-                        @role('Admin')
+                        {{-- @role('Admin')
                             <span class="badge bg-primary ms-2">Admin</span>
-                        @endrole
+                        @endrole --}}
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="{{ route('dashboard') }}"
                         class="nav-item nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i
                             class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="{{ route('document.index') }}"
-                        class="nav-item nav-link {{ request()->routeIs('document.index', 'document.create') ? 'active' : '' }}"><i
-                            class="fa fa-th me-2"></i>Documents</a>
                     <div class="nav-item dropdown">
+                        <a href="#"
+                            class="nav-link dropdown-toggle {{ request()->routeIs('document.index', 'document.create', 'document.file', 'document.received', 'document.sent') ? 'active' : '' }}"
+                            data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Documents</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{{ route('document.index') }}"
+                                class="dropdown-item {{ request()->routeIs('document.index') ? 'active' : '' }}"><i
+                                    class="fa fa-th me-2"></i>My Documents</a>
+                            @role('Admin|Secretary|Staff|IT Admin')
+                                <a href="{{ route('document.create') }}"
+                                    class="dropdown-item {{ request()->routeIs('document.create') ? 'active' : '' }}"><i
+                                        class="fa fa-plus me-2"></i>Add Document</a>
+                            @endrole
+                            @role('User')
+                                <a href="{{ route('document.file') }}"
+                                    class="dropdown-item {{ request()->routeIs('document.file') ? 'active' : '' }}"><i
+                                        class="fa fa-plus me-2"></i>File a Document</a>
+                            @endrole
+                            <a href="{{ route('document.received') }}"
+                                class="dropdown-item {{ request()->routeIs('document.received') ? 'active' : '' }}"><i
+                                    class="fa fa-inbox me-2"></i>Incoming Mails</a>
+                            <a href="{{ route('document.sent') }}"
+                                class="dropdown-item {{ request()->routeIs('document.sent') ? 'active' : '' }}"><i
+                                    class="fa fa-paper-plane me-2"></i>Treated Mails</a>
+                        </div>
+
+
+                        {{-- <a href="{{ route('document.index') }}"
+                        class="nav-item nav-link {{ request()->routeIs('document.index', 'document.create') ? 'active' : '' }}"><i
+                            class="fa fa-th me-2"></i>Documents</a> --}}
+                        {{-- <div class="nav-item dropdown">
                         <a href="#"
                             class="nav-link dropdown-toggle {{ request()->routeIs('document.received', 'document.sent') ? 'active' : '' }}"
                             data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>File Movement</a>
@@ -175,67 +202,75 @@
                             <a href="{{ route('document.sent') }}" class="dropdown-item"><i
                                     class="fa fa-paper-plane"></i>Outgoing Mails</a>
                         </div>
-                    </div>
-                    @role('Admin|Secretary|Staff|IT Admin')
-                        <a href="{{ route('memo.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
-                                class="fa fa-th me-2"></i>Memos</a>
-                        <div class="nav-item dropdown">
-                            <a href="#"
-                                class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.sent') ? 'active' : '' }}"
-                                data-bs-toggle="dropdown"><i class="fa fa-file me-2"></i>Memo Movement</a>
-                            <div class="dropdown-menu bg-transparent border-0">
-                                <a href="{{ route('memo.received') }}" class="dropdown-item"><i
-                                        class="fa fa-inbox"></i>Incoming Memos </a>
-                                <a href="{{ route('memo.sent') }}" class="dropdown-item"><i
-                                        class="fa fa-paper-plane"></i>Outgoing Memos</a>
+                    </div> --}}
+                        @role('Admin|Secretary|Staff|IT Admin')
+                            {{-- <a href="{{ route('memo.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
+                                    class="fa fa-th me-2"></i>Memos</a> --}}
+                            <div class="nav-item dropdown">
+                                <a href="#"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.index', 'memo.create', 'memo.sent') ? 'active' : '' }}"
+                                    data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Memos</a>
+                                <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="{{ route('memo.index') }}"
+                                        class="dropdown-item {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
+                                            class="fa fa-th me-2"></i>My Memos</a>
+                                    <a href="{{ route('memo.create') }}"
+                                        class="dropdown-item {{ request()->routeIs('memo.create') ? 'active' : '' }}"><i
+                                            class="fa fa-plus me-2"></i>Initiate Memo</a>
+                                    <a href="{{ route('memo.received') }}" class="dropdown-item"><i
+                                            class="fa fa-inbox"></i>Incoming Memos </a>
+                                    <a href="{{ route('memo.sent') }}" class="dropdown-item"><i
+                                            class="fa fa-paper-plane"></i>Outgoing Memos</a>
+                                </div>
                             </div>
-                        </div>
-                    @endrole
-                    @role('Admin|IT Admin')
-                    <a href="{{ route('designation.index') }}"
-                    class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
-                        class="fa fa-user-circle me-2"></i>Designations</a>
-                        <a href="{{ route('users.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Manage User</a>
-                        <a href="{{ route('department.index') }}" class="nav-item nav-link"><i
-                                class="fa fa-file me-2"></i>Departments
-                        </a>
-                    @endrole
-                    @role('User')
-                        <a href="{{ route('receipt.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('receipt.index') ? 'active' : '' }}"><i
-                                class="fa fa-th me-2"></i>Payment History</a>
-                    @endrole
+                        @endrole
+                        @role('IT Admin')
+                            <a href="{{ route('designation.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Designations</a>
+                        @endrole
+                        @role('Admin|IT Admin')
+                            <a href="{{ route('users.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Manage User</a>
+                            <a href="{{ route('department.index') }}" class="nav-item nav-link"><i
+                                    class="fa fa-file me-2"></i>Departments
+                            </a>
+                        @endrole
+                        @role('User')
+                            <a href="{{ route('receipt.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('receipt.index') ? 'active' : '' }}"><i
+                                    class="fa fa-th me-2"></i>Payment History</a>
+                        @endrole
 
-                    @role('superadmin')
-                        <a href="{{ route('users.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Manage User</a>
-                        <a href="{{ route('set.charge') }}"
-                            class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Set File Charge</a>
-                        <a href="{{ route('designation.index') }}"
-                            class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
-                                class="fa fa-user-circle me-2"></i>Designations</a>
-                                <a href="{{ route('role.index') }}"
+                        @role('superadmin')
+                            <a href="{{ route('users.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Manage User</a>
+                            <a href="{{ route('set.charge') }}"
+                                class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Set File Charge</a>
+                            <a href="{{ route('designation.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Designations</a>
+                            <a href="{{ route('role.index') }}"
                                 class="nav-item nav-link {{ request()->routeIs('role.index') ? 'active' : '' }}"><i
                                     class="fa fa-user-circle me-2"></i>Roles</a>
-                        <div class="nav-item dropdown">
-                            <a href="#"
-                                class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}"
-                                data-bs-toggle="dropdown"><i class="fa fa-building me-2"></i>MDA Manager</a>
-                            <div class="dropdown-menu bg-transparent border-0">
-                                <a href="{{ route('organisation.index') }}" class="nav-item nav-link"><i
-                                        class="fa fa-building me-2"></i>Organisations</a>
-                                <a href="{{ route('department.index') }}" class="dropdown-item"><i
-                                        class="fa fa-file me-2"></i>Departments
-                                </a>
+                            <div class="nav-item dropdown">
+                                <a href="#"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}"
+                                    data-bs-toggle="dropdown"><i class="fa fa-building me-2"></i>MDA Manager</a>
+                                <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="{{ route('organisation.index') }}" class="nav-item nav-link"><i
+                                            class="fa fa-building me-2"></i>Organisations</a>
+                                    <a href="{{ route('department.index') }}" class="dropdown-item"><i
+                                            class="fa fa-file me-2"></i>Departments
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    @endrole
-                </div>
+                        @endrole
+                    </div>
             </nav>
         </div>
         <!-- Sidebar End -->

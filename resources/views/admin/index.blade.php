@@ -9,7 +9,7 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 popout-effect">
                             <i class="fa fa-inbox fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Received Files</p>
+                                <p class="mb-2">Received Mails</p>
                                 <h6 class="mb-0">{{ $recieved_documents_count }}</h6>
                             </div>
                         </div>
@@ -20,7 +20,7 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 popout-effect">
                             <i class="fa fa-paper-plane fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Sent Files</p>
+                                <p class="mb-2">Treated Mails</p>
                                 <h6 class="mb-0">{{ $sent_documents_count }}</h6>
                             </div>
                         </div>
@@ -43,11 +43,7 @@
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <p class="mb-2">Total Revenue</p>
-                                @if (date('d') >= 28 && date('d') <= 31)
-                                    <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6>
-                                @else
-                                    <h6 class="mb-0">NGN 0.00</h6>
-                                @endif
+                                <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6>
                                 {{-- <h6 class="mb-0">NGN{{ number_format($totalAmount ?? 0, 2) }}</h6> --}}
                             </div>
                         </div>
