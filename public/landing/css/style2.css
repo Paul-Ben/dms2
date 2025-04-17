@@ -1,0 +1,27 @@
+
+.logo-scroll-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: #f8f9fa; /* optional background */
+    padding: 10px 0;
+}
+
+.logo-scroll {
+    display: inline-block;
+    animation: scrollLogos 20s linear infinite;
+}
+
+.logo-scroll img {
+    height: 60px;
+    margin: 0 30px;
+    vertical-align: middle;
+}
+
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}

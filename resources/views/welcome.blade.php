@@ -27,7 +27,7 @@
                 <div class="col-12 col-md-4 text-center">
                     <div class="p-3  ">
                         <!-- <img src="images/vector_shape1.svg"
-                                                style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
+                                                        style="z-index: 5; position: absolute; margin-top: 318px; left: 1000.85px;"> -->
                         <img src="{{ asset('landing/images/benue_new_logo.svg') }}" width="343" height="382"
                             class="w-300">
                     </div>
@@ -44,15 +44,16 @@
 
                 <div class="col-12 col-md-6">
                     <div class="p-3">
-                        <img src="{{ asset('landing/images/Gov Alia-2.png') }}" width="443" height=""
-                            class="w-300" style="border-radius: 1em;">
+                        <img src="{{ asset('landing/images/Gov Alia-2.png') }}" width="443" height="" class="w-300"
+                            style="border-radius: 1em;">
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <div class="p-3 ">
                         <div class="">
-                            <p class="title" style="display: inline;">About </p><span style="display: inline; font-size:45px; font-weight:500">BENEDMS</span>
+                            <p class="title" style="display: inline;">About </p><span
+                                style="display: inline; font-size:45px; font-weight:500">BENEDMS</span>
                         </div>
                         <p class="body-text" style="">The Benue State Electronic Document Management System (BENEDMS)
                             is a cutting-edge digital platform designed to revolutionize document processing, storage, and
@@ -340,9 +341,10 @@
                             <div class="accordion-body">
                                 <p>
                                     The use of BENEDMS for government agencies and departments may be free or
-                                subscription-based, depending on the level of access required. Individuals or external
-                                organizations seeking access to certain services may need to pay a fee as stipulated by the
-                                Benue State Government.
+                                    subscription-based, depending on the level of access required. Individuals or external
+                                    organizations seeking access to certain services may need to pay a fee as stipulated by
+                                    the
+                                    Benue State Government.
                                 </p>
                             </div>
                         </div>
@@ -359,6 +361,33 @@
                 <div class="d-flex text-center justify-content-center align-items-center">
                     <a href="{{ route('contact') }}"><button type="button" class="btn btn-success ml-auto "
                             style="width: 230px; height: 48px;">Contact</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="margin-top: 150px;">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="faqs-head-div">
+                    <h2 class="mb-4 text-center faqs-title">Partners</h2>
+                    {{-- <p class="text-center">Get your concerns address in this Frequently Asked Questions section</p> --}}
+                </div>
+                <div class="partners-text text-center">
+                    <p>We are proud to partner with leading organizations to deliver exceptional services.</p>
+                </div>
+            </div>
+            <!-- Logo Scroll Container -->
+            <div class="logo-scroll-wrapper" >
+                <div class="logo-scroll">
+                    <img src="{{ asset('landing/partners/nitda.jpg') }}" alt="Partner 1">
+                    <img src="{{ asset('landing/partners/galaxybackbone.jpg') }}" alt="Partner 2">
+                    <img src="{{ asset('landing/partners/ndpc.jpg') }}" alt="Partner 3">
+                    <img src="{{ asset('landing/partners/hos.jpg') }}" alt="Partner 4">
+                    <!-- Duplicate logos for seamless looping -->
+                    <img src="{{ asset('landing/partners/nitda.jpg') }}" alt="Partner 1">
+                    <img src="{{ asset('landing/partners/galaxybackbone.jpg') }}" alt="Partner 2">
+                    <img src="{{ asset('landing/partners/ndpc.jpg') }}" alt="Partner 3">
+                    <img src="{{ asset('landing/partners/hos.jpg') }}" alt="Partner 4">
                 </div>
             </div>
         </div>
