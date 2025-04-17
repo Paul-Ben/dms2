@@ -383,11 +383,13 @@
                     <img src="{{ asset('landing/partners/galaxybackbone.jpg') }}" alt="Partner 2">
                     <img src="{{ asset('landing/partners/ndpc.jpg') }}" alt="Partner 3">
                     <img src="{{ asset('landing/partners/hos.jpg') }}" alt="Partner 4">
+                    <img src="{{ asset('landing/partners/minstry.jpg') }}" alt="Partner 5">
                     <!-- Duplicate logos for seamless looping -->
                     <img src="{{ asset('landing/partners/nitda.jpg') }}" alt="Partner 1">
                     <img src="{{ asset('landing/partners/galaxybackbone.jpg') }}" alt="Partner 2">
                     <img src="{{ asset('landing/partners/ndpc.jpg') }}" alt="Partner 3">
                     <img src="{{ asset('landing/partners/hos.jpg') }}" alt="Partner 4">
+                    <img src="{{ asset('landing/partners/minstry.jpg') }}" alt="Partner 5">
                 </div>
             </div>
         </div>
