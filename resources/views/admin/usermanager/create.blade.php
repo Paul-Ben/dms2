@@ -61,11 +61,11 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">NIN</label>
-                                    <input type="text" name="nin_number" class="form-control">
+                                    <input type="text" name="nin_number" class="form-control" required>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Phone</label>
-                                    <input type="text" name="phone_number" class="form-control">
+                                    <input type="text" name="phone_number" class="form-control" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
-                                    <select name="default_role" class="form-select">
+                                    <select name="default_role" class="form-select" required>
                                         <option selected>select menu</option>
                                         @foreach ($roles as $role)
                                             <option value="{{ $role->name }}">{{ $role->name }}</option>
@@ -86,7 +86,7 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="genderSelect" class="form-label">Gender</label>
-                                    <select id="genderSelect" name="gender" class="form-select">
+                                    <select id="genderSelect" name="gender" class="form-select" required>
                                         <option value=" ">select menu</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
-                                    <select id="departmentSelect" name="department_id" class="form-select">
+                                    <select id="departmentSelect" name="department_id" class="form-select" required>
                                         <option value="">select menu</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -107,7 +107,7 @@
                                     <label for="exampleInputEmail1" class="form-label">Designation</label>
                                     <input type="text" name="tenant_id" class="form-control"
                                         value="{{ Auth::user()->userDetail->tenant_id }}" hidden>
-                                    <select id="organisationSelect" name="designation" class="form-select">
+                                    <select id="organisationSelect" name="designation" class="form-select" required>
                                         <option selected>select menu</option>
                                         @foreach ($designations as $designation)
                                             <option value="{{ $designation->name }}">{{ $designation->name }}</option>
