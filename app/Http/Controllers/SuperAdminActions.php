@@ -115,10 +115,6 @@ class SuperAdminActions extends Controller
 
         ]);
 
-        // check if validation fails
-        if ($request->fails()) {
-            return redirect()->back()->withErrors($request->errors())->withInput();
-        }
 
 
         // Create a new user instance
