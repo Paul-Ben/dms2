@@ -10,37 +10,39 @@
 
         body {
             background: #f6f8fc;
-            padding: 20px;
+            padding: 15px;
         }
 
         .email-container {
-            max-width: 1000px;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            padding: 20px;
+            padding: 15px;
         }
 
         .toolbar {
             padding: 10px 0;
             border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             border: 1px solid #dadce0;
             border-radius: 4px;
             background: white;
             color: #444;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 5px;
+            white-space: nowrap;
         }
 
         .btn:hover {
@@ -48,42 +50,43 @@
         }
 
         .btn svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
         }
 
         .email-header {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .subject {
-            font-size: 20px;
+            font-size: 18px;
             color: #202124;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .email-meta {
             display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 10px;
-            font-size: 14px;
+            grid-template-columns: 70px 1fr;
+            gap: 8px;
+            font-size: 13px;
             color: #5f6368;
         }
 
         .email-body {
             color: #202124;
             line-height: 1.5;
-            margin: 20px 0;
+            margin: 15px 0;
+            font-size: 14px;
         }
 
         .attachment {
             border: 1px solid #dadce0;
             border-radius: 4px;
-            padding: 12px;
-            margin: 20px 0;
+            padding: 10px;
+            margin: 15px 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
         }
 
@@ -92,8 +95,8 @@
         }
 
         .file-icon {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: #f1f3f4;
             border-radius: 4px;
             display: flex;
@@ -108,10 +111,11 @@
         .file-name {
             font-weight: 500;
             color: #202124;
+            font-size: 14px;
         }
 
         .file-meta {
-            font-size: 12px;
+            font-size: 11px;
             color: #5f6368;
         }
 
@@ -132,57 +136,193 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            width: 80%;
+            width: 90%;
+            max-width: 800px;
             max-height: 80vh;
             overflow: auto;
         }
 
         .close-preview {
             position: absolute;
-            right: 20px;
-            top: 20px;
+            right: 15px;
+            top: 15px;
             cursor: pointer;
+        }
+
+        /* Timeline Styling */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 12px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0d6efd;
+            border: 2px solid white;
+        }
+
+        /* Message Bubble */
+        .message-bubble {
+            position: relative;
+            border-left: 3px solid #0d6efd;
+            padding: 12px;
+            background: white;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .email-container {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .btn svg {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .subject {
+                font-size: 20px;
+            }
+            
+            .email-meta {
+                grid-template-columns: 80px 1fr;
+                font-size: 14px;
+            }
+            
+            .timeline {
+                padding-left: 50px;
+            }
+            
+            .timeline-item::before {
+                left: -40px;
+                width: 12px;
+                height: 12px;
+            }
+            
+            .avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .toolbar {
+                gap: 6px;
+            }
+            
+            .btn {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+            
+            .btn svg {
+                width: 12px;
+                height: 12px;
+            }
+            
+            .email-meta {
+                grid-template-columns: 60px 1fr;
+                font-size: 12px;
+                gap: 6px;
+            }
+            
+            .timeline {
+                padding-left: 30px;
+            }
+            
+            .timeline-item::before {
+                left: -25px;
+                width: 8px;
+                height: 8px;
+            }
         }
     </style>
 
-    <!-- Button Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="col-12">
-            <div class="bg-light rounded h-100 p-4">
-
-            </div>
-        </div>
-    </div>
-    <!-- Button End -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-light rounded p-4">
+    <div class="container-fluid pt-3 pt-md-4 px-2 px-md-3">
+        <div class="bg-light rounded p-3 p-md-4">
             <div class="email-container">
                 <div class="toolbar">
-                    <a href="{{ route('document.reply', $document_received->document_id) }}">
-                        <button class="btn" onclick="replyEmail()">
+                    <a href="{{ route('document.reply', $document_received->document_id) }}" class="text-decoration-none">
+                        <button class="btn">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
                             </svg>
-                            Reply
+                            <span class="d-none d-sm-inline">Reply the mail</span>
+                            <span class="d-inline d-sm-none">Reply</span>
                         </button>
                     </a>
-                    <a href="{{ route('document.send', $document_received->document_id) }}">
-                        <button class="btn" onclick="forwardEmail()">
+                    <a href="{{ route('document.send', $document_received->document_id) }}" class="text-decoration-none">
+                        <button class="btn">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M14 9v-4l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
                             </svg>
-                            Forward
+                            <span class="d-none d-sm-inline">Minute the mail</span>
+                            <span class="d-inline d-sm-none">Minute</span>
                         </button>
                     </a>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#forwardedMessageModal">
+                    {{-- <button class="btn" type="button" data-toggle="modal" data-target="#forwardedMessageModal">
                         <svg viewBox="0 0 24 24">
                             <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                         </svg>
-                        Previous Minuting
-                    </button>
-                    <a href="{{ route('track', $document_received->document_id) }}">
+                        <span class="d-none d-md-inline">Previous Minuting</span>
+                        <span class="d-inline d-md-none">History</span>
+                    </button> --}}
+                    <a href="#priviousmiuting">
+                        <button class="btn" type="button">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                            </svg>
+                            <span class="d-none d-md-inline">Previous Minuting</span>
+                            <span class="d-inline d-md-none">History</span>
+                        </button>
+                    </a>
+
+                    <a href="{{ route('track', $document_received->document_id) }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
@@ -191,17 +331,18 @@
                         </button>
                     </a>
                     @if ($document_received->attachments->isNotEmpty())
-                    <a href="{{route('getAttachments', $document_received->document_id)}}" target="_blank">
-                        <button class="btn">
-                            <svg viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                            </svg>
-                            Attachments
-                        </button>
-                    </a>
+                        <a href="{{ route('getAttachments', $document_received->document_id) }}" target="_blank" class="text-decoration-none">
+                            <button class="btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                                </svg>
+                                <span class="d-none d-sm-inline">Attachments</span>
+                                <span class="d-inline d-sm-none">Files</span>
+                            </button>
+                        </a>
                     @endif
-                    <a href="{{ url()->previous() }}">
-                        <button class="btn" onclick="replyEmail()">
+                    <a href="{{ url()->previous() }}" class="text-decoration-none">
+                        <button class="btn">
                             <svg viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
                             </svg>
@@ -210,37 +351,30 @@
                     </a>
                 </div>
 
-                <div class="email-header">
-                    <div class="subject">Subject: {{ $document_received->document->title }}</div>
-                    <div class="email-meta">
-                        <div>From:</div>
-                        <div>{{ $document_received->sender->name }} &lt;{{ $document_received->sender->email }}&gt;</div>
-                        <div>To:</div>
-                        <div>{{ $document_received->recipient->name }} &lt;{{ $document_received->recipient->email }}m&gt;
+                <!-- Document Preview Section -->
+                <div class="attachment mt-3">
+                    <div class="file-details">
+                        <strong>Document:</strong> {{ e($document_received->document->docuent_number) }}
+                        <div id="previewContainer" class="mt-3">
+                            <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
+                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe>
                         </div>
-                        <div>Date:</div>
-                        <div>{{ $document_received->created_at->format('M j, Y') }}</div>
                     </div>
                 </div>
 
-                <div class="email-body ml-8">
-                    Hi {{ $document_received->recipient->name }},<br><br>
-
-                    {{ $document_received->message }}.<br><br>
-                    Best regards,<br>
-                    {{ $document_received->sender->name }}
-                </div>
-                <div>
+                <!-- Attachments List -->
+                <div class="mt-3">
                     @if ($document_received->attachments->isNotEmpty())
                         <a href="{{ asset('documents/attachments/' . $document_received->attachments[0]->attachment) }}"
-                            target="__blank">Attachment by {{ $document_received->sender->name }}</a>
-                    @else 
-                        
+                            target="__blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-paperclip mr-1"></i>
+                            Attachment by {{ $document_received->sender->name }}
+                        </a>
                     @endif
-
                 </div>
 
-                <div class="attachment" id="fileinput">
+                <!-- Document Download Section -->
+                <div class="attachment mt-3" id="fileinput">
                     <div class="file-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24">
                             <path fill="#5f6368"
@@ -248,91 +382,143 @@
                         </svg>
                     </div>
                     <div class="file-details">
-                        <div class="file-name"><a href="{{ asset('storage/'. $document_received->document->file_path) }}"
-                                target="__blank">{{ $document_received->document->file_path }}</a></div>
+                        <div class="file-name">
+                            <a href="{{ asset('storage/' . $document_received->document->file_path) }}"
+                                target="__blank" class="text-primary">
+                                {{ $document_received->document->docuent_number }}
+                            </a>
+                        </div>
                         <div class="file-meta">PDF Document Added
                             {{ $document_received->created_at->format('M j, Y') }}</div>
-                        <div id="previewContainer">
-                            <img id="imagePreview" style="display: none; max-width: 100%; max-height: 400px;" />
-                            <iframe id="pdfPreview" style="display: none; width: 100%; height: 400px;"
-                                frameborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Minuting Timeline Section -->
+            <div class="container py-3 py-md-4">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-8">
+                        <!-- Header -->
+                        <div id="priviousmiuting" class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 h4-md fw-bold text-primary mb-0">
+                                <i class="fas fa-history mr-2"></i> Previous Minuting
+                            </h2>
+                        </div>
+
+                        <!-- Document Info Card -->
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body bg-light p-3">
+                                <h5 class="card-title fw-bold mb-1">
+                                   Document Title: {{ $document_received->document->title }}
+                                </h5>
+                                <p class="card-text text-muted small mb-0">
+                                    <strong>Document #:</strong> {{ $document_received->document->docuent_number }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Chat-Style Timeline -->
+                        <div class="timeline">
+                            @foreach ($document_locations as $location)
+                                <div class="timeline-item">
+                                    <!-- Message Header -->
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary text-white rounded-circle mr-2 mr-md-3">
+                                                {{ strtoupper(substr($location->sender->name, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold small">{{ $location->sender->name }}</h6>
+                                                <small class="text-muted d-block">
+                                                    {{ $location->sender->userDetail->designation }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ $location->updated_at->format('M j, Y g:i A') }}
+                                        </small>
+                                    </div>
+
+                                    <!-- Message Bubble -->
+                                    <div class="message-bubble">
+                                        <p class="mb-2 small">Hi {{ $location->recipient->name }},</p>
+                                        <p class="mb-3 small">{{ $location->message }}</p>
+                                        <small class="text-muted d-block small">
+                                            <i class="fas fa-user-check mr-1"></i>
+                                            Sent to: {{ $location->recipient->name }}
+                                        </small>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Attachment -->
-            <div class="attachment mt-4">
-                <div class="file-details">
-                    <strong>Attachment:</strong>
-                    <div class="file-name">
-                        <a href="{{ asset('storage/'. $document_received->document->file_path) }}" target="_blank">
-                            {{ e($document_received->document->file_path) }}
-                        </a>
+            <div class="container py-3 py-md-4">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                      
                     </div>
-                    <div id="previewContainer">
-                        <iframe id="pdfPreview" style="width: 100%; height: 400px;" frameborder="0"
-                            src="{{ asset('storage/'. $document_received->document->file_path) }}"></iframe>
-                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="forwardedMessageModal" tabindex="-1" role="dialog" aria-labelledby="forwardedMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forwardedMessageModalLabel">
+                        Previous Minutes
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @foreach ($document_locations as $location)
+                        <div class="forwarded-content mb-4">
+                            <p class="text-center font-weight-bold">---------- {{ $document_received->document->docuent_number }} ----------</p>
+                            <p class="mb-1">
+                                <strong>From:</strong> {{ $location->sender->name }}
+                                &lt;{{ $location->sender->userDetail->designation }}&gt;
+                            </p>
+                            <p class="mb-1">
+                                <strong>Date:</strong> {{ $location->updated_at->format('M j, Y g:i A') }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Subject:</strong> {{ $document_received->document->title }}
+                            </p>
+                            <p class="mb-3">
+                                <strong>To:</strong> {{ $location->recipient->name }}
+                                &lt;{{ $location->recipient->userDetail->designation }}&gt;
+                            </p>
+                            <p>Hi {{ $location->recipient->name }},</p>
+                            <p class="mb-3">
+                                {{ $location->message }}
+                            </p>
+                            <p>Best regards,</p>
+                            <p>{{ $location->sender->name }}</p>
+                        </div>
+                        @if (!$loop->last)
+                            <hr class="my-4">
+                        @endif
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div>
-        <!-- Modal -->
-        <div class="modal fade" id="forwardedMessageModal" tabindex="-1" aria-labelledby="forwardedMessageModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="forwardedMessageModalLabel">
-                            Previous Minutes
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @foreach ($document_locations as $location)
-                            <div class="forwarded-content">
-                                <p>---------- {{ $document_received->document->docuent_number }} ----------</p>
-                                <p>
-                                    <strong>From:</strong> {{ $location->sender->name }}
-                                    &lt;{{ $location->sender->userDetail->designation }}&gt;
-                                </p>
-                                <p>
-                                    <strong>Date:</strong> {{ $location->updated_at->format('M j, Y g:i A') }}
-                                </p>
-                                <p>
-                                    <strong>Subject:</strong> {{ $document_received->document->title }}
-                                </p>
-                                <p>
-                                    <strong>To:</strong> {{ $location->recipient->name }}
-                                    &lt;{{ $location->recipient->userDetail->designation }}&gt;
-                                </p>
-                                <br />
-                                <p>Hi {{ $location->recipient->name }},</p>
-                                <p>
-                                    {{ $location->message }}
-                                </p>
 
-                                <p>Best regards,</p>
-                                <p>{{ $location->sender->name }}</p>
-                            </div>
-                        @endforeach
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <script>
         function showPreview() {
             document.getElementById('previewModal').style.display = 'block';
-
-
         }
 
         function closePreview() {
@@ -364,8 +550,7 @@
                 modal.style.display = 'none';
             }
         }
-    </script>
-    <script>
+
         function previewDocument(fileUrl, fileType) {
             if (fileType === 'pdf') {
                 document.getElementById('imagePreview').style.display = 'none';

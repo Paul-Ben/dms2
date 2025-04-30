@@ -922,7 +922,7 @@ class SuperAdminActions extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
-            'file_path' => 'required|mimes:pdf|max:2048', // PDF file, max 2MB
+            'file_path' => 'required|mimes:pdf|max:10240', // PDF file, max 2MB
             'uploaded_by' => 'required|exists:users,id',
             'status' => 'nullable|in:pending,processing,approved,rejected,kiv,completed',
             'description' => 'nullable|string',
@@ -1157,6 +1157,7 @@ class SuperAdminActions extends Controller
     public function document_show($received, Document $document)
     {
         $authUser = Auth::user();
+        $tenantId = $authUser->userDetail->tenant_id ?? null;
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
@@ -1167,7 +1168,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
-
+            
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -1205,7 +1206,9 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
             // dd($document_received);
-            return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant'));
+            
+            return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant', 'recipients', 'notification'));
+                
         }
         if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();

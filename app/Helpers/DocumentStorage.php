@@ -69,7 +69,7 @@ class DocumentStorage
         $data->validate([
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
-            'file_path' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_path' => 'required|file|mimes:pdf|max:10240',
             'description' => 'required|string',
             'metadata' => 'nullable|json',
         ]);
