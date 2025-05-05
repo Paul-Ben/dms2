@@ -702,7 +702,7 @@
                         </button>
                     </a>
                     @if ($document_received->attachments->isNotEmpty())
-                        <a href="{{ route('getAttachments', $document_received->document_id) }}" target="_blank" class="text-decoration-none">
+                        <a href="{{ route('getAttachments', $document_received->document_id) }}" class="text-decoration-none">
                             <button class="btn">
                                 <svg viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />

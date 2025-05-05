@@ -31,7 +31,7 @@
                     </form>
                 </div> --}}
                 <div>
-                    @role('IT Amin')
+                    @role('IT Admin')
                     <a class="btn btn-sm btn-primary" href="{{ route('user.create') }}">Add User</a>
                     @endrole
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
