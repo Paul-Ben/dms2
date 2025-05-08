@@ -25,7 +25,7 @@
                 <form action="{{ route('document.senddoc', $document) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-3">
-                        <label for="recipient_email">Recipient</label>
+                        <label for="recipient_email">Select Staff to minute to:</label>
 
                         <select class="form-control selectpicker" name="recipient_id[]" id="recipients" multiple="multiple">
                             <option value="" disabled>Select recipients</option>
@@ -43,8 +43,24 @@
                         <input type="text" value="{{ $document->id }}" class="form-control" id="subject"
                             name="document_id" required>
                     </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
+                    <div class="form-group mb-3">
+                        <label for="message">Message/Minuting</label>
+                        <!-- Suggestion Chips -->
+                    <div class="mb-3" id="suggestion-container" style="display: none;">
+                        <label class="form-label">Suggestions:</label>
+                        <div id="suggestions">
+                            <span class="badge bg-primary suggestion" style="cursor:pointer;">Please treat.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Please act.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Please treat as urgent.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Please advise.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Please bring up.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">For your necessary action.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Please Keep in view.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">This is for your information.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Write a Brief.</span>
+                                <span class="badge bg-primary suggestion" style="cursor:pointer;">Put away.</span>
+                        </div>
+                    </div>
                         <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                     </div>
                     <div class="col-sm-12 col-xl-6 mb-3">
@@ -64,6 +80,33 @@
                 placeholder: "Select recipients",
                 allowClear: true,
                 tags: false,
+            });
+        });
+    </script>
+    <script>
+        const textarea = document.getElementById('message');
+        const suggestionContainer = document.getElementById('suggestion-container');
+        const suggestions = document.querySelectorAll('.suggestion');
+    
+        // Show suggestions on focus
+        textarea.addEventListener('focus', () => {
+            suggestionContainer.style.display = 'block';
+        });
+    
+        // Hide suggestions when focus is lost (optional)
+        textarea.addEventListener('blur', () => {
+            setTimeout(() => {
+                suggestionContainer.style.display = 'none';
+            }, 200); // delay to allow chip click before hiding
+        });
+    
+        // Handle suggestion click
+        suggestions.forEach(suggestion => {
+            suggestion.addEventListener('click', () => {
+                textarea.value = textarea.value.trim()
+                    ? textarea.value + ' ' + suggestion.textContent
+                    : suggestion.textContent;
+                textarea.focus();
             });
         });
     </script>

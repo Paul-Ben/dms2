@@ -220,7 +220,7 @@ class DocumentStorage
                 ], [
                     'message' => $data->message,
                 ]);
-
+                
                 if ($fileName) {
                     Attachments::firstOrCreate([
                         'file_movement_id' => $document_action->id,
@@ -558,7 +558,7 @@ class DocumentStorage
                 ->where('sender_id',  $authUser->id)
                 ->orderBy('id', 'desc')
                 ->get();
-
+            
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
                 $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);

@@ -1,7 +1,20 @@
 @extends('layouts.logandregister')
 @section('content')
-    <div class="container  ">
-        <div class="row mtop-small-150  ">
+<div class="container text-center d-none d-sm-block">
+    <div class="row no-wrap">
+        <div class="col-4">
+            <div class="p-3 "><img src="{{ asset('landing/images/hero_image1.png')}}" alt="" style="border-radius: 1em;" width="220"></div>
+        </div>
+        <div class="col-4">
+            <div class="p-3 "><img src="{{ asset('landing/images/landing_image_2.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
+        </div>
+        <div class="col-4">
+            <div class="p-3 "><img src="{{ asset('landing/images/landing_image1.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
+        </div>
+    </div>
+</div>
+    <div class="container form-layout ">
+        <div class="row">
 
             <div class="col-md-8 mx-auto ">
                 <div class="login-form  p-sides-large">

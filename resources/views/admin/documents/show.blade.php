@@ -354,7 +354,7 @@
                 <!-- Document Preview Section -->
                 <div class="attachment mt-3">
                     <div class="file-details">
-                        <strong>Document:</strong> {{ e($document_received->document->docuent_number) }}
+                        <strong>Document:</strong> {{ e($document_received->document->docuent_number) }} | {{$document_received->document->file_path}}
                         <div id="previewContainer" class="mt-3">
                             <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe>
