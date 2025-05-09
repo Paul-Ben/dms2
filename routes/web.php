@@ -33,7 +33,7 @@ Route::get('/agencies', function () {
 })->name('agency');
 
 Route::get('/contact', [PagesController::class, 'contactPage'])->name('contact');
-
+Route::post('/contact', [PagesController::class, 'send'])->name('contact.send');
 
 Route::get('/test-verify', function () {
     return view('test-verify');

@@ -8,22 +8,23 @@
             <div class="col-md-6 ">
                 <div class="contact-form">
                     <h2 class="mb-4">Glad to hear from you</h2>
-                    <form class="p-5">
+                    <form class="p-5" action="{{ route('contact.send') }}" method="POST">
+                        @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter your full name">
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Enter your full name" required>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                            <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" required>
                         </div>
                         <div class="mb-3">
                             <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" placeholder="Enter subject">
+                            <input type="text" name="subject" class="form-control" id="subject" placeholder="Enter subject" required>
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" rows="5" placeholder="Your message here"></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Your message here"></textarea>
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-success">Send Message</button>
