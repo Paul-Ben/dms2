@@ -25,7 +25,7 @@ class PagesController extends Controller
         ]);
 
         // Send email using Laravel Mailable
-        Mail::to('paulben.ajene@gmail.com')->send(new ContactFormMail($request->all(), $appName));
+        Mail::to('info@bdic.ng')->send(new ContactFormMail($request->all(), $appName));
 
         $notification = array(
             'message' => 'Your message has been sent successfully!',
