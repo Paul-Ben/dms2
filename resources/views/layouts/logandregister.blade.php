@@ -284,7 +284,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
     <style>
         .iti {
             width: 100%;
@@ -469,7 +469,55 @@
     </div>
     <!-- Footer end -->
     <script src="js/script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        @if (Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
+                case 'info':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.info("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+                    break;
+                case 'success':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.success("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+                case 'warning':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.warning("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+                case 'error':
+
+                    toastr.options.timeOut = 10000;
+                    toastr.options.closeButton = true;
+                    toastr.options.progressBar = true;
+                    toastr.error("{{ Session::get('message') }}");
+                    var audio = new Audio('audio.mp3');
+                    audio.play();
+
+                    break;
+            }
+        @endif
+    </script>
 
 </body>
 
