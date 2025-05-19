@@ -47,7 +47,7 @@
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
-                            @role('IT Amin')
+                            @role('IT Admin')
                             <th scope="col">Action</th>
                             @endrole
                         </tr>
@@ -60,7 +60,7 @@
                                 <td>{{ $user->user->email }}</td>
 
                                 <td>{{ $user->user->default_role }}</td>
-                                @role('IT Amin')
+                                @role('IT Admin')
                                 <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle"
