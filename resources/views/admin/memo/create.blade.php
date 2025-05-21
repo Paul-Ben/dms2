@@ -28,7 +28,7 @@
                     <div class="bg-light rounded h-100 p-4">
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <div>
-                                <h6 class="mb-4">Create a Document Record</h6>
+                                <h6 class="mb-4">Create a Memo Record</h6>
                                 <p>Fill All Fields Required</p>
                             </div>
                             <div>
@@ -54,7 +54,7 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Sender</label>
-                                    <input type="text" name="sender" class="form-control"  >
+                                    <input type="text" name="sender" value="{{ Auth::user()->name }}" class="form-control" readonly>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Recipient</label>

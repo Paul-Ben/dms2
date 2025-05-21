@@ -389,7 +389,7 @@
                             </a>
                         </div>
                         <div class="file-meta">PDF Document Added
-                            {{ $document_received->created_at->format('M j, Y') }}</div>
+                            {{ $document_received->updated_at->format('M j, Y') }}</div>
                     </div>
                 </div>
             </div>
@@ -435,7 +435,7 @@
                                             </div>
                                         </div>
                                         <small class="text-muted">
-                                            {{ $location->updated_at->format('M j, Y g:i A') }}
+                                            {{ $location->created_at->format('M j, Y g:i A') }}
                                         </small>
                                     </div>
 

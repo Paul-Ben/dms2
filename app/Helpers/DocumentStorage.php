@@ -558,7 +558,7 @@ class DocumentStorage
                 ->where('sender_id',  $authUser->id)
                 ->orderBy('id', 'desc')
                 ->get();
-            
+
             // Fetch recipient details for each sent document
             foreach ($sent_documents as $key => $value) {
                 $recipient = User::with('userDetail.tenant')->where('id', $value->recipient_id)->get(['id', 'name', 'email']);
@@ -592,7 +592,7 @@ class DocumentStorage
                 // $value->sender_details = User::select('name', 'email')->find($value->sender_id);
                 $value->sender_details = User::with('userDetail')->find($value->sender_id);
             }
-           
+
             return [$received_documents];
         } catch (\Exception $e) {
             // Log the error message

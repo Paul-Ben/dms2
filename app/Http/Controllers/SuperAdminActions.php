@@ -229,6 +229,7 @@ class SuperAdminActions extends Controller
 
     public function user_update(Request $request, User $user)
     {
+       
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -1168,7 +1169,7 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->get();
-            
+
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -1206,9 +1207,8 @@ class SuperAdminActions extends Controller
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
             // dd($document_received);
-            
+
             return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant', 'recipients', 'notification'));
-                
         }
         if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
@@ -1551,7 +1551,7 @@ class SuperAdminActions extends Controller
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
-        
+
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()
@@ -1585,7 +1585,7 @@ class SuperAdminActions extends Controller
 
         // Decode the JSON data
         $documentData = json_decode($validated['document_data'], true);
-
+        
         $documentID = $documentData['document_id'];
         // Validate required fields in the decoded data
         if (!isset($documentData['document']['id'], $documentData['sender']['name'], $documentData['recipient']['name'])) {
@@ -1614,7 +1614,7 @@ class SuperAdminActions extends Controller
                 $query->where('tenant_id', $tenantId);
             })
             ->first();
-            
+            // dd($recipient);
 
         if ($recipient === null) {
             return redirect()->back()->with([
@@ -1622,6 +1622,20 @@ class SuperAdminActions extends Controller
                 'alert-type' => 'error',
             ]);
         }
+
+        // ===== NEW: Check for existing submission =====
+        // $existingSubmission = FileMovement::where([
+        //     'document_id' => $documentID,
+        //     'recipient_id' => $recipient->id,
+        // ])->where('sender_id', '!=',  $authUser->id)->exists();
+
+        // if ($existingSubmission) {
+        //     return redirect()->back()->with([
+        //         'message' => 'This document has already been sent to admin.',
+        //         'alert-type' => 'error',
+        //     ]);
+        // }
+        // ===== END OF NEW CHECK =====
 
         // Process the document
         $stamp = StampHelper::stampIncomingMail($documentID);
@@ -1631,7 +1645,7 @@ class SuperAdminActions extends Controller
         $userDepartment = UserDetails::with('tenant_department')->where('id', $recipient->id)->first();
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
-        
+
         // Send notification email
         try {
             SendMailHelper::sendReviewNotificationMail($documentData, $recipient, $userTenant, $userDepartment);
@@ -1748,6 +1762,7 @@ class SuperAdminActions extends Controller
 
     public function update_memo(Request $request, Memo $memo)
     {
+        $authUser = Auth::user();
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'document_number' => 'required|string|max:255',
@@ -1787,63 +1802,163 @@ class SuperAdminActions extends Controller
         return redirect()->route('memo.index')->with($notification);
     }
 
+    // public function generateMemoPdf(Memo $memo)
+    // {
+    //     // dd($memo);
+    //     $authUser = Auth::user();
+    //     // Create new FPDI instance
+    //     $pdf = new Fpdi();
+
+    //     // Set the source file (your letterhead template)
+    //     $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
+
+    //     // Import the first page of the template
+    //     $tplId = $pdf->importPage(1);
+
+    //     // Add a new page to the PDF and use the imported template
+    //     $pdf->AddPage();
+    //     $pdf->useTemplate($tplId);
+
+    //     // Set font and add dynamic content
+    //     $pdf->SetFont('Arial', '', 14);
+
+    //     //Add sender
+    //     $pdf->SetXY(35, 28);
+    //     $pdf->Write(0, $memo['sender']);
+
+    //     //Add recipient
+    //     $pdf->SetXY(125, 28);
+    //     $pdf->Write(0, $memo['receiver']);
+
+    //     $pdf->SetXY(130, 42);
+    //     $pdf->Write(0, $memo['created_at']);
+    //     // Add title/subject information
+    //     $pdf->SetXY(36, 42); // Adjust X and Y coordinates as needed
+    //     $pdf->Write(0,  $memo['title']);
+
+    //     // Add salutation
+    //     // $pdf->SetXY(25, 50); // Adjust X and Y coordinates as needed
+    //     // $pdf->Write(0,  'Dear Sir/Madam,');
+    //     $pdf->SetXY(25, 59); // Adjust X and Y coordinates as needed
+    //     $pdf->Write(0,  'Dear Sir/Madam,');
+
+    //     // Add body/content
+    //     $pdf->SetXY(25, 70); // Adjust Y coordinate for body text
+    //     $pdf->MultiCell(0, 10, $memo['content']);
+
+    //     // Add closing
+    //     $pdf->SetXY(25, 150); // Adjust Y coordinate for closing
+    //     $pdf->Write(0, 'Yours faithfully,');
+    //     $pdf->SetXY(25, 160); // Adjust Y coordinate for signature
+    //     $pdf->Write(0, $authUser->userDetail->signature);
+    //     $pdf->SetXY(25, 180); // Adjust Y coordinate for name
+    //     $pdf->Write(0, $authUser->name);
+    //     //Add Salutation
+
+    //     // $pdf->SetXY(25, 150);
+    //     // $pdf->Write(0, "Yours faithfully,");
+
+    //     // $pdf->SetXY(25, 160);
+    //     // $pdf->Write(0, $authUser->userDetail->signature);
+    //     // $pdf->SetXY(25, 180);
+    //     // $pdf->Write(0, $authUser->name);
+
+    //     // Output the PDF to browser for download or display
+    //     return response()->stream(function () use ($pdf) {
+    //         $pdf->Output('I', 'letter.pdf'); // Output inline in browser or use 'D' for download
+    //     }, 200, [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="letter.pdf"',
+    //     ]);
+    // }
     public function generateMemoPdf(Memo $memo)
-    {
-        // dd($memo);
-        $authUser = Auth::user();
-        // Create new FPDI instance
-        $pdf = new Fpdi();
-
-        // Set the source file (your letterhead template)
-        $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
-
-        // Import the first page of the template
-        $tplId = $pdf->importPage(1);
-
-        // Add a new page to the PDF and use the imported template
+{
+    $authUser = Auth::user();
+    $pdf = new Fpdi();
+    
+    // Set margins
+    $topMargin = 30;
+    $leftMargin = 25;
+    $bottomMargin = 50; // Space needed for closing section
+    
+    // Set the source file (your letterhead template)
+    $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
+    $tplId = $pdf->importPage(1);
+    $pdf->AddPage();
+    $pdf->useTemplate($tplId);
+    
+    // Set font
+    $pdf->SetFont('Arial', '', 14);
+    
+    // Header information
+    $pdf->SetXY(35, 28);
+    $pdf->Write(0, $memo['sender']);
+    $pdf->SetXY(125, 28);
+    $pdf->Write(0, $memo['receiver']);
+    $pdf->SetXY(130, 42);
+    $pdf->Write(0, $memo['created_at']);
+    $pdf->SetXY(36, 42);
+    $pdf->Write(0, $memo['title']);
+    
+    // Salutation
+    $pdf->SetXY($leftMargin, 59);
+    $pdf->Write(0, 'Dear Sir/Madam,');
+    
+    // Body content with dynamic positioning
+    $pdf->SetXY($leftMargin, 70);
+    $content = $memo['content'];
+    
+    // Save current Y position
+    $yBeforeContent = $pdf->GetY();
+    
+    // Write content and get ending Y position
+    $pdf->MultiCell(0, 10, $content);
+    $yAfterContent = $pdf->GetY();
+    
+    // Calculate available space
+    $pageHeight = $pdf->getPageHeight();
+    $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
+    
+    // Add page if needed
+    if ($availableSpace < 60) { // 60 = space needed for closing
         $pdf->AddPage();
-        $pdf->useTemplate($tplId);
-
-        // Set font and add dynamic content
-        $pdf->SetFont('Arial', '', 14);
-
-        //Add sender
-        $pdf->SetXY(35, 28);
-        $pdf->Write(0, $memo['sender']);
-
-        //Add recipient
-        $pdf->SetXY(125, 28);
-        $pdf->Write(0, $memo['receiver']);
-
-        $pdf->SetXY(130, 42);
-        $pdf->Write(0, $memo['created_at']);
-        // Add title/subject information
-        $pdf->SetXY(25, 60); // Adjust X and Y coordinates as needed
-        $pdf->Write(0, "Subject: " . $memo['title']);
-
-        // Add body/content
-        $pdf->SetXY(25, 70); // Adjust Y coordinate for body text
-        $pdf->MultiCell(0, 10, $memo['content']);
-
-        //Add Salutation
-
-        // $pdf->SetXY(25, 150);
-        // $pdf->Write(0, "Yours faithfully,");
-
-        // $pdf->SetXY(25, 160);
-        // $pdf->Write(0, $authUser->userDetail->signature);
-        // $pdf->SetXY(25, 180);
-        // $pdf->Write(0, $authUser->name);
-
-        // Output the PDF to browser for download or display
-        return response()->stream(function () use ($pdf) {
-            $pdf->Output('I', 'letter.pdf'); // Output inline in browser or use 'D' for download
-        }, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="letter.pdf"',
-        ]);
+        $yAfterContent = $topMargin; // Reset Y position
     }
-
+    
+    // Closing section - always at consistent position from bottom
+    $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
+    
+    $pdf->SetXY($leftMargin, $closingY);
+    $pdf->Write(0, 'Yours faithfully,');
+    
+    // $pdf->SetXY($leftMargin, $closingY + 10);
+    // $pdf->Write(0, $authUser->userDetail->signature);
+    // Add signature image instead of text signature
+    $signatureY = $closingY + 10;
+    
+    // Check if user has a signature image (adjust path as needed)
+    $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
+    
+    if (file_exists($signaturePath)) {
+        // Insert signature image (adjust width/height as needed)
+        $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
+    } else {
+        // Fallback to text signature if image doesn't exist
+        $pdf->SetXY(25, $signatureY);
+        $pdf->Write(0, $authUser->userDetail->signature ?? '');
+    }
+    
+    $pdf->SetXY($leftMargin, $closingY + 20);
+    $pdf->Write(0, $authUser->name);
+    
+    // Output the PDF
+    return response()->stream(function () use ($pdf) {
+        $pdf->Output('I', 'letter.pdf');
+    }, 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="letter.pdf"',
+    ]);
+}    
 
     public function get_memo(Request $request, Memo $memo)
     {
@@ -2005,28 +2120,28 @@ class SuperAdminActions extends Controller
                 }
 
                 return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
-                case 'IT Admin':
-                    $tenantId = $authUser->userDetail->tenant_id ?? null;
-                    // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
-                    if (!$tenantId) {
-                        return redirect()->back()->with('error', 'Tenant information is missing.');
-                    }
-                    $recipients = User::select('id', 'name')
-                        ->with(['userDetail' => function ($query) {
-                            $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
-                                ->with('tenant_department:id,name'); // Load department name
-                        }])
-                        ->whereHas('userDetail', function ($query) use ($tenantId) {
-                            $query->where('tenant_id', $tenantId);
-                        })
-                        ->where('id', '!=', $authUser->id)
-                        ->get();
-    
-                    if ($recipients->isEmpty()) {
-                        return redirect()->back()->with('error', 'No recipients found.');
-                    }
-    
-                    return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
+            case 'IT Admin':
+                $tenantId = $authUser->userDetail->tenant_id ?? null;
+                // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
+                if (!$tenantId) {
+                    return redirect()->back()->with('error', 'Tenant information is missing.');
+                }
+                $recipients = User::select('id', 'name')
+                    ->with(['userDetail' => function ($query) {
+                        $query->select('id', 'user_id', 'designation', 'tenant_id', 'department_id')
+                            ->with('tenant_department:id,name'); // Load department name
+                    }])
+                    ->whereHas('userDetail', function ($query) use ($tenantId) {
+                        $query->where('tenant_id', $tenantId);
+                    })
+                    ->where('id', '!=', $authUser->id)
+                    ->get();
+
+                if ($recipients->isEmpty()) {
+                    return redirect()->back()->with('error', 'No recipients found.');
+                }
+
+                return view('staff.memo.send', compact('recipients', 'memo', 'authUser', 'userTenant'));
             case 'Secretary':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
                 // $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document->id)->get();
@@ -2134,7 +2249,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
-        if (in_array(Auth::user()->default_role,['Staff', 'IT Admin'])) {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
 
             if (!empty($recipient) && isset($recipient[0])) {
@@ -2174,7 +2289,7 @@ class SuperAdminActions extends Controller
 
             return view('user.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
-        if (in_array(Auth::user()->default_role,['Staff', 'IT Admin'])) {
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
             list($received_documents) = DocumentStorage::getReceivedMemos();
 
             return view('staff.memo.received', compact('received_documents', 'authUser', 'userTenant'));
