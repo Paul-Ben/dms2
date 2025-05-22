@@ -28,7 +28,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Document No</th>
                             <th scope="col">Subject</th>
-                            <th scope="col">Sent By</th>
+                            <th scope="col">Submitted By</th>
                             <th scope="col">Status</th>
                             <th scope="col">Date</th>
                         </tr>

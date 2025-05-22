@@ -31,7 +31,7 @@ class DashboardController extends Controller
             'Secretary' => 'secretary.index',
             'Staff' => 'staff.index',
             'User' => 'user.index',
-            'IT Admin'=> 'staff.index',
+            'IT Admin' => 'staff.index',
         ];
 
 
@@ -41,12 +41,12 @@ class DashboardController extends Controller
 
 
         list($recieved_documents_count, $sent_documents_count, $uploaded_documents_count, $totalAmount) = DocumentStorage::documentCount();
-        // $activities = Activity::where('user_id', $authUser->id)->latest()->take(20);
+       
         $activities = Activity::with('user')
             ->where('user_id', $authUser->id)
             ->orderBy('id', 'desc')
-            ->limit(20) // Retrieve only the last 20 records
-            ->paginate(10);
+            ->take(10)
+            ->get();
 
         return view($views[$role], compact('recieved_documents_count', 'sent_documents_count', 'uploaded_documents_count', 'activities', 'userTenant', 'totalAmount',  'authUser'));
     }
