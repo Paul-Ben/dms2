@@ -49,12 +49,12 @@
                                                 data-bs-toggle="dropdown">Details</a>
                                             <div class="dropdown-menu">
                                                 <a href="{{route('designation.edit', $role)}}" class="dropdown-item">Edit</a>
-                                                <form action="{{ route('designation.delete', $role) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                                {{-- <form action="{{ route('designation.delete', $role) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                     @csrf
                                                     @method('DELETE')
                                                    
                                                     <button class="dropdown-item" style="background-color: rgb(235, 78, 78)" type="submit">Delete</button>
-                                                </form> 
+                                                </form>  --}}
                                             </div>
                                         </div>
                                     </td>
