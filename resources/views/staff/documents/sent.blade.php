@@ -49,7 +49,7 @@
                                 </td>
                                 {{-- <td>{{$sent->sender->userDetail->designation}}</td> --}}
                                 <td>
-                                    {{ $sent->document->updated_at->format('M j, Y g:i A') }}
+                                    {{ $sent->updated_at->format('M j, Y g:i A') }}
                                     {{-- <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a> --}}
                                 </td>
                             </tr>

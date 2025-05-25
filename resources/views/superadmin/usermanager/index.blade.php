@@ -43,8 +43,8 @@
                         <tr class="text-dark">
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
+                            <th scope="col">Organisation</th>
+                            <th scope="col">Department</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -53,9 +53,9 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td><a href="{{route('user.view', $user)}}">{{ $user->name }}</a></td>
-                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->userDetail->tenant->name }}</td>
 
-                                <td>{{ $user->default_role }}</td>
+                                <td>{{ $user->userDetail?->tenant_department?->name ?? $user->userDetail->designation }}</td>
                                 <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>

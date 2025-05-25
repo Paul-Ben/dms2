@@ -48,7 +48,7 @@
                                          <span>{{$sent->recipient_details[0]->userDetail->tenant->name}}</span>
                                     @endif
                                 </td>
-                                <td>{{$sent->document->updated_at->format('M j, Y g:i A')}}</td>
+                                <td>{{$sent->updated_at->format('M j, Y g:i A')}}</td>
                                 {{-- <td>
                                     <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
                                 </td> --}}

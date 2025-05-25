@@ -48,7 +48,7 @@
                                     @endif
                                 </td>
                                 <td>{{$received->document->status}}</td>
-                                <td>{{$received->document->updated_at->format('M j, Y g:i A')}}</td>
+                                <td>{{$received->updated_at->format('M j, Y g:i A')}}</td>
                                 {{-- <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>

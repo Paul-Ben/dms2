@@ -70,8 +70,8 @@ return [
     |
     */
 
-    // 'timezone' => 'UTC',
-    'timezone' => 'Africa/Lagos',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    // 'timezone' => 'Africa/Lagos',
 
     /*
     |--------------------------------------------------------------------------

@@ -59,8 +59,8 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
         if (Auth::user()->default_role === 'superadmin') {
-            $users = User::orderBy('id', 'desc')->get();
-
+            $users = User::with('userDetail')->orderBy('id', 'desc')->get();
+            // dd($users);
             return view('superadmin.usermanager.index', compact('users', 'authUser', 'userTenant'));
         }
 
@@ -229,7 +229,7 @@ class SuperAdminActions extends Controller
 
     public function user_update(Request $request, User $user)
     {
-       
+
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -331,11 +331,109 @@ class SuperAdminActions extends Controller
         return view('superadmin.usermanager.uploadUser', compact('authUser', 'userTenant'));
     }
 
+    // public function userUploadCsv(Request $request)
+    // {
+    //     // Validate the uploaded file
+    //     $validator = Validator::make($request->all(), [
+    //         'csv_file' => 'required|file|mimes:csv,txt',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+
+    //     // Get the uploaded file
+    //     $file = $request->file('csv_file');
+
+    //     // Read the CSV file
+    //     $csvData = array_map('str_getcsv', file($file->getRealPath()));
+
+    //     // Remove the header row (if present)
+    //     $header = array_shift($csvData);
+
+    //     $duplicates = [];
+    //     $uniqueEntries = [];
+
+    //     // Process and insert data into the database
+    //     try {
+    //         DB::beginTransaction();
+    //         $csvData = array_chunk($csvData, 100);
+    //         foreach ($csvData as $chunk) {
+    //             foreach ($chunk as $row) {
+    //                 // Validate and process each row
+    //                 if (count($row) === count($header)) {
+    //                     $data = array_combine($header, $row);
+    //                     $existingUser = User::where('email', $data['email'])->first();
+
+    //                     if ($existingUser) {
+    //                         // Add to duplicates array
+    //                         $duplicates[] = $data;
+    //                     } else {
+    //                         // Add to unique entries array
+    //                         $uniqueEntries[] = $data;
+
+    //                         // Create the user
+    //                         $user = User::create([
+    //                             'name' => $data['name'],
+    //                             'email' => $data['email'],
+    //                             'password' => Hash::make($data['password']), // Hash the password
+    //                             'default_role' => $data['role'],
+    //                             'email_verified_at' => Carbon::now()
+    //                         ]);
+
+    //                         // Create the user details
+    //                         UserDetails::create([
+    //                             'user_id' => $user->id,
+    //                             'nin_number' => $data['nin'],
+    //                             'gender' => $data['gender'],
+    //                             'phone_number' => $data['phone'],
+    //                             'tenant_id' => $data['tenant_id'],
+    //                             'designation' => $data['designation'],
+    //                             'department_id' => $data['department'],
+    //                             'account_type' => $data['account_type'],
+    //                             'state' => $data['state'],
+    //                             'lga' => $data['lga'],
+    //                             'country' => $data['country'],
+    //                         ]);
+
+    //                         // Assign the role to the user
+    //                         $role = Role::where('name', $data['role'])->first();
+    //                         if ($role) {
+    //                             $user->assignRole($role);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             DB::commit();
+    //             $notification = [
+    //                 'message' => 'Users uploaded successfully',
+    //                 'type' => 'success',
+    //             ];
+    //             if (!empty($duplicates)) {
+    //                 $notification = [
+    //                     'message' => 'Users uploaded successfully. However, the following entries were duplicates and skipped: ' . implode(', ', array_column($duplicates, 'email')),
+    //                     'type' => 'warning'
+    //                 ];
+    //                 return redirect()->back()->with($notification);
+    //             }
+    //             return redirect()->back()->with($notification);
+    //         }
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         $notification = [
+    //             'message' => 'Error uploading users: ' . $e->getMessage(),
+    //             'type' => 'error',
+    //         ];
+    //         return redirect()->back()->with($notification);
+    //     }
+    // }
     public function userUploadCsv(Request $request)
     {
         // Validate the uploaded file
         $validator = Validator::make($request->all(), [
             'csv_file' => 'required|file|mimes:csv,txt',
+            'tenant_name' => 'required|exists:tenants,name',
+            'department_name' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -345,89 +443,112 @@ class SuperAdminActions extends Controller
         // Get the uploaded file
         $file = $request->file('csv_file');
 
-        // Read the CSV file
+        // Read and process CSV
         $csvData = array_map('str_getcsv', file($file->getRealPath()));
-
-        // Remove the header row (if present)
         $header = array_shift($csvData);
 
         $duplicates = [];
-        $uniqueEntries = [];
+        $errors = [];
+        $successCount = 0;
 
-        // Process and insert data into the database
         try {
             DB::beginTransaction();
-            $csvData = array_chunk($csvData, 100);
-            foreach ($csvData as $chunk) {
-                foreach ($chunk as $row) {
-                    // Validate and process each row
-                    if (count($row) === count($header)) {
-                        $data = array_combine($header, $row);
-                        $existingUser = User::where('email', $data['email'])->first();
 
-                        if ($existingUser) {
-                            // Add to duplicates array
-                            $duplicates[] = $data;
-                        } else {
-                            // Add to unique entries array
-                            $uniqueEntries[] = $data;
-
-                            // Create the user
-                            $user = User::create([
-                                'name' => $data['name'],
-                                'email' => $data['email'],
-                                'password' => Hash::make($data['password']), // Hash the password
-                                'default_role' => $data['role'],
-                                'email_verified_at' => Carbon::now()
-                            ]);
-
-                            // Create the user details
-                            UserDetails::create([
-                                'user_id' => $user->id,
-                                'nin_number' => $data['nin'],
-                                'gender' => $data['gender'],
-                                'phone_number' => $data['phone'],
-                                'tenant_id' => $data['tenant_id'],
-                                'designation' => $data['designation'],
-                                'department_id' => $data['department'],
-                                'account_type' => $data['account_type'],
-                                'state' => $data['state'],
-                                'lga' => $data['lga'],
-                                'country' => $data['country'],
-                            ]);
-
-                            // Assign the role to the user
-                            $role = Role::where('name', $data['role'])->first();
-                            if ($role) {
-                                $user->assignRole($role);
-                            }
-                        }
+            foreach ($csvData as $index => $row) {
+                try {
+                    if (count($row) !== count($header)) {
+                        $errors[] = "Row " . ($index + 1) . ": Column count mismatch";
+                        continue;
                     }
+
+                    $data = array_combine($header, $row);
+
+                    // Check for existing user
+                    if (User::where('email', $data['email'])->exists()) {
+                        $duplicates[] = $data['email'];
+                        continue;
+                    }
+
+                    // Resolve organization (tenant)
+                    $tenant = Tenant::where('name', $data['tenant_name'])->first();
+                    if (!$tenant) {
+                        $errors[] = "Row " . ($index + 1) . ": Organization '{$data['tenant_name']}' not found";
+                        continue;
+                    }
+
+                    // Resolve department
+                    $department = TenantDepartment::where('name', $data['department_name'])
+                        ->where('tenant_id', $tenant->id)
+                        ->first();
+                    if (!$department) {
+                        $errors[] = "Row " . ($index + 1) . ": Department '{$data['department_name']}' not found in {$data['tenant_name']}";
+                        continue;
+                    }
+
+                    // Create user
+                    $user = User::create([
+                        'name' => $data['name'],
+                        'email' => $data['email'],
+                        'password' => Hash::make($data['password']),
+                        'default_role' => $data['role'],
+                        'email_verified_at' => now()
+                    ]);
+
+                    // Create user details
+                    UserDetails::create([
+                        'user_id' => $user->id,
+                        'nin_number' => $data['nin'],
+                        'gender' => $data['gender'],
+                        'phone_number' => $data['phone'],
+                        'tenant_id' => $tenant->id,
+                        'designation' => $data['designation'],
+                        'department_id' => $department->id,
+                        'account_type' => $data['account_type'],
+                        'state' => $data['state'],
+                        'lga' => $data['lga'],
+                        'country' => $data['country'],
+                    ]);
+
+                    // Assign role
+                    $role = Role::where('name', $data['role'])->first();
+                    if ($role) {
+                        $user->assignRole($role);
+                    }
+
+                    $successCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Row " . ($index + 1) . ": " . $e->getMessage();
                 }
-                DB::commit();
-                $notification = [
-                    'message' => 'Users uploaded successfully',
-                    'type' => 'success',
-                ];
-                if (!empty($duplicates)) {
-                    $notification = [
-                        'message' => 'Users uploaded successfully. However, the following entries were duplicates and skipped: ' . implode(', ', array_column($duplicates, 'email')),
-                        'type' => 'warning'
-                    ];
-                    return redirect()->back()->with($notification);
-                }
-                return redirect()->back()->with($notification);
             }
+
+            DB::commit();
+
+            // Prepare notification
+            $notification = [
+                'message' => "Successfully created $successCount users",
+                'type' => 'success'
+            ];
+
+            if (!empty($duplicates)) {
+                $notification['message'] .= ". Skipped " . count($duplicates) . " duplicates";
+                $notification['type'] = 'warning';
+            }
+
+            if (!empty($errors)) {
+                $notification['message'] .= ". " . count($errors) . " errors occurred";
+                $notification['errors'] = $errors;
+                $notification['type'] = 'error';
+            }
+
+            return redirect()->back()->with($notification);
         } catch (\Exception $e) {
             DB::rollBack();
-            $notification = [
-                'message' => 'Error uploading users: ' . $e->getMessage(),
-                'type' => 'error',
-            ];
-            return redirect()->back()->with($notification);
+            return redirect()->back()->with([
+                'message' => 'Transaction failed: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
-
     /**Role Management */
     public function roleIndex()
     {
@@ -654,6 +775,18 @@ class SuperAdminActions extends Controller
                 'alert-type' => 'success'
             ];
             return redirect()->route('organisation.index')->with($notification);
+        }
+        return view('errors.404', compact('authUser', 'userTenant'));
+    }
+
+    public function org_departments(Tenant $tenant)
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        if (Auth::user()->default_role === 'superadmin') {
+            $departments = TenantDepartment::where('tenant_id', $tenant->id)->get();
+            return view('superadmin.departments.index', compact('departments', 'tenant', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
     }
@@ -1315,7 +1448,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
-            
+
             return view('admin.documents.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -1585,7 +1718,7 @@ class SuperAdminActions extends Controller
 
         // Decode the JSON data
         $documentData = json_decode($validated['document_data'], true);
-        
+
         $documentID = $documentData['document_id'];
         // Validate required fields in the decoded data
         if (!isset($documentData['document']['id'], $documentData['sender']['name'], $documentData['recipient']['name'])) {
@@ -1614,7 +1747,7 @@ class SuperAdminActions extends Controller
                 $query->where('tenant_id', $tenantId);
             })
             ->first();
-            // dd($recipient);
+        // dd($recipient);
 
         if ($recipient === null) {
             return redirect()->back()->with([
@@ -1872,93 +2005,93 @@ class SuperAdminActions extends Controller
     //     ]);
     // }
     public function generateMemoPdf(Memo $memo)
-{
-    $authUser = Auth::user();
-    $pdf = new Fpdi();
-    
-    // Set margins
-    $topMargin = 30;
-    $leftMargin = 25;
-    $bottomMargin = 50; // Space needed for closing section
-    
-    // Set the source file (your letterhead template)
-    $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
-    $tplId = $pdf->importPage(1);
-    $pdf->AddPage();
-    $pdf->useTemplate($tplId);
-    
-    // Set font
-    $pdf->SetFont('Arial', '', 14);
-    
-    // Header information
-    $pdf->SetXY(35, 28);
-    $pdf->Write(0, $memo['sender']);
-    $pdf->SetXY(125, 28);
-    $pdf->Write(0, $memo['receiver']);
-    $pdf->SetXY(130, 42);
-    $pdf->Write(0, $memo['created_at']);
-    $pdf->SetXY(36, 42);
-    $pdf->Write(0, $memo['title']);
-    
-    // Salutation
-    $pdf->SetXY($leftMargin, 59);
-    $pdf->Write(0, 'Dear Sir/Madam,');
-    
-    // Body content with dynamic positioning
-    $pdf->SetXY($leftMargin, 70);
-    $content = $memo['content'];
-    
-    // Save current Y position
-    $yBeforeContent = $pdf->GetY();
-    
-    // Write content and get ending Y position
-    $pdf->MultiCell(0, 10, $content);
-    $yAfterContent = $pdf->GetY();
-    
-    // Calculate available space
-    $pageHeight = $pdf->getPageHeight();
-    $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
-    
-    // Add page if needed
-    if ($availableSpace < 60) { // 60 = space needed for closing
+    {
+        $authUser = Auth::user();
+        $pdf = new Fpdi();
+
+        // Set margins
+        $topMargin = 30;
+        $leftMargin = 25;
+        $bottomMargin = 50; // Space needed for closing section
+
+        // Set the source file (your letterhead template)
+        $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
+        $tplId = $pdf->importPage(1);
         $pdf->AddPage();
-        $yAfterContent = $topMargin; // Reset Y position
+        $pdf->useTemplate($tplId);
+
+        // Set font
+        $pdf->SetFont('Arial', '', 14);
+
+        // Header information
+        $pdf->SetXY(35, 28);
+        $pdf->Write(0, $memo['sender']);
+        $pdf->SetXY(125, 28);
+        $pdf->Write(0, $memo['receiver']);
+        $pdf->SetXY(130, 42);
+        $pdf->Write(0, $memo['created_at']);
+        $pdf->SetXY(36, 42);
+        $pdf->Write(0, $memo['title']);
+
+        // Salutation
+        $pdf->SetXY($leftMargin, 59);
+        $pdf->Write(0, 'Dear Sir/Madam,');
+
+        // Body content with dynamic positioning
+        $pdf->SetXY($leftMargin, 70);
+        $content = $memo['content'];
+
+        // Save current Y position
+        $yBeforeContent = $pdf->GetY();
+
+        // Write content and get ending Y position
+        $pdf->MultiCell(0, 10, $content);
+        $yAfterContent = $pdf->GetY();
+
+        // Calculate available space
+        $pageHeight = $pdf->getPageHeight();
+        $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
+
+        // Add page if needed
+        if ($availableSpace < 60) { // 60 = space needed for closing
+            $pdf->AddPage();
+            $yAfterContent = $topMargin; // Reset Y position
+        }
+
+        // Closing section - always at consistent position from bottom
+        $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
+
+        $pdf->SetXY($leftMargin, $closingY);
+        $pdf->Write(0, 'Yours faithfully,');
+
+        // $pdf->SetXY($leftMargin, $closingY + 10);
+        // $pdf->Write(0, $authUser->userDetail->signature);
+        // Add signature image instead of text signature
+        $signatureY = $closingY + 10;
+
+        // Check if user has a signature image (adjust path as needed)
+        $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
+
+        if (file_exists($signaturePath)) {
+            // Insert signature image (adjust width/height as needed)
+            $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
+        } else {
+            // Fallback to text signature if image doesn't exist
+            $pdf->SetXY(25, $signatureY);
+            $pdf->Write(0, $authUser->userDetail->signature ?? '');
+        }
+
+        $pdf->SetXY($leftMargin, $closingY + 20);
+        $pdf->Write(0, $authUser->name);
+
+        // Output the PDF
+        return response()->stream(function () use ($pdf) {
+            $pdf->Output('I', 'letter.pdf');
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="letter.pdf"',
+        ]);
     }
-    
-    // Closing section - always at consistent position from bottom
-    $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
-    
-    $pdf->SetXY($leftMargin, $closingY);
-    $pdf->Write(0, 'Yours faithfully,');
-    
-    // $pdf->SetXY($leftMargin, $closingY + 10);
-    // $pdf->Write(0, $authUser->userDetail->signature);
-    // Add signature image instead of text signature
-    $signatureY = $closingY + 10;
-    
-    // Check if user has a signature image (adjust path as needed)
-    $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
-    
-    if (file_exists($signaturePath)) {
-        // Insert signature image (adjust width/height as needed)
-        $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
-    } else {
-        // Fallback to text signature if image doesn't exist
-        $pdf->SetXY(25, $signatureY);
-        $pdf->Write(0, $authUser->userDetail->signature ?? '');
-    }
-    
-    $pdf->SetXY($leftMargin, $closingY + 20);
-    $pdf->Write(0, $authUser->name);
-    
-    // Output the PDF
-    return response()->stream(function () use ($pdf) {
-        $pdf->Output('I', 'letter.pdf');
-    }, 200, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="letter.pdf"',
-    ]);
-}    
 
     public function get_memo(Request $request, Memo $memo)
     {

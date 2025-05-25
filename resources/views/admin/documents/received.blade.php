@@ -44,8 +44,7 @@
                                 <td>{{$received->sender_details->name ?? 'NA'}}</td>
                                 <td>{{$received->document->status}}</td>
                                 <td>
-                                    {{$received->document->updated_at->format('M j, Y g:i A')}}
-                                    {{-- <a href="{{route('document.view', $received)}}" class="nav-item">View</a> --}}
+                                    {{$received->updated_at->format('M j, Y g:i A')}}
                                 </td>
                             </tr>
                             @empty

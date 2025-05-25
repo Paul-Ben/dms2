@@ -170,7 +170,7 @@
                             <a href="{{ route('document.index') }}"
                                 class="dropdown-item {{ request()->routeIs('document.index') ? 'active' : '' }}"><i
                                     class="fa fa-th me-2"></i>My Documents</a>
-                            @role('Admin|Secretary|Staff|IT Admin')
+                            @role('Admin|Secretary|Staff|IT Admin|superadmin')
                                 <a href="{{ route('document.create') }}"
                                     class="dropdown-item {{ request()->routeIs('document.create') ? 'active' : '' }}"><i
                                         class="fa fa-plus me-2"></i>Add Document</a>
@@ -203,7 +203,7 @@
                                     class="fa fa-paper-plane"></i>Outgoing Mails</a>
                         </div>
                     </div> --}}
-                        @role('Admin|Secretary|Staff|IT Admin')
+                        @role('Admin|Secretary|Staff|IT Admin|superadmin')
                             {{-- <a href="{{ route('memo.index') }}"
                                 class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
                                     class="fa fa-th me-2"></i>Memos</a> --}}

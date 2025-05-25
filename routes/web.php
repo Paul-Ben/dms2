@@ -38,6 +38,9 @@ Route::post('/contact', [PagesController::class, 'send'])->name('contact.send');
 Route::get('/test-verify', function () {
     return view('test-verify');
 });
+Route::get('/session/check', function () {
+    return response()->json(['authenticated' => auth()->check()]);
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -89,6 +92,7 @@ Route::get('/users/search', [SearchController::class, 'searchUser'])->name('sear
     Route::put('/superadmin/organisations/{tenant}/edit', [SuperAdminActions::class, 'org_update'])->name('organisation.update');
     Route::delete('/superadmin/organisations/{tenant}/delete', [SuperAdminActions::class, 'org_delete'])->name('organisation.delete');
 Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->name('search.org');
+    Route::get('/superadmin/organisations/{tenant}/departments', [SuperAdminActions::class, 'org_departments'])->name('organisation.departments');
 
 
     /**Department Management related links */

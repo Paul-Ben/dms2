@@ -70,13 +70,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Tenant::class);
     }
+    public function tenant_department()
+    {
+        return $this->belongsTo(TenantDepartment::class);
+    }
 
     public function payments()
     {
         return $this->hasMany(Payment::class, 'customerId');
     }
-    public function staffProfile()
-    {
-        return $this->hasOne(staffProfile::class);
-        }
+    // public function staffProfile()
+    // {
+    //     return $this->hasOne(staffProfile::class);
+    // }
 }

@@ -10,9 +10,24 @@
                             <a class="btn btn-sm btn-primary" href="{{ route('users.index') }}"><i
                                     class="fa fa-arrow-left me-2"></i>Back</a>
                         </div>
-
                     </div>
-                    <form action="{{route('userUpload.csv')}}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <a href="{{ asset('templates/Template_sample.csv') }}" class="btn btn-success" download>
+                            <i class="fa fa-download"></i> Download CSV Template
+                        </a>
+                    </div>
+                    <div class="mb-3">
+                        <p class="text-muted">User Upload Instructions:</p>
+                        <ul>
+                            <li>Download the template above and use to maintain the correct structure.</li>
+                            <li>Ensure the CSV file is formatted correctly.</li>
+                            <li>Do not include any headers in the CSV file.</li>
+                            <li>Use the correct headers as per the template.</li>
+                            <li>Ensure that the Organisation (Tenant) and Departments exist in the system.</li>
+                            <li>Check for any duplicate emails to avoid conflicts.</li>
+                        </ul>
+                    </div>
+                    <form action="{{ route('userUpload.csv') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-sm-12 col-xl-6 mb-3">

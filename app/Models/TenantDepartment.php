@@ -14,4 +14,13 @@ class TenantDepartment extends Model
     {
         return $this->belongsTo(Tenant::class);
     }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function userDetails()
+    {
+        return $this->hasMany(UserDetails::class);
+    }
 }

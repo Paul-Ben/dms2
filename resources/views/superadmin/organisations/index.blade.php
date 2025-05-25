@@ -54,7 +54,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     {{-- <td><img src="{{ asset('logos/' . $tenant->logo) }}" alt="" width="50"></td> --}}
-                                    <td>{{ $tenant->name }}</td>
+                                    <td><a href="{{route('organisation.departments', $tenant)}}">{{ $tenant->name }}</a></td>
                                     <td>{{ $tenant->email }}</td>
                                     <td>{{ $tenant->phone }}</td>
                                     <td>{{ $tenant->status }}</td>

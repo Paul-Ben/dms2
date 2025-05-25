@@ -1,0 +1,3 @@
+name,email,password,role,nin,gender,phone,tenant_name,designation,department_name,account_type,state,lga,country
+Gbatar Samuel,testuser1@bdic.ng,Eight_characters,Staff,48856160670,male,08032625940,Benue Digital Infrastructure Company,Permanent Secretary,Product Unit,individual,Benue,Makurdi,Nigeria
+Terhide  Tyavyar,testuser2@bdic.ng,Eight_characters,Staff,34259540926,male,07038068880,Benue Digital Infrastructure Company,Director Administration And Supply,Product Unit,individual,Benue,Makurdi,Nigeria

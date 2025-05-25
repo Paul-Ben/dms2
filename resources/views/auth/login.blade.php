@@ -145,4 +145,23 @@
             toggleIcon.classList.toggle('bi-eye-slash');
         });
     </script>
+    <script>
+        // Refresh ~10 seconds before session expires
+        const refreshTime = {{ config('session.lifetime') * 60 * 1000 - 10000 }};
+        setTimeout(() => {
+            window.location.reload();
+        }, refreshTime);
+
+        // Check session every minute (60000 ms)
+    setInterval(() => {
+        fetch('/session/check')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.authenticated) {
+                    // Session expired, reload or redirect to login
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+    }, 60000); // 1 minute interval
+    </script>
 @endsection
