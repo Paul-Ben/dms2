@@ -1684,7 +1684,7 @@ class SuperAdminActions extends Controller
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
-
+        
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()

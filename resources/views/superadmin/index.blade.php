@@ -88,10 +88,10 @@
             </div>
         </div>
         <!-- Widgets End -->
-        @if ($activities->count() > 0)
+        {{-- @if ($activities->count() > 0)
             <div class="mt-4">
                 {{ $activities->links('pagination::bootstrap-5') }}
             </div>
-        @endif
+        @endif --}}
     </div>
 @endsection
