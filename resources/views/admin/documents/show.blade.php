@@ -191,7 +191,7 @@
             padding: 12px;
             background: white;
             border-radius: 0 8px 8px 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         /* Avatar */
@@ -209,40 +209,40 @@
             body {
                 padding: 20px;
             }
-            
+
             .email-container {
                 padding: 20px;
             }
-            
+
             .btn {
                 padding: 8px 16px;
                 font-size: 14px;
             }
-            
+
             .btn svg {
                 width: 16px;
                 height: 16px;
             }
-            
+
             .subject {
                 font-size: 20px;
             }
-            
+
             .email-meta {
                 grid-template-columns: 80px 1fr;
                 font-size: 14px;
             }
-            
+
             .timeline {
                 padding-left: 50px;
             }
-            
+
             .timeline-item::before {
                 left: -40px;
                 width: 12px;
                 height: 12px;
             }
-            
+
             .avatar {
                 width: 40px;
                 height: 40px;
@@ -254,27 +254,27 @@
             .toolbar {
                 gap: 6px;
             }
-            
+
             .btn {
                 padding: 5px 8px;
                 font-size: 12px;
             }
-            
+
             .btn svg {
                 width: 12px;
                 height: 12px;
             }
-            
+
             .email-meta {
                 grid-template-columns: 60px 1fr;
                 font-size: 12px;
                 gap: 6px;
             }
-            
+
             .timeline {
                 padding-left: 30px;
             }
-            
+
             .timeline-item::before {
                 left: -25px;
                 width: 8px;
@@ -331,7 +331,8 @@
                         </button>
                     </a>
                     @if ($document_received->attachments->isNotEmpty())
-                        <a href="{{ route('getAttachments', $document_received->document_id) }}" class="text-decoration-none">
+                        <a href="{{ route('getAttachments', $document_received->document_id) }}"
+                            class="text-decoration-none">
                             <button class="btn">
                                 <svg viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
@@ -354,10 +355,15 @@
                 <!-- Document Preview Section -->
                 <div class="attachment mt-3">
                     <div class="file-details">
-                        <strong>Document:</strong> {{ e($document_received->document->docuent_number) }} | {{$document_received->document->file_path}}
-                        <div id="previewContainer" class="mt-3">
-                            <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
-                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe>
+                        <strong>Document:</strong> {{ e($document_received->document->docuent_number) }} |
+                        {{ $document_received->document->file_path }}
+                        <div id="previewContainer" class="mt-3"
+                            style="display: flex; flex-direction: column; height: 80vh; min-height: 300px;">
+                            {{-- <iframe id="pdfPreview" style="width: 100%; height: 800px; min-height: 300px;" frameborder="0"
+                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; width: 100%; border: none;"
+                                src="{{ asset('storage/' . $document_received->document->file_path) }}">
+                            </iframe>
                         </div>
                     </div>
                 </div>
@@ -383,8 +389,8 @@
                     </div>
                     <div class="file-details">
                         <div class="file-name">
-                            <a href="{{ asset('storage/' . $document_received->document->file_path) }}"
-                                target="__blank" class="text-primary">
+                            <a href="{{ asset('storage/' . $document_received->document->file_path) }}" target="__blank"
+                                class="text-primary">
                                 {{ $document_received->document->docuent_number }}
                             </a>
                         </div>
@@ -409,7 +415,7 @@
                         <div class="card mb-3 border-0 shadow-sm">
                             <div class="card-body bg-light p-3">
                                 <h5 class="card-title fw-bold mb-1">
-                                   Document Title: {{ $document_received->document->title }}
+                                    Document Title: {{ $document_received->document->title }}
                                 </h5>
                                 <p class="card-text text-muted small mb-0">
                                     <strong>Document #:</strong> {{ $document_received->document->docuent_number }}
@@ -420,7 +426,7 @@
                         <!-- Chat-Style Timeline -->
                         <div class="timeline">
                             @foreach ($document_locations as $location)
-                                <div class="timeline-item">
+                                {{-- <div class="timeline-item">
                                     <!-- Message Header -->
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="d-flex align-items-center">
@@ -448,7 +454,50 @@
                                             Sent to: {{ $location->recipient->name }}
                                         </small>
                                     </div>
+                                </div> --}}
+                                <div class="timeline-item">
+                                    <!-- Clickable Header (acts as accordion toggle) -->
+                                    <div class="message-header d-flex justify-content-between align-items-start mb-2"
+                                        onclick="this.parentNode.querySelector('.message-content').classList.toggle('d-none')"
+                                        style="cursor: pointer;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary text-white rounded-circle mr-2 mr-md-3">
+                                                {{ strtoupper(substr($location->sender->name, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold small">{{ $location->sender->name }}</h6>
+                                                <small class="text-muted d-block">
+                                                    {{ $location->sender->userDetail->designation }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ $location->created_at->format('M j, Y g:i A') }}
+                                        </small>
+                                    </div>
+
+                                    <!-- Collapsible Message Content -->
+                                    <div class="message-content d-none animate__animated animate__fadeIn">
+                                        <div class="message-bubble bg-light p-3 rounded mt-2">
+                                            <p class="mb-2 small">Hi {{ $location->recipient->name }},</p>
+                                            <p class="mb-3 small">{{ $location->message }}</p>
+                                            <small class="text-muted d-block small">
+                                                <i class="fas fa-user-check mr-1"></i>
+                                                Sent to: {{ $location->recipient->name }}
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <style>
+                                    .message-header:hover {
+                                        background-color: #f8f9fa;
+                                    }
+
+                                    .message-bubble {
+                                        border-left: 3px solid #0d6efd;
+                                    }
+                                </style>
                             @endforeach
                         </div>
                     </div>
@@ -457,7 +506,7 @@
             <div class="container py-3 py-md-4">
                 <div class="row justify-content-center">
                     <div class="col-12">
-                      
+
                     </div>
                 </div>
 
@@ -466,7 +515,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="forwardedMessageModal" tabindex="-1" role="dialog" aria-labelledby="forwardedMessageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forwardedMessageModal" tabindex="-1" role="dialog"
+        aria-labelledby="forwardedMessageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -480,7 +530,8 @@
                 <div class="modal-body">
                     @foreach ($document_locations as $location)
                         <div class="forwarded-content mb-4">
-                            <p class="text-center font-weight-bold">---------- {{ $document_received->document->docuent_number }} ----------</p>
+                            <p class="text-center font-weight-bold">----------
+                                {{ $document_received->document->docuent_number }} ----------</p>
                             <p class="mb-1">
                                 <strong>From:</strong> {{ $location->sender->name }}
                                 &lt;{{ $location->sender->userDetail->designation }}&gt;

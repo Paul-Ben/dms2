@@ -130,129 +130,129 @@ class DocumentStorage
     /**
      * Send document to a recipient
      */
-    // public static function sendDocument($data)
-    // {
-    //     dd($data);
-    //     $data->validate([
-    //         'recipient_id' => 'required|array', // Validate that it's an array
-    //         'recipient_id.*' => 'exists:users,id',
-    //         'message' => 'nullable|string',
-    //         'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-    //     ]);
-
-    //     if ($data->hasFile('attachment')) {
-    //         // Get the uploaded file
-    //         $file = $data->file('attachment');
-
-    //         // Define the path where you want to store the file
-    //         $destinationPath = public_path('documents/attachments');
-
-    //         // Generate a unique filename (optional)
-    //         $fileName = time() . '_' . $file->getClientOriginalName();
-
-    //         // Move the file to the public attachments directory
-    //         $file->move($destinationPath, $fileName);
-    //     }
-
-    //     foreach ($data->recipient_id as $recipient) {
-    //         $document_action = FileMovement::create([
-    //             'recipient_id' => $recipient,
-    //             'sender_id' => Auth::user()->id,
-    //             'message' => $data->message,
-    //             'document_id' => $data->document_id,
-    //         ]);
-    //         if ($data->hasFile('attachment')) {
-    //             Attachments::create([
-    //                 'file_movement_id' => $document_action->id,
-    //                 'attachment' => $fileName,
-    //                 'document_id' => $data->document_id,
-    //             ]);
-    //         }
-    //         DocumentRecipient::create([
-    //             'file_movement_id' => $document_action->id,
-    //             'recipient_id' => $recipient,
-    //             'user_id' => Auth::user()->id,
-    //             'created_at' => now(),
-    //         ]);
-    //         Activity::insert([
-    //             [
-    //                 'action' => 'Sent Document',
-    //                 'user_id' => Auth::user()->id,
-    //                 'created_at' => now(),
-    //             ],
-    //             [
-    //                 'action' => 'Document Received',
-    //                 'user_id' => $recipient,
-    //                 'created_at' => now(),
-    //             ],
-    //         ]);
-    //     }
-    //     return [
-    //         'status' => 'success',
-    //         'message' => 'Document sent successfully!',
-    //     ];
-    // }
     public static function sendDocument($data)
     {
+        // dd($data);
         $data->validate([
-            'recipient_id' => 'required|array',
+            'recipient_id' => 'required|array', // Validate that it's an array
             'recipient_id.*' => 'exists:users,id',
             'message' => 'nullable|string',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        $recipients = array_unique($data->recipient_id);
-        $fileName = null;
-
         if ($data->hasFile('attachment')) {
+            // Get the uploaded file
             $file = $data->file('attachment');
+
+            // Define the path where you want to store the file
             $destinationPath = public_path('documents/attachments');
+
+            // Generate a unique filename (optional)
             $fileName = time() . '_' . $file->getClientOriginalName();
+
+            // Move the file to the public attachments directory
             $file->move($destinationPath, $fileName);
         }
 
-        DB::transaction(function () use ($data, $recipients, $fileName) {
-            foreach ($recipients as $recipient) {
-                $document_action = FileMovement::firstOrCreate([
-                    'recipient_id' => $recipient,
-                    'sender_id' => Auth::user()->id,
-                    'document_id' => $data->document_id,
-                ], [
-                    'message' => $data->message,
-                ]);
-                
-                if ($fileName) {
-                    Attachments::firstOrCreate([
-                        'file_movement_id' => $document_action->id,
-                        'document_id' => $data->document_id,
-                    ], [
-                        'attachment' => $fileName,
-                    ]);
-                }
-
-                DocumentRecipient::firstOrCreate([
+        foreach ($data->recipient_id as $recipient) {
+            $document_action = FileMovement::create([
+                'recipient_id' => $recipient,
+                'sender_id' => Auth::user()->id,
+                'message' => $data->message,
+                'document_id' => $data->document_id,
+            ]);
+            if ($data->hasFile('attachment')) {
+                Attachments::create([
                     'file_movement_id' => $document_action->id,
-                    'recipient_id' => $recipient,
-                    'user_id' => Auth::user()->id,
-                ]);
-
-                Activity::firstOrCreate([
-                    'action' => 'Sent Document',
-                    'user_id' => Auth::user()->id,
-                ]);
-
-                Activity::firstOrCreate([
-                    'action' => 'Document Received',
-                    'user_id' => $recipient,
+                    'attachment' => $fileName,
+                    'document_id' => $data->document_id,
                 ]);
             }
-        });
-
+            DocumentRecipient::create([
+                'file_movement_id' => $document_action->id,
+                'recipient_id' => $recipient,
+                'user_id' => Auth::user()->id,
+                'created_at' => now(),
+            ]);
+            Activity::insert([
+                [
+                    'action' => 'Sent Document',
+                    'user_id' => Auth::user()->id,
+                    'created_at' => now(),
+                ],
+                [
+                    'action' => 'Document Received',
+                    'user_id' => $recipient,
+                    'created_at' => now(),
+                ],
+            ]);
+        }
         return [
             'status' => 'success',
             'message' => 'Document sent successfully!',
         ];
     }
+    // public static function sendDocument($data)
+    // {
+    //     $data->validate([
+    //         'recipient_id' => 'required|array',
+    //         'recipient_id.*' => 'exists:users,id',
+    //         'message' => 'nullable|string',
+    //         'attachment' => 'nullable|file|mimes:pdf|max:2048',
+    //     ]);
+
+    //     $recipients = array_unique($data->recipient_id);
+    //     $fileName = null;
+
+    //     if ($data->hasFile('attachment')) {
+    //         $file = $data->file('attachment');
+    //         $destinationPath = public_path('documents/attachments');
+    //         $fileName = time() . '_' . $file->getClientOriginalName();
+    //         $file->move($destinationPath, $fileName);
+    //     }
+
+    //     DB::transaction(function () use ($data, $recipients, $fileName) {
+    //         foreach ($recipients as $recipient) {
+    //             $document_action = FileMovement::firstOrCreate([
+    //                 'recipient_id' => $recipient,
+    //                 'sender_id' => Auth::user()->id,
+    //                 'document_id' => $data->document_id,
+    //             ], [
+    //                 'message' => $data->message,
+    //             ]);
+                
+    //             if ($fileName) {
+    //                 Attachments::firstOrCreate([
+    //                     'file_movement_id' => $document_action->id,
+    //                     'document_id' => $data->document_id,
+    //                 ], [
+    //                     'attachment' => $fileName,
+    //                 ]);
+    //             }
+
+    //             DocumentRecipient::firstOrCreate([
+    //                 'file_movement_id' => $document_action->id,
+    //                 'recipient_id' => $recipient,
+    //                 'user_id' => Auth::user()->id,
+    //             ]);
+
+    //             Activity::firstOrCreate([
+    //                 'action' => 'Sent Document',
+    //                 'user_id' => Auth::user()->id,
+    //             ]);
+
+    //             Activity::firstOrCreate([
+    //                 'action' => 'Document Received',
+    //                 'user_id' => $recipient,
+    //             ]);
+    //         }
+    //     });
+
+    //     return [
+    //         'status' => 'success',
+    //         'message' => 'Document sent successfully!',
+    //     ];
+    // }
 
 
     public static function sendMemo($data)

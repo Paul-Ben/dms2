@@ -53,8 +53,9 @@
                                         <a href="#" class="nav-link dropdown-toggle"
                                             data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            <a href="" onclick="showSendOptions(event)"
-                                                class="dropdown-item">Send</a>
+                                            {{-- <a href="" onclick="showSendOptions(event)"
+                                                class="dropdown-item">Send</a> --}}
+                                                <a href="#" onclick="showSendOptions(event, '{{ $document->id }}')" class="dropdown-item">Send</a>
                                             <a href="{{route('memo.edit', $document)}}" class="dropdown-item">Edit</a>
                                             {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
@@ -90,7 +91,7 @@
         </div>
     </div>
     <!-- Table End -->
-    <script>
+    {{-- <script>
         // Check if $document is null and set a default value or handle accordingly
         @if(isset($document) && $document)
             const documentId = '{{ $document->id }}'; // Use document ID if available
@@ -120,8 +121,33 @@
                 window.location.href = "{{route('memo.sendout', ':id')}}".replace(':id', documentId); // Redirect to external send route
             }
         }
-    </script>
-    
+    </script> --}}
+    <script>
+    let selectedDocumentId = null;
+
+    function showSendOptions(event, docId) {
+        event.preventDefault();
+        selectedDocumentId = docId; // Set the selected document ID
+        document.getElementById('sendOptionsModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('sendOptionsModal').style.display = 'none';
+    }
+
+    function sendDocument(option) {
+        if (!selectedDocumentId) {
+            alert("Memo not found.");
+            return;
+        }
+
+        if (option === 'internal') {
+            window.location.href = "{{ route('memo.send', ':id') }}".replace(':id', selectedDocumentId);
+        } else {
+            window.location.href = "{{ route('memo.sendout', ':id') }}".replace(':id', selectedDocumentId);
+        }
+    }
+</script>
     <style>
         .modal {
             display: flex;

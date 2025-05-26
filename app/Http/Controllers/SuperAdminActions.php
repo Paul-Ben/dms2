@@ -1684,7 +1684,7 @@ class SuperAdminActions extends Controller
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
-        
+
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()
@@ -2004,94 +2004,322 @@ class SuperAdminActions extends Controller
     //         'Content-Disposition' => 'inline; filename="letter.pdf"',
     //     ]);
     // }
+    // public function generateMemoPdf(Memo $memo)
+    // {
+    //     $authUser = Auth::user();
+    //     $pdf = new Fpdi();
+
+    //     // Set margins
+    //     $topMargin = 30;
+    //     $leftMargin = 25;
+    //     $bottomMargin = 50; // Space needed for closing section
+
+    //     // Set the source file (your letterhead template)
+    //     $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
+    //     $tplId = $pdf->importPage(1);
+    //     $pdf->AddPage();
+    //     $pdf->useTemplate($tplId);
+
+    //     // Set font
+    //     $pdf->SetFont('Arial', '', 14);
+
+    //     // Header information
+    //     $pdf->SetXY(35, 28);
+    //     $pdf->Write(0, $memo['sender']);
+    //     $pdf->SetXY(125, 28);
+    //     $pdf->Write(0, $memo['receiver']);
+    //     $pdf->SetXY(130, 42);
+    //     $pdf->Write(0, $memo['created_at']);
+    //     $pdf->SetXY(36, 42);
+    //     $pdf->Write(0, $memo['title']);
+
+    //     // Salutation
+    //     $pdf->SetXY($leftMargin, 59);
+    //     $pdf->Write(0, 'Dear Sir/Madam,');
+
+    //     // Body content with dynamic positioning
+    //     $pdf->SetXY($leftMargin, 70);
+    //     $content = $memo['content'];
+
+    //     // Save current Y position
+    //     $yBeforeContent = $pdf->GetY();
+
+    //     // Write content and get ending Y position
+    //     $pdf->MultiCell(0, 10, $content);
+    //     $yAfterContent = $pdf->GetY();
+
+    //     // Calculate available space
+    //     $pageHeight = $pdf->getPageHeight();
+    //     $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
+
+    //     // Add page if needed
+    //     if ($availableSpace < 60) { // 60 = space needed for closing
+    //         $pdf->AddPage();
+    //         $yAfterContent = $topMargin; // Reset Y position
+    //     }
+
+    //     // Closing section - always at consistent position from bottom
+    //     $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
+
+    //     $pdf->SetXY($leftMargin, $closingY);
+    //     $pdf->Write(0, 'Yours faithfully,');
+
+    //     // $pdf->SetXY($leftMargin, $closingY + 10);
+    //     // $pdf->Write(0, $authUser->userDetail->signature);
+    //     // Add signature image instead of text signature
+    //     $signatureY = $closingY + 10;
+
+    //     // Check if user has a signature image (adjust path as needed)
+    //     $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
+
+    //     if (file_exists($signaturePath)) {
+    //         // Insert signature image (adjust width/height as needed)
+    //         $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
+    //     } else {
+    //         // Fallback to text signature if image doesn't exist
+    //         $pdf->SetXY(25, $signatureY);
+    //         $pdf->Write(0, $authUser->userDetail->signature ?? '');
+    //     }
+
+    //     $pdf->SetXY($leftMargin, $closingY + 20);
+    //     $pdf->Write(0, $authUser->name);
+
+    //     // Output the PDF
+    //     return response()->stream(function () use ($pdf) {
+    //         $pdf->Output('I', 'letter.pdf');
+    //     }, 200, [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="letter.pdf"',
+    //     ]);
+    // }
+
     public function generateMemoPdf(Memo $memo)
     {
-        $authUser = Auth::user();
+        // Get the sender user (assuming sender is a user name or ID)
+        $senderUser = User::where('name', $memo['sender'])->with('userDetail')->first();
+
         $pdf = new Fpdi();
 
-        // Set margins
-        $topMargin = 30;
-        $leftMargin = 25;
-        $bottomMargin = 50; // Space needed for closing section
-
-        // Set the source file (your letterhead template)
-        $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
-        $tplId = $pdf->importPage(1);
+        // Set dimensions from the letterhead template
+        $templatePath = public_path('templates/letterhead.pdf');
+        $pageCount = $pdf->setSourceFile($templatePath);
+        $template = $pdf->importPage(1);
         $pdf->AddPage();
-        $pdf->useTemplate($tplId);
+        $pdf->useTemplate($template);
+
+        // === Add logo at the top center ===
+        $logoPath = null;
+        $logoWidth = 20; // Adjust as needed
+        $logoHeight = 20; // Adjust as needed
+
+        if (
+            $senderUser &&
+            $senderUser->userDetail &&
+            $senderUser->userDetail->tenant &&
+            $senderUser->userDetail->tenant->logo
+        ) {
+            $logoPath = public_path('logos/' . $senderUser->userDetail->tenant->logo);
+            if (file_exists($logoPath)) {
+                // Get page width to center the logo
+                $pageWidth = $pdf->GetPageWidth();
+                $x = ($pageWidth - $logoWidth) / 2;
+                $y = 15; // Top margin
+                $pdf->Image($logoPath, $x, $y, $logoWidth, $logoHeight);
+            }
+        }
 
         // Set font
-        $pdf->SetFont('Arial', '', 14);
+        $pdf->SetFont('Arial', '', 12);
 
-        // Header information
-        $pdf->SetXY(35, 28);
+        // Header positions (adjust these based on your letterhead template)
+        $pdf->SetXY(35, 53);  // Sender position
         $pdf->Write(0, $memo['sender']);
-        $pdf->SetXY(125, 28);
-        $pdf->Write(0, $memo['receiver']);
-        $pdf->SetXY(130, 42);
-        $pdf->Write(0, $memo['created_at']);
-        $pdf->SetXY(36, 42);
+
+        $pdf->SetXY(35, 69);  // Subject position
         $pdf->Write(0, $memo['title']);
 
+        $pdf->SetXY(140, 53); // Recipient position
+        $pdf->Write(0, $memo['receiver']);
+
+        $pdf->SetXY(140, 69); // Date position
+        $pdf->Write(0, $memo['created_at']->format('M j, Y'));
+
+        // Content positioning
+        $contentStartY = 85; // Starting Y position for main content
+
         // Salutation
-        $pdf->SetXY($leftMargin, 59);
+        $pdf->SetXY(30, $contentStartY);
         $pdf->Write(0, 'Dear Sir/Madam,');
 
-        // Body content with dynamic positioning
-        $pdf->SetXY($leftMargin, 70);
-        $content = $memo['content'];
+        // Main content with MultiCell for automatic line breaks
+        $pdf->SetXY(30, $contentStartY + 15);
+        $pdf->MultiCell(150, 6, $memo['content']); // Width 150mm, height 6mm per line
 
-        // Save current Y position
-        $yBeforeContent = $pdf->GetY();
-
-        // Write content and get ending Y position
-        $pdf->MultiCell(0, 10, $content);
+        // Get Y position after content
         $yAfterContent = $pdf->GetY();
 
-        // Calculate available space
-        $pageHeight = $pdf->getPageHeight();
-        $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
+        // Closing section - 3 line spaces after content
+        $lineHeight = 6; // Same as MultiCell line height
+        $closingY = $yAfterContent + (3 * $lineHeight);
 
-        // Add page if needed
-        if ($availableSpace < 60) { // 60 = space needed for closing
+        // If closing would go past page bottom, add new page
+        if ($closingY > ($pdf->getPageHeight() - 30)) {
             $pdf->AddPage();
-            $yAfterContent = $topMargin; // Reset Y position
+            $pdf->useTemplate($template);
+            $closingY = 50; // Reset Y position on new page
         }
 
-        // Closing section - always at consistent position from bottom
-        $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
-
-        $pdf->SetXY($leftMargin, $closingY);
+        // Closing content
+        $pdf->SetXY(30, $closingY);
         $pdf->Write(0, 'Yours faithfully,');
 
-        // $pdf->SetXY($leftMargin, $closingY + 10);
-        // $pdf->Write(0, $authUser->userDetail->signature);
-        // Add signature image instead of text signature
+        // Signature (image or text) for the sender
         $signatureY = $closingY + 10;
+        $signaturePath = $senderUser && $senderUser->id
+            ? storage_path('app/signatures/' . $senderUser->id . '.png')
+            : null;
 
-        // Check if user has a signature image (adjust path as needed)
-        $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
-
-        if (file_exists($signaturePath)) {
-            // Insert signature image (adjust width/height as needed)
-            $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
+        if ($signaturePath && file_exists($signaturePath)) {
+            $pdf->Image($signaturePath, 50, $signatureY, 40, 15);
         } else {
-            // Fallback to text signature if image doesn't exist
-            $pdf->SetXY(25, $signatureY);
-            $pdf->Write(0, $authUser->userDetail->signature ?? '');
+            $pdf->SetXY(30, $signatureY);
+            $pdf->Write(0, $senderUser->userDetail->signature ?? '');
         }
 
-        $pdf->SetXY($leftMargin, $closingY + 20);
-        $pdf->Write(0, $authUser->name);
+        // Name and designation of the sender
+        $pdf->SetXY(30, $signatureY + 10);
+        $pdf->Write(0, $senderUser->name ?? $memo['sender']);
+
+        $pdf->SetXY(30, $signatureY + 16);
+        $pdf->SetFont('Arial', 'I', 10);
+        $pdf->Write(0, $senderUser->userDetail->designation ?? '');
+
+
+        // === Append Memo Movements Section ===
+        // Fetch all memo movements for this memo, descending order
+        $movements = DB::table('memo_movements')
+            ->where('memo_id', $memo->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($movements->count() > 0) {
+            // Add a section title
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->SetXY(30, $pdf->GetY() + 15);
+            $pdf->Write(0, '--- Memo Minuting History ---');
+            $pdf->SetFont('Arial', '', 11);
+
+            foreach ($movements as $movement) {
+                // Get sender details
+                $sender = \App\Models\User::with('userDetail')->find($movement->sender_id);
+                $senderName = $sender ? $sender->name : 'Unknown';
+                $senderDesignation = $sender && $sender->userDetail ? $sender->userDetail->designation : '';
+
+                // Format date
+                $date = \Carbon\Carbon::parse($movement->created_at)->format('M j, Y g:i A');
+
+                // Prepare message block
+                $messageBlock = "Message: {$movement->message}\nBy: {$senderName} ({$senderDesignation})\nOn: {$date}\n";
+
+                // Add some spacing before each message
+                $pdf->SetXY(30, $pdf->GetY() + 7);
+                $pdf->MultiCell(150, 6, $messageBlock, 0, 'L');
+            }
+        }
 
         // Output the PDF
         return response()->stream(function () use ($pdf) {
-            $pdf->Output('I', 'letter.pdf');
+            $pdf->Output('I', 'memo.pdf');
         }, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="letter.pdf"',
+            'Content-Disposition' => 'inline; filename="memo.pdf"',
         ]);
     }
+
+    // public function generateMemoPdf(Memo $memo)
+    // {
+    //     $authUser = Auth::user();
+    //     $pdf = new Fpdi();
+
+    //     // Set dimensions from the letterhead template
+    //     $templatePath = public_path('templates/letterhead.pdf');
+    //     $pageCount = $pdf->setSourceFile($templatePath);
+    //     $template = $pdf->importPage(1);
+    //     $pdf->AddPage();
+    //     $pdf->useTemplate($template);
+
+    //     // Set font
+    //     $pdf->SetFont('Arial', '', 12);
+
+    //     // Header positions (adjust these based on your letterhead template)
+    //     $pdf->SetXY(35, 53);  // Sender position
+    //     $pdf->Write(0, $memo['sender']);
+
+    //     $pdf->SetXY(35, 69);  // Subject position
+    //     $pdf->Write(0, $memo['title']);
+
+    //     $pdf->SetXY(140, 53); // Recipient position
+    //     $pdf->Write(0, $memo['receiver']);
+
+    //     $pdf->SetXY(140, 69); // Date position
+    //     $pdf->Write(0, $memo['created_at']->format('M j, Y'));
+
+    //     // Content positioning
+    //     $contentStartY = 85; // Starting Y position for main content
+
+    //     // Salutation
+    //     $pdf->SetXY(30, $contentStartY);
+    //     $pdf->Write(0, 'Dear Sir/Madam,');
+
+    //     // Main content with MultiCell for automatic line breaks
+    //     $pdf->SetXY(30, $contentStartY + 15);
+    //     $pdf->MultiCell(150, 6, $memo['content']); // Width 150mm, height 6mm per line
+
+    //     // Get Y position after content
+    //     $yAfterContent = $pdf->GetY();
+
+    //     // Closing section - 3 line spaces after content
+    //     $lineHeight = 6; // Same as MultiCell line height
+    //     $closingY = $yAfterContent + (3 * $lineHeight);
+
+    //     // If closing would go past page bottom, add new page
+    //     if ($closingY > ($pdf->getPageHeight() - 30)) {
+    //         $pdf->AddPage();
+    //         $pdf->useTemplate($template);
+    //         $closingY = 50; // Reset Y position on new page
+    //     }
+
+    //     // Closing content
+    //     $pdf->SetXY(30, $closingY);
+    //     $pdf->Write(0, 'Yours faithfully,');
+
+    //     // Signature (image or text)
+    //     $signatureY = $closingY + 10;
+    //     $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
+
+    //     if (file_exists($signaturePath)) {
+    //         $pdf->Image($signaturePath, 50, $signatureY, 40, 15);
+    //     } else {
+    //         $pdf->SetXY(30, $signatureY);
+    //         $pdf->Write(0, $authUser->userDetail->signature ?? '');
+    //     }
+
+    //     // Name and designation
+    //     $pdf->SetXY(30, $signatureY + 10);
+    //     $pdf->Write(0, $authUser->name);
+
+    //     $pdf->SetXY(30, $signatureY + 16);
+    //     $pdf->SetFont('Arial', 'I', 10);
+    //     $pdf->Write(0, $authUser->userDetail->designation ?? '');
+
+    //     // Output the PDF
+    //     return response()->stream(function () use ($pdf) {
+    //         $pdf->Output('I', 'memo.pdf');
+    //     }, 200, [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="memo.pdf"',
+    //     ]);
+    // }
 
     public function get_memo(Request $request, Memo $memo)
     {
@@ -2348,7 +2576,7 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
 
-            list($sent_documents, $recipient) = DocumentStorage::getSentDocuments();
+            list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
 
             if (!empty($recipient) && isset($recipient[0])) {
                 $mda = UserDetails::with('tenant')->where('id', $recipient[0]->id)->get();
@@ -2361,7 +2589,7 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
-
+            // dd($sent_documents);
             return view('admin.memo.sent', compact('sent_documents', 'recipient', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
