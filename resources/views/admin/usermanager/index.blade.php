@@ -59,7 +59,7 @@
                                 <td><a href="{{ route('user.view', $user) }}">{{ $user->user->name }}</a></td>
                                 <td>{{ $user->designation }}</td>
 
-                                <td>{{ $user->tenant_department->name }}</td>
+                                <td>{{ $user->tenant_department->name ?? '' }}</td>
                                 @role('IT Admin')
                                 <td>
                                     <div class="nav-item dropdown">
