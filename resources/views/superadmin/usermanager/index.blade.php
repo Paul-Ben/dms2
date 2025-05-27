@@ -43,7 +43,7 @@
                         <tr class="text-dark">
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Organisation</th>
+                            <th scope="col">Designation</th>
                             <th scope="col">Department</th>
                             <th scope="col">Action</th>
                         </tr>

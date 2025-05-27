@@ -42,7 +42,7 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Title/Subject</label>
-                                    <input type="text" name="title" class="form-control" required>
+                                    <input type="text" name="title" class="form-control" maxlength="40" required>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Document Number</label>

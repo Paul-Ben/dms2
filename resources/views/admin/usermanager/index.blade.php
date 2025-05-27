@@ -45,8 +45,8 @@
                         <tr class="text-dark">
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
+                            <th scope="col">Designation</th>
+                            <th scope="col">Department</th>
                             @role('IT Admin')
                             <th scope="col">Action</th>
                             @endrole

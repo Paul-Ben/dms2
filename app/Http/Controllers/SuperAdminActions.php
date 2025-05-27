@@ -2112,21 +2112,44 @@ class SuperAdminActions extends Controller
         $logoWidth = 20; // Adjust as needed
         $logoHeight = 20; // Adjust as needed
 
+        // if (
+        //     $senderUser &&
+        //     $senderUser->userDetail &&
+        //     $senderUser->userDetail->tenant &&
+        //     $senderUser->userDetail->tenant->logo
+        // ) {
+        //     $logoPath = public_path('logos/' . $senderUser->userDetail->tenant->logo);
+        //     if (file_exists($logoPath)) {
+        //         // Get page width to center the logo
+        //         $pageWidth = $pdf->GetPageWidth();
+        //         $x = ($pageWidth - $logoWidth) / 2;
+        //         $y = 15; // Top margin
+        //         $pdf->Image($logoPath, $x, $y, $logoWidth, $logoHeight);
+        //     }
+        // }
         if (
             $senderUser &&
             $senderUser->userDetail &&
             $senderUser->userDetail->tenant &&
             $senderUser->userDetail->tenant->logo
         ) {
-            $logoPath = public_path('logos/' . $senderUser->userDetail->tenant->logo);
+            $logoRelativePath = 'logos/' . $senderUser->userDetail->tenant->logo;
+            $logoPath = public_path($logoRelativePath);
+
             if (file_exists($logoPath)) {
-                // Get page width to center the logo
                 $pageWidth = $pdf->GetPageWidth();
                 $x = ($pageWidth - $logoWidth) / 2;
-                $y = 15; // Top margin
-                $pdf->Image($logoPath, $x, $y, $logoWidth, $logoHeight);
+                $y = 15;
+                try {
+                    $pdf->Image($logoPath, $x, $y, $logoWidth, $logoHeight);
+                } catch (\Exception $e) {
+                    Log::error('Failed to load logo in PDF: ' . $e->getMessage());
+                }
+            } else {
+                Log::warning("Logo file not found: {$logoPath}");
             }
         }
+
 
         // Set font
         $pdf->SetFont('Arial', '', 12);
@@ -2202,6 +2225,30 @@ class SuperAdminActions extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // if ($movements->count() > 0) {
+        //     // Add a section title
+        //     $pdf->SetFont('Arial', 'B', 12);
+        //     $pdf->SetXY(30, $pdf->GetY() + 15);
+        //     $pdf->Write(0, '--- Memo Minuting History ---');
+        //     $pdf->SetFont('Arial', '', 11);
+
+        //     foreach ($movements as $movement) {
+        //         // Get sender details
+        //         $sender = \App\Models\User::with('userDetail')->find($movement->sender_id);
+        //         $senderName = $sender ? $sender->name : 'Unknown';
+        //         $senderDesignation = $sender && $sender->userDetail ? $sender->userDetail->designation : '';
+
+        //         // Format date
+        //         $date = \Carbon\Carbon::parse($movement->created_at)->format('M j, Y g:i A');
+
+        //         // Prepare message block
+        //         $messageBlock = "Message: {$movement->message}\nBy: {$senderName} ({$senderDesignation})\nOn: {$date}\n";
+
+        //         // Add some spacing before each message
+        //         $pdf->SetXY(30, $pdf->GetY() + 7);
+        //         $pdf->MultiCell(150, 6, $messageBlock, 0, 'L');
+        //     }
+        // }
         if ($movements->count() > 0) {
             // Add a section title
             $pdf->SetFont('Arial', 'B', 12);
@@ -2215,11 +2262,19 @@ class SuperAdminActions extends Controller
                 $senderName = $sender ? $sender->name : 'Unknown';
                 $senderDesignation = $sender && $sender->userDetail ? $sender->userDetail->designation : '';
 
+                // Get recipient details
+                $recipient = \App\Models\User::with('userDetail')->find($movement->recipient_id);
+                $recipientName = $recipient ? $recipient->name : 'Unknown';
+                $recipientDesignation = $recipient && $recipient->userDetail ? $recipient->userDetail->designation : '';
+
                 // Format date
                 $date = \Carbon\Carbon::parse($movement->created_at)->format('M j, Y g:i A');
 
-                // Prepare message block
-                $messageBlock = "Message: {$movement->message}\nBy: {$senderName} ({$senderDesignation})\nOn: {$date}\n";
+                // Prepare message block with sender and recipient details
+                $messageBlock = "Message: {$movement->message}\n"
+                    . "By: {$senderName} ({$senderDesignation})\n"
+                    . "To: {$recipientName} ({$recipientDesignation})\n"
+                    . "On: {$date}\n";
 
                 // Add some spacing before each message
                 $pdf->SetXY(30, $pdf->GetY() + 7);
