@@ -31,6 +31,7 @@
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
                             <th scope="col" >Date</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,9 +50,17 @@
                                     @endif
                                 </td>
                                 <td>{{$sent->updated_at->format('M j, Y g:i A')}}</td>
-                                {{-- <td>
-                                    <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a>
-                                </td> --}}
+                                <td>
+                                    {{-- <a href="{{route('folders.select', $sent->document->id)}}" class="btn btn-sm btn-primary">
+                                        Add to Folder
+                                    </a> --}}
+                                    <a href="{{ route('folders.select', $sent->document->id) }}" 
+                                        class="btn btn-sm btn-primary  p-2"
+                                        title="Add to folder">
+                                         <i class="fas fa-folder-plus"></i>
+                                     </a>
+                                  
+                                </td>
                             </tr>
                             @empty
                             <tr class="text-center">

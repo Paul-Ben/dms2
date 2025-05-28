@@ -132,18 +132,8 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        {{-- @if ($authUser->userDetail->avatar != null)
-                            <img class="rounded-circle"
-                            src="{{ asset('uploads/avatars/' . $authUser->userDetail->avatar) }}" alt=""
-                            style="width: 40px; height: 40px;">
-                            @else
-                            <img class="rounded-circle"
-                            src="{{ asset('avatar.jpeg') }}" alt=""
-                            style="width: 40px; height: 40px;">
-                            
-                        @endif --}}
                         <img class="rounded-circle"
-                            src="{{ $authUser->userDetail->avatar ? asset('uploads/avatars/' . $authUser->userDetail->avatar) : asset('avatar.jpeg') }}"
+                            src="{{ isset($authUser->userDetail) && $authUser->userDetail->avatar ? asset('uploads/avatars/' . $authUser->userDetail->avatar) : asset('avatar.jpeg') }}"
                             alt="" style="width: 40px; height: 40px;">
 
                         <div
@@ -151,8 +141,8 @@
                         </div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">{{ $authUser->name }}</h6>
-                        <span>{{ $authUser->userDetail->designation }}</span>
+                        <h6 class="mb-0">{{ $authUser->name ?? '' }}</h6>
+                        <span>{{ isset($authUser->userDetail) ? $authUser->userDetail->designation : 'No designation' }}</span>
                         {{-- @role('Admin')
                             <span class="badge bg-primary ms-2">Admin</span>
                         @endrole --}}
@@ -204,16 +194,14 @@
                         </div>
                     </div> --}}
                         @role('Admin|Secretary|Staff|IT Admin|superadmin')
-                            {{-- <a href="{{ route('memo.index') }}"
-                                class="nav-item nav-link {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
-                                    class="fa fa-th me-2"></i>Memos</a> --}}
+                            
                             <div class="nav-item dropdown">
                                 <a href="#"
                                     class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.index', 'memo.create', 'memo.sent') ? 'active' : '' }}"
                                     data-bs-toggle="dropdown"><i class="fa fa-th me-2"></i>Memos</a>
                                 <div class="dropdown-menu bg-transparent border-0">
                                     <a href="{{ route('memo.index') }}"
-                                        class="dropdown-item {{ request()->routeIs('memo.index', 'memo.create') ? 'active' : '' }}"><i
+                                        class="dropdown-item {{ request()->routeIs('memo.index') ? 'active' : '' }}"><i
                                             class="fa fa-th me-2"></i>My Memos</a>
                                     <a href="{{ route('memo.create') }}"
                                         class="dropdown-item {{ request()->routeIs('memo.create') ? 'active' : '' }}"><i
@@ -225,6 +213,26 @@
                                 </div>
                             </div>
                         @endrole
+                        @role('Admin|Secretary|Staff|IT Admin|superadmin')
+                            
+                        <div class="nav-item dropdown">
+                            <a href="#"
+                                class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.index', 'memo.create', 'memo.sent') ? 'active' : '' }}"
+                                data-bs-toggle="dropdown"><i class="fa fa-paper-plane"></i>Folders</a>
+                            <div class="dropdown-menu bg-transparent border-0">
+                                <a href="{{ route('folders.index') }}"
+                                    class="dropdown-item {{ request()->routeIs('folders.index') ? 'active' : '' }}"><i
+                                        class="fa fa-th me-2"></i>My Folders</a>
+                                <a href="{{ route('folders.create') }}"
+                                    class="dropdown-item {{ request()->routeIs('folders.create') ? 'active' : '' }}"><i
+                                        class="fa fa-plus me-2"></i>Create Folder</a>
+                                {{-- <a href="{{ route('memo.received') }}" class="dropdown-item"><i
+                                        class="fa fa-inbox"></i>Incoming Memos </a>
+                                <a href="{{ route('memo.sent') }}" class="dropdown-item"><i
+                                        class="fa fa-paper-plane"></i>Outgoing Memos</a> --}}
+                            </div>
+                        </div>
+                    @endrole
                         @role('IT Admin')
                             <a href="{{ route('designation.index') }}"
                                 class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
@@ -381,9 +389,9 @@
                                 src="{{ asset('uploads/avatars/' . $authUser->userDetail->avatar) }}" alt=""
                                 style="width: 40px; height: 40px;"> --}}
                             <img class="rounded-circle"
-                                src="{{ $authUser->userDetail->avatar ? asset('uploads/avatars/' . $authUser->userDetail->avatar) : asset('avatar.jpeg') }}"
+                                src="{{ isset($authUser->userDetail) && $authUser->userDetail->avatar ? asset('uploads/avatars/' . $authUser->userDetail->avatar) : asset('avatar.jpeg') }}"
                                 alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">{{ $authUser->name }}</span>
+                            <span class="d-none d-lg-inline-flex">{{ $authUser->name  }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">My Profile</a>
@@ -414,7 +422,7 @@
                             &copy; <a href="#">Government of Benue State</a>, All Rights Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                            <!--/*** This template is free as long as you keep the footer author's credit link/attribution link/backlink. If you'd like to use the template without the footer author's credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             Powered By <a href="#">BDIC <img
                                     src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                             </br>

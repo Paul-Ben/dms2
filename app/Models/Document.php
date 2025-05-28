@@ -10,6 +10,17 @@ class Document extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected $fillable = [
+        'title',
+        'docuent_number',
+        'file_path',
+        'uploaded_by',
+        'status',
+        'description',
+        'metadata',
+        'folder_id'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -23,5 +34,10 @@ class Document extends Model
     public function documentRecipients()
     {
         return $this->hasMany(DocumentRecipient::class);
+    }
+
+    public function folder()
+    {
+        return $this->belongsTo(Folder::class);
     }
 }

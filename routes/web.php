@@ -8,6 +8,7 @@ use App\Http\Controllers\SuperAdminActions;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FolderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -151,6 +152,26 @@ Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->nam
     Route::get('/document/receipts', [SuperAdminActions::class, 'receipt_index'])->name('receipt.index');
     Route::get('/document/{receipt}/receipt', [SuperadminActions::class, 'show_receipt'])->name('receipt.show');
     Route::get('/download-receipt', [SuperadminActions::class, 'downloadReceipt'])->name('download.receipt');
+});
+
+// Folder Management Routes
+Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+    // Additional folder management routes
+    Route::post('/folders/{folder}/move', [FolderController::class, 'move'])->name('folders.move');
+    Route::post('/folders/{folder}/share', [FolderController::class, 'share'])->name('folders.share');
+    Route::delete('/folders/{folder}/unshare/{user}', [FolderController::class, 'unshare'])->name('folders.unshare');
+    Route::get('/folders/{folder}/permissions', [FolderController::class, 'permissions'])->name('folders.permissions');
+    Route::post('/folders/{folder}/documents', [FolderController::class, 'addDocument'])->name('folders.add-document');
+    Route::delete('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
+    
+    // Main folder resource routes
+    Route::resource('folders', FolderController::class);
+
+    // Folder document management routes
+    Route::get('/folders/select/{document}', [FolderController::class, 'selectFolder'])->name('folders.select');
+    Route::get('/folders/{folder}/add-documents', [FolderController::class, 'showAddDocuments'])->name('folders.add-documents');
+    Route::post('/folders/{folder}/add-documents', [FolderController::class, 'addDocuments'])->name('folders.add-documents');
+    Route::delete('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
 });
 
 require __DIR__ . '/auth.php';

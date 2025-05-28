@@ -31,6 +31,7 @@
                             <th scope="col">Sent To</th>
                             {{-- <th scope="col" style="width: 16.66%;">Comment</th> --}}
                             <th scope="col" >Date</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,6 +52,19 @@
                                 <td>
                                     {{ $sent->updated_at->format('M j, Y g:i A') }}
                                     {{-- <a href="{{route('document.view_sent', $sent)}}" class="nav-item">View</a> --}}
+                                </td>
+                                <td>
+                                    <a href="{{ route('folders.select') }}" 
+                                       class="btn btn-sm btn-primary"
+                                       onclick="event.preventDefault(); document.getElementById('add-to-folder-form-{{ $sent->document->id }}').submit();">
+                                        Add to Folder
+                                    </a>
+                                    <form id="add-to-folder-form-{{ $sent->document->id }}" 
+                                          action="{{ route('folders.select') }}" 
+                                          method="GET" 
+                                          style="display: none;">
+                                        <input type="hidden" name="document_ids[]" value="{{ $sent->document->id }}">
+                                    </form>
                                 </td>
                             </tr>
                             @empty
