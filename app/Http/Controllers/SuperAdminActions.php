@@ -1554,11 +1554,12 @@ class SuperAdminActions extends Controller
 
     public function getSendform(Request $request, Document $document)
     {
+       
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $role = $authUser->default_role;
-
+        
         switch ($role) {
             case 'superadmin':
                 $recipients = User::all();
@@ -1684,7 +1685,7 @@ class SuperAdminActions extends Controller
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
-
+        
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()

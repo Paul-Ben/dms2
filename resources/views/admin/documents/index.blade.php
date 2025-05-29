@@ -53,20 +53,18 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td><a target="_blank"
-                                        href="{{ asset('storage/'.$document->file_path) }}">{{ $document->docuent_number }}</a>
+                                        href="{{ asset('storage/' . $document->file_path) }}">{{ $document->docuent_number }}</a>
                                 </td>
                                 <td>{{ $document->title }}</td>
-                                <td>{{$document->status}}</td>
+                                <td>{{ $document->status }}</td>
                                 <td>
                                     <div class="nav-item dropdown">
                                         <a href="#" class="nav-link dropdown-toggle"
                                             data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
                                             {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
-                                            <a href="" onclick="showSendOptions(event)"
+                                            <a href="" onclick="showSendOptions(event, {{ $document->id }})"
                                                 class="dropdown-item">Send</a>
-                                            {{-- <a href="edit_studet.html" class="dropdown-item">Edit</a> --}}
-                                            {{-- <a href="delete_student.html" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a> --}}
                                         </div>
                                     </div>
                                 </td>
@@ -84,7 +82,7 @@
                     </tbody>
                 </table>
                 <div class="pt-4">
-                  
+
                 </div>
             </div>
         </div>
@@ -100,9 +98,9 @@
         </div>
     </div>
     <!-- Table End -->
-    <script>
+    {{-- <script>
         // Check if $document is null and set a default value or handle accordingly
-        @if(isset($document) && $document)
+        @if (isset($document) && $document)
             const documentId = '{{ $document->id }}'; // Use document ID if available
         @else
             const documentId = null; // Set to null or handle as needed
@@ -130,8 +128,33 @@
                 window.location.href = "{{route('document.sendout', ':id')}}".replace(':id', documentId); // Redirect to external send route
             }
         }
+    </script> --}}
+    <script>
+        let selectedDocumentId = null;
+
+        function showSendOptions(event, documentId) {
+            event.preventDefault(); // Prevent default link behavior
+            selectedDocumentId = documentId; // Store the clicked document's ID
+            document.getElementById('sendOptionsModal').style.display = 'block'; // Show modal
+        }
+
+        function closeModal() {
+            document.getElementById('sendOptionsModal').style.display = 'none';
+        }
+
+        function sendDocument(option) {
+            if (!selectedDocumentId) {
+                alert("Document ID not found.");
+                return;
+            }
+
+            if (option === 'internal') {
+                window.location.href = "{{ route('document.send', ':id') }}".replace(':id', selectedDocumentId);
+            } else {
+                window.location.href = "{{ route('document.sendout', ':id') }}".replace(':id', selectedDocumentId);
+            }
+        }
     </script>
-    
     <style>
         .modal {
             display: flex;
@@ -167,28 +190,28 @@
         }
     </style>
 
-<script>
-    $(document).ready(function() {
-        $('#adminDocs').DataTable({
-            responsive: true,
-            autoWidth: false,
-            paging: true, // Enable pagination
-            searching: true, // Enable search
-            ordering: true, // Enable sorting
-            lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
-            columnDefs: [{
-                    orderable: false,
-                    targets: -1
-                } // Disable sorting on last column (Actions)
-            ],
-            language: {
-                searchPlaceholder: "Search here...",
-                zeroRecords: "No matching records found",
-                lengthMenu: "Show entries",
-                // info: "Showing START to END of TOTAL entries",
-                infoFiltered: "(filtered from MAX total entries)",
-            }
+    <script>
+        $(document).ready(function() {
+            $('#adminDocs').DataTable({
+                responsive: true,
+                autoWidth: false,
+                paging: true, // Enable pagination
+                searching: true, // Enable search
+                ordering: true, // Enable sorting
+                lengthMenu: [10, 25, 50, 100], // Dropdown for showing entries
+                columnDefs: [{
+                        orderable: false,
+                        targets: -1
+                    } // Disable sorting on last column (Actions)
+                ],
+                language: {
+                    searchPlaceholder: "Search here...",
+                    zeroRecords: "No matching records found",
+                    lengthMenu: "Show entries",
+                    // info: "Showing START to END of TOTAL entries",
+                    infoFiltered: "(filtered from MAX total entries)",
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endsection

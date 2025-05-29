@@ -323,16 +323,28 @@ class FolderController extends Controller
                 ]);
             }
             // check if the user has permission to remove documents from this folder
-            $hasPermission = $folder->users()
-                ->where('user_id', $authUser->id)
-                ->whereIn('permission', ['write', 'admin'])
-                ->exists();
-            if (!$hasPermission) {
-                return redirect()->back()->with([
-                    'message' => 'You do not have permission to remove documents from this folder',
-                    'alert-type' => 'error'
-                ]);
+            if ($folder->is_private) {
+                $hasAccess = $folder->users()
+                    ->where('user_id', $authUser->id)
+                    ->exists();
+
+                if (!$hasAccess) {
+                    return redirect()->back()->with([
+                        'message' => 'You do not have permission to remove documents from this folder',
+                        'alert-type' => 'error'
+                    ]);
+                }
             }
+            // $hasPermission = $folder->users()
+            //     ->where('user_id', $authUser->id)
+            //     ->whereIn('permission', ['write', 'admin'])
+            //     ->exists();
+            // if (!$hasPermission) {
+            //     return redirect()->back()->with([
+            //         'message' => 'You do not have permission to remove documents from this folder',
+            //         'alert-type' => 'error'
+            //     ]);
+            // }
 
             // Remove document from folder
             $document->update(['folder_id' => null]);

@@ -72,10 +72,10 @@
                                                 frameborder="0"></iframe>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-xl-6 mb-3" hidden>
+                                    {{-- <div class="col-sm-12 col-xl-6 mb-3" hidden>
                                         <label for="exampleInputEmail1" class="form-label">Metadata</label>
                                             <textarea class="form-control" name="metadata" id="metadataField" cols="30" rows="5"></textarea>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div style="text-align: center;">
                                     <button type="submit" class="btn btn-primary">Submit</button>

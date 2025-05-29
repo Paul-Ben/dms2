@@ -183,7 +183,7 @@
             <p>
                 Dear Sir/Madam,
             </p>
-            {{-- <p>{{$memo->content}}</p> --}}
+            {{-- <p><pre-wrap>{{$memo->content}}</pre-wrap></p> --}}
             <div style="white-space: pre-wrap;">{{ $memo->content }}</div>
 
         </div>

@@ -91,7 +91,7 @@ class DocumentStorage
             'uploaded_by' => $authUser->id,
             'status' => $data->status ?? 'pending',
             'description' => $data->description,
-            'metadata' => json_encode($data->metadata),
+            // 'metadata' => json_encode($data->metadata),
         ]);
 
         // Log the activity
