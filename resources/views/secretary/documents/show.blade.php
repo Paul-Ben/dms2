@@ -736,7 +736,7 @@
             </div>
 
             <!-- Previous Minuting Timeline Section -->
-            <div class="container py-3 py-md-4">
+            {{-- <div class="container py-3 py-md-4">
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-8">
                         <!-- Header -->
@@ -790,6 +790,108 @@
                                         </small>
                                     </div>
                                 </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+            <div class="container py-3 py-md-4">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-8">
+                        <!-- Header -->
+                        <div id="priviousmiuting" class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 h4-md fw-bold text-primary mb-0">
+                                <i class="fas fa-history mr-2"></i> Previous Minuting
+                            </h2>
+                        </div>
+
+                        <!-- Document Info Card -->
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body bg-light p-3">
+                                <h5 class="card-title fw-bold mb-1">
+                                    Document Title: {{ $document_received->document->title }}
+                                </h5>
+                                <p class="card-text text-muted small mb-0">
+                                    <strong>Document #:</strong> {{ $document_received->document->docuent_number }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Chat-Style Timeline -->
+                        <div class="timeline">
+                            @foreach ($document_locations as $location)
+                                {{-- <div class="timeline-item">
+                                    <!-- Message Header -->
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary text-white rounded-circle mr-2 mr-md-3">
+                                                {{ strtoupper(substr($location->sender->name, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold small">{{ $location->sender->name }}</h6>
+                                                <small class="text-muted d-block">
+                                                    {{ $location->sender->userDetail->designation }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ $location->created_at->format('M j, Y g:i A') }}
+                                        </small>
+                                    </div>
+
+                                    <!-- Message Bubble -->
+                                    <div class="message-bubble">
+                                        <p class="mb-2 small">Hi {{ $location->recipient->name }},</p>
+                                        <p class="mb-3 small">{{ $location->message }}</p>
+                                        <small class="text-muted d-block small">
+                                            <i class="fas fa-user-check mr-1"></i>
+                                            Sent to: {{ $location->recipient->name }}
+                                        </small>
+                                    </div>
+                                </div> --}}
+                                <div class="timeline-item">
+                                    <!-- Clickable Header (acts as accordion toggle) -->
+                                    <div class="message-header d-flex justify-content-between align-items-start mb-2"
+                                        onclick="this.parentNode.querySelector('.message-content').classList.toggle('d-none')"
+                                        style="cursor: pointer;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary text-white rounded-circle mr-2 mr-md-3">
+                                                {{ strtoupper(substr($location->sender->name, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold small">{{ $location->sender->name }}</h6>
+                                                <small class="text-muted d-block">
+                                                    {{ $location->sender->userDetail->designation }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ $location->created_at->format('M j, Y g:i A') }}
+                                        </small>
+                                    </div>
+
+                                    <!-- Collapsible Message Content -->
+                                    <div class="message-content d-none animate__animated animate__fadeIn">
+                                        <div class="message-bubble bg-light p-3 rounded mt-2">
+                                            <p class="mb-2 small">Hi {{ $location->recipient->name }},</p>
+                                            <p class="mb-3 small">{{ $location->message }}</p>
+                                            <small class="text-muted d-block small">
+                                                <i class="fas fa-user-check mr-1"></i>
+                                                Sent to: {{ $location->recipient->name }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .message-header:hover {
+                                        background-color: #f8f9fa;
+                                    }
+
+                                    .message-bubble {
+                                        border-left: 3px solid #0d6efd;
+                                    }
+                                </style>
                             @endforeach
                         </div>
                     </div>

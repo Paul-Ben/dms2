@@ -33,7 +33,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($folders as $folder)
+                                @forelse($folders as $folder)
                                     <tr>
                                         <td>
                                             <a href="{{ route('folders.show', $folder) }}">
@@ -68,7 +68,11 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">No folders found.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
