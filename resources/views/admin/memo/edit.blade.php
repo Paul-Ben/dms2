@@ -55,7 +55,7 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Sender</label>
-                                    <input type="text" name="sender" value="{{ $memo->sender }}" class="form-control"  >
+                                    <input type="text" name="sender" value="{{ $memo->sender }}" class="form-control" readonly >
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Recipient</label>

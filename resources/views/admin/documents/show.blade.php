@@ -368,10 +368,10 @@
                         <strong>Document:</strong> {{ e($document_received->document->docuent_number) }} |
                         {{ $document_received->document->file_path }}
                         <div id="previewContainer" class="mt-3"
-                            style="display: flex; flex-direction: column; height: 80vh; min-height: 300px;">
+                            style="display: flex; flex-direction: column; height: 90vh; min-height: 300px;">
                             {{-- <iframe id="pdfPreview" style="width: 100%; height: 800px; min-height: 300px;" frameborder="0"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
-                            <iframe id="pdfPreview" style="flex: 1 1 auto; width: 100%; border: none;"
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}">
                             </iframe>
                         </div>

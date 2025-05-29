@@ -2381,8 +2381,11 @@ class SuperAdminActions extends Controller
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        $senderUser = User::where('name', $memo['sender'])->with('userDetail')->first();
+        // dd($senderUser);
+$receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->first();
         // $memo = Memo::where('id', $id)->first();
-        return view('admin.memo.show', compact('memo', 'authUser', 'userTenant'));
+        return view('admin.memo.show', compact('memo', 'authUser', 'userTenant', 'senderUser'));
     }
 
     public function createMemoTemplateForm()

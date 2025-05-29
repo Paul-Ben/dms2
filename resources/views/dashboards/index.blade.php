@@ -217,7 +217,7 @@
                             
                         <div class="nav-item dropdown">
                             <a href="#"
-                                class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.index', 'memo.create', 'memo.sent') ? 'active' : '' }}"
+                                class="nav-link dropdown-toggle {{ request()->routeIs('folders.index', 'folders.index', 'memo.create') ? 'active' : '' }}"
                                 data-bs-toggle="dropdown"><i class="fa fa-paper-plane"></i>Folders</a>
                             <div class="dropdown-menu bg-transparent border-0">
                                 <a href="{{ route('folders.index') }}"

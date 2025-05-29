@@ -44,9 +44,9 @@
                                         <td>{{ $folder->creator->name }}</td>
                                         <td>
                                             @if($folder->is_private)
-                                                <span class="badge badge-warning">Private</span>
+                                                <span>Private</span>
                                             @else
-                                                <span class="badge badge-danger">Public</span>
+                                                <span>Public</span>
                                             @endif
                                         </td>
                                         <td>{{ $folder->documents->count() }}</td>

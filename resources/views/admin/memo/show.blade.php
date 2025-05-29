@@ -1,6 +1,6 @@
 @extends('dashboards.index')
 @section('content')
-<style>
+{{-- <style>
     /* Add your letterhead styles here */
     body {
         font-family: Arial, sans-serif;
@@ -35,5 +35,6 @@
     <div class="footer">
         <p>Your Company Footer Information</p>
     </div>
-</div>
+</div> --}}
+@include('admin.memo.memotemplate')
 @endsection

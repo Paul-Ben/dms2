@@ -671,6 +671,14 @@
                             </button>
                         </a>
                     @endif
+                    <a href="{{ route('folders.select', $document_received->document->id) }}" 
+                        class="text-decoration-none"
+                        title="Add to folder">
+                         <button class="btn">
+                            <i class="fas fa-folder-plus"></i>
+                            Add to Folder
+                         </button>
+                     </a>
                     <a href="{{ url()->previous() }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">
@@ -686,8 +694,11 @@
                     <div class="file-details">
                         <strong>Document:</strong> {{ e($document_received->document->docuent_number) }}
                         <div id="previewContainer" class="mt-3">
-                            <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
-                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe>
+                            {{-- <iframe id="pdfPreview" style="width: 100%; height: 300px; min-height: 300px;" frameborder="0"
+                                src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
+                                <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                src="{{ asset('storage/' . $document_received->document->file_path) }}">
+                            </iframe>
                         </div>
                     </div>
                 </div>

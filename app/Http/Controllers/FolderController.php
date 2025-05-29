@@ -307,6 +307,11 @@ class FolderController extends Controller
 
     public function removeDocument(Request $request, Folder $folder, Document $document)
     {
+        $authUser = Auth::user();
+        $userdetails = $authUser->userDetail;
+        if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin'])) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
         try {
             DB::beginTransaction();
 
@@ -314,6 +319,17 @@ class FolderController extends Controller
             if ($document->folder_id !== $folder->id) {
                 return redirect()->back()->with([
                     'message' => 'Document does not belong to this folder',
+                    'alert-type' => 'error'
+                ]);
+            }
+            // check if the user has permission to remove documents from this folder
+            $hasPermission = $folder->users()
+                ->where('user_id', $authUser->id)
+                ->whereIn('permission', ['write', 'admin'])
+                ->exists();
+            if (!$hasPermission) {
+                return redirect()->back()->with([
+                    'message' => 'You do not have permission to remove documents from this folder',
                     'alert-type' => 'error'
                 ]);
             }
