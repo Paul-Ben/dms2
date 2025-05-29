@@ -161,8 +161,9 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::post('/folders/{folder}/share', [FolderController::class, 'share'])->name('folders.share');
     Route::delete('/folders/{folder}/unshare/{user}', [FolderController::class, 'unshare'])->name('folders.unshare');
     Route::get('/folders/{folder}/permissions', [FolderController::class, 'permissions'])->name('folders.permissions');
+    Route::put('/folders/{folder}/permissions', [FolderController::class, 'updatePermissions'])->name('folders.update-permissions');
     Route::post('/folders/{folder}/documents', [FolderController::class, 'addDocument'])->name('folders.add-document');
-    Route::delete('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
+    Route::post('/folders/{folder}/documents/{document}/remove', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
     
     // Main folder resource routes
     Route::resource('folders', FolderController::class);
@@ -171,7 +172,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::get('/folders/select/{document}', [FolderController::class, 'selectFolder'])->name('folders.select');
     Route::get('/folders/{folder}/add-documents', [FolderController::class, 'showAddDocuments'])->name('folders.add-documents');
     Route::post('/folders/{folder}/add-documents', [FolderController::class, 'addDocuments'])->name('folders.add-documents');
-    Route::delete('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
+    Route::get('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
 });
 
 require __DIR__ . '/auth.php';

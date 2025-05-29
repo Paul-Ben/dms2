@@ -342,7 +342,7 @@
                             </button>
                         </a>
                     @endif
-                    @if($document_received->document->folder_id == null)
+                    
                     <a href="{{ route('folders.select', $document_received->document->id) }}" 
                         class="text-decoration-none"
                         title="Add to folder">
@@ -351,7 +351,7 @@
                             Add to Folder
                          </button>
                      </a>
-                    @endif
+                    
                     <a href="{{ url()->previous() }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">

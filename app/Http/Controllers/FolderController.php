@@ -26,7 +26,7 @@ class FolderController extends Controller
         $userdetails = $authUser->userDetail;
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
         }
 
@@ -56,7 +56,12 @@ class FolderController extends Controller
             ->whereNull('parent_id')
             ->get();
 
-        return view('admin.folders.create', compact('parentFolders', 'authUser', 'userTenant', 'folders'));
+        // Get users from the same tenant
+        $users = User::whereHas('userDetail', function ($query) use ($userdetails) {
+            $query->where('tenant_id', $userdetails->tenant_id);
+        })->get();
+
+        return view('admin.folders.create', compact('parentFolders', 'authUser', 'userTenant', 'folders', 'users'));
     }
 
     public function store(Request $request)
@@ -84,25 +89,42 @@ class FolderController extends Controller
                 ->withInput();
         }
 
-        $folder = Folder::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'tenant_id' => $userdetails->tenant_id,
-            'created_by' => $authUser->id,
-            'parent_id' => $request->parent_id,
-            'is_private' => $request->is_private ?? false
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($request->is_private && $request->has('permissions')) {
-            foreach ($request->permissions as $permission) {
-                $folder->users()->attach($permission['user_id'], [
-                    'permission' => $permission['permission']
-                ]);
+            $folder = Folder::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'tenant_id' => $userdetails->tenant_id,
+                'created_by' => $authUser->id,
+                'parent_id' => $request->parent_id,
+                'is_private' => $request->is_private ?? false
+            ]);
+
+            // Add creator as admin by default
+            $folder->users()->attach($authUser->id, ['permission' => 'admin']);
+
+            // Add other user permissions if folder is private
+            if ($request->is_private && $request->has('permissions')) {
+                foreach ($request->permissions as $permission) {
+                    if ($permission['user_id'] != $authUser->id) { // Don't add creator again
+                        $folder->users()->attach($permission['user_id'], [
+                            'permission' => $permission['permission']
+                        ]);
+                    }
+                }
             }
-        }
 
-        return redirect()->route('folders.index')
-            ->with('success', 'Folder created successfully');
+            DB::commit();
+
+            return redirect()->route('folders.index')
+                ->with(['message' => 'Folder created successfully', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with(['message' => 'Error creating folder: ' . $e->getMessage(), 'alert-type' => 'error'])
+                ->withInput();
+        }
     }
 
     public function show(Folder $folder)
@@ -118,7 +140,7 @@ class FolderController extends Controller
                 ->exists();
 
             if (!$hasAccess) {
-                return redirect()->back()->with('error', 'You do not have access to this folder');
+                return redirect()->back()->with(['message' => 'You do not have permission to access this folder', 'alert-type' => 'error']);
             }
         }
 
@@ -220,12 +242,17 @@ class FolderController extends Controller
 
         // Check if folder has documents
         if ($folder->documents()->exists()) {
-            return redirect()->back()->with('error', 'Cannot delete folder with documents');
+            return redirect()->back()->with(['message' => 'Cannot delete folder with documents', 'alert-type' => 'error']);
         }
 
         // Check if folder has subfolders
         if ($folder->children()->exists()) {
-            return redirect()->back()->with('error', 'Cannot delete folder with subfolders');
+            return redirect()->back()->with(['message' => 'Cannot delete folder with subfolders']);
+        }
+
+        // Check if folder was not created by the user
+        if ($folder->created_by !== $authUser->id) {
+            return redirect()->back()->with(['message' => 'Cannot delete folder that was not created by you.', 'alert-type' => 'error']);
         }
 
         $folder->delete();
@@ -283,6 +310,14 @@ class FolderController extends Controller
         try {
             DB::beginTransaction();
 
+            // Check if document belongs to the folder
+            if ($document->folder_id !== $folder->id) {
+                return redirect()->back()->with([
+                    'message' => 'Document does not belong to this folder',
+                    'alert-type' => 'error'
+                ]);
+            }
+
             // Remove document from folder
             $document->update(['folder_id' => null]);
 
@@ -323,6 +358,13 @@ class FolderController extends Controller
 
     public function selectFolder(Request $request, Document $document)
     {
+        // Check if the document is already in a folder
+        if ($document->folder_id) {
+            return redirect()->back()->with([
+                'message' => 'Document already belongs to a folder',
+                'alert-type' => 'error'
+            ]);
+        }
         
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
@@ -343,5 +385,86 @@ class FolderController extends Controller
             ->get();
 
         return view('folders.select-folder', compact('folders', 'authUser', 'userTenant', 'document'));
+    }
+
+    public function permissions(Folder $folder)
+    {
+        $authUser = Auth::user();
+        $userdetails = $authUser->userDetail;
+
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+
+        // $users = User::with('UserDetails')->where('tenant_id', $userdetails->tenant_id)->get();
+        $users = User::with(['userDetail' => function($query) {
+            $query->select('user_id', 'designation', 'department_id');
+        }])
+        ->whereHas('userDetail', function($q) use ($userdetails) {
+            $q->where('tenant_id', $userdetails->tenant_id);
+        })
+        ->select('id', 'name', 'email')
+        ->orderBy('name')
+        ->get();
+        return view('admin.folders.permissions', compact('folder', 'users', 'authUser'));
+    }
+
+    public function updatePermissions(Request $request, Folder $folder)
+    {
+        $authUser = Auth::user();
+        $userdetails = $authUser->userDetail;
+
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'is_private' => 'boolean',
+            'permissions' => 'required_if:is_private,true|array',
+            'permissions.*.user_id' => 'required|exists:users,id',
+            'permissions.*.permission' => 'required|in:read,write,admin'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Update folder privacy
+            $folder->update([
+                'is_private' => $request->is_private ?? false
+            ]);
+
+            // Clear existing permissions
+            $folder->users()->detach();
+
+            // Add creator as admin by default
+            $folder->users()->attach($authUser->id, ['permission' => 'admin']);
+
+            // Add other user permissions if folder is private
+            if ($request->is_private && $request->has('permissions')) {
+                foreach ($request->permissions as $permission) {
+                    if ($permission['user_id'] != $authUser->id) { // Don't add creator again
+                        $folder->users()->attach($permission['user_id'], [
+                            'permission' => $permission['permission']
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('folders.index')
+                ->with(['message' => 'Folder permissions updated successfully', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with(['message' => 'Error updating folder permissions: ' . $e->getMessage(), 'alert-type' => 'error'])
+                ->withInput();
+        }
     }
 } 

@@ -97,11 +97,24 @@
                                                     </div>
                                                     <p class="mb-1">{{ $document->docuent_number }} - {{ Str::limit($document->description, 100) }}</p>
                                                     <small>
-                                                        {{-- Uploaded by {{ $document->uploadedBy->name }} --}}
                                                         @if($document->is_private)
                                                             <span class="badge badge-info">Private</span>
                                                         @endif
                                                     </small>
+                                                    <div class="btn-group">
+                                                        <a href="{{ route('document.view', $document) }}" class="btn btn-sm btn-info">
+                                                            <i class="fa fa-eye"></i> View
+                                                        </a>
+                                                        <a href="{{ route('folders.remove-document', ['folder' => $folder->id, 'document' => $document->id]) }}" class="btn btn-sm btn-danger">
+                                                            <i class="fa fa-trash"></i> Remove
+                                                        </a>
+                                                        {{-- <form action="{{ route('folders.remove-document', ['folder' => $folder->id, 'document' => $document->id]) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to remove this document from the folder?')">
+                                                                <i class="fa fa-trash"></i> Remove
+                                                            </button>
+                                                        </form> --}}
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>

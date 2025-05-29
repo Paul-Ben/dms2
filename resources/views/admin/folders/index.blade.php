@@ -46,23 +46,23 @@
                                             @if($folder->is_private)
                                                 <span class="badge badge-warning">Private</span>
                                             @else
-                                                <span class="badge badge-success">Public</span>
+                                                <span class="badge badge-danger">Public</span>
                                             @endif
                                         </td>
                                         <td>{{ $folder->documents->count() }}</td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('folders.edit', $folder) }}" 
-                                                   class="btn btn-sm btn-info">
-                                                    <i class="fas fa-edit"></i>
+                                                <a href="{{ route('folders.edit', $folder->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fa fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('folders.destroy', $folder) }}" 
-                                                      method="POST" 
-                                                      onsubmit="return confirm('Are you sure you want to delete this folder?');">
+                                                <a href="{{ route('folders.permissions', $folder->id) }}" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-key"></i>
+                                                </a>
+                                                <form action="{{ route('folders.destroy', $folder->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this folder?')">
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>
                                             </div>

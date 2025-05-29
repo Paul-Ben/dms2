@@ -391,7 +391,7 @@
                             <img class="rounded-circle"
                                 src="{{ isset($authUser->userDetail) && $authUser->userDetail->avatar ? asset('uploads/avatars/' . $authUser->userDetail->avatar) : asset('avatar.jpeg') }}"
                                 alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">{{ $authUser->name  }}</span>
+                            <span class="d-none d-lg-inline-flex">{{ $authUser->name ?? '' }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">My Profile</a>
@@ -438,10 +438,11 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('dbf/lib/chart/chart.min.js') }}"></script>
     <script src="{{ asset('dbf/lib/easing/easing.min.js') }}"></script>
