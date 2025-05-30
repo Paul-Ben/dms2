@@ -38,7 +38,8 @@
             width: 70px;
             height: 70px;
             margin: 0 auto 10px auto;
-            background: url({{ asset('logos/' . $senderUser->userDetail->tenant->logo ?? 'landing/images/Benue_New_Logo.png') }}) no-repeat center center;
+            background: url({{ asset('logos/' . ($senderUser->userDetail->tenant->logo ?? 'landing/images/Benue_New_Logo.png')) }}) no-repeat center center;
+            /* background: url({{ asset('logos/' . ($senderUser?->userDetail?->tenant?->logo ?? 'landing/images/Benue_New_Logo.png')) }}); */
             /* background: url('https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png') no-repeat center center; */
             background-size: contain;
             display: block;
@@ -156,6 +157,7 @@
     <div class="memo-container">
         <div class="letterhead">
             <div class="logo"></div>
+            {{-- <div><img src="{{ asset('logos/' . ($senderUser->userDetail->tenant->logo ?? 'landing/images/Benue_New_Logo.png')) }}" width="70px" height="70px" alt=""></div> --}}
             <div class="org-address">{{ $senderUser->userDetail->tenant->name }}</div>
         </div>
         <div class="memo-title">INTERNAL MEMO</div>
