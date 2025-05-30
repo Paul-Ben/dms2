@@ -29,17 +29,17 @@ return new class extends Migration
         });
 
         // Add folder_id to documents table
-        Schema::table('documents', function (Blueprint $table) {
-            $table->foreignId('folder_id')->nullable()->constrained('folders')->onDelete('set null');
-        });
+        // Schema::table('documents', function (Blueprint $table) {
+        //     $table->foreignId('folder_id')->nullable()->constrained('folders')->onDelete('set null');
+        // });
     }
 
     public function down()
     {
-        Schema::table('documents', function (Blueprint $table) {
-            $table->dropForeign(['folder_id']);
-            $table->dropColumn('folder_id');
-        });
+        // Schema::table('documents', function (Blueprint $table) {
+        //     $table->dropForeign(['folder_id']);
+        //     $table->dropColumn('folder_id');
+        // });
         
         Schema::dropIfExists('folder_permissions');
         Schema::dropIfExists('folders');
