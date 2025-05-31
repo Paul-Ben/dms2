@@ -185,8 +185,12 @@ class FolderController extends Controller
         $userdetails = $authUser->userDetail;
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
+        }
+        // Check if user created the folder or has admin access
+        if ($folder->created_by !== $authUser->id && !in_array($authUser->default_role, ['Admin'])) {
+            return redirect()->back()->with(['message' => 'You do not have permission to edit this folder', 'alert-type' => 'error']);
         }
 
         $parentFolders = Folder::where('tenant_id', $userdetails->tenant_id)
@@ -477,10 +481,17 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
-
+        // Check if user created the folder or has admin access
+        if ($folder->created_by !== $authUser->id && !in_array($authUser->default_role, ['Admin'])) {
+            return redirect()->back()->with([
+                'message' => 'You do not have permission to manage folder permissions',
+                'alert-type' => 'error'
+            ]); 
+        }
+        
         // $users = User::with('UserDetails')->where('tenant_id', $userdetails->tenant_id)->get();
         $users = User::with(['userDetail' => function ($query) {
             $query->select('user_id', 'designation', 'department_id');

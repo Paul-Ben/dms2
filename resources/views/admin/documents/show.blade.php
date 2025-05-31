@@ -287,6 +287,7 @@
         <div class="bg-light rounded p-3 p-md-4">
             <div class="email-container">
                 <div class="toolbar">
+                    
                     <a href="{{ route('document.reply', $document_received->document_id) }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">
@@ -409,7 +410,7 @@
                     </div>
                 </div>
             </div>
-
+           
             <!-- Previous Minuting Timeline Section -->
             <div class="container py-3 py-md-4">
                 <div class="row justify-content-center">

@@ -205,4 +205,24 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            // Get the search form specifically
+            const searchForm = $('form[action="{{ route('folders.index') }}"]');
+
+            // Submit form when privacy filter changes
+            $('select[name="privacy"]', searchForm).change(function() {
+                searchForm.submit();
+            });
+
+            // Debounced search for better performance
+            let timer;
+            $('input[name="search"]', searchForm).keyup(function() {
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    searchForm.submit();
+                }, 500);
+            });
+        });
+    </script>
 @endsection
