@@ -68,7 +68,6 @@
                                 <td>No Data Found</td>
                                 <td>No Data Found</td>
                                 <td>No Data Found</td>
-                                <td>No Data Found</td>
                             </tr>
                         @endforelse
 
