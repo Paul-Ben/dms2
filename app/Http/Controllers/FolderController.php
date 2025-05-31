@@ -20,23 +20,51 @@ class FolderController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
-    {
-        $authUser = Auth::user();
-        $userdetails = $authUser->userDetail;
-        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+    public function index(Request $request)
+{
+    $authUser = Auth::user();
+    $userdetails = $authUser->userDetail;
+    $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin'])) {
-            return view('errors.404', compact('authUser', 'userTenant'));
-        }
-
-        $folders = Folder::with(['creator', 'parent', 'documents'])
-            ->where('tenant_id', $userdetails->tenant_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('admin.folders.index', compact('folders', 'authUser', 'userTenant'));
+    if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin', 'superadmin'])) {
+        return view('errors.404', compact('authUser', 'userTenant'));
     }
+
+    $folders = Folder::with(['creator', 'parent', 'documents'])
+        ->where('tenant_id', $userdetails->tenant_id)
+        ->when($request->search, function($query, $search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('creator', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        })
+        ->when($request->privacy, function($query, $privacy) {
+            $query->where('is_private', $privacy === 'private');
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(5); // Using pagination instead of get()
+
+    return view('admin.folders.index', compact('folders', 'authUser', 'userTenant'));
+}
+    // public function index()
+    // {
+    //     $authUser = Auth::user();
+    //     $userdetails = $authUser->userDetail;
+    //     $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+
+    //     if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin', 'superadmin'])) {
+    //         return view('errors.404', compact('authUser', 'userTenant'));
+    //     }
+
+    //     $folders = Folder::with(['creator', 'parent', 'documents'])
+    //         ->where('tenant_id', $userdetails->tenant_id)
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return view('admin.folders.index', compact('folders', 'authUser', 'userTenant'));
+    // }
 
     public function create()
     {
@@ -275,8 +303,10 @@ class FolderController extends Controller
 
             // Check if document already belongs to a folder
             if ($document->folder_id) {
-                return redirect()->back()->with([
-                    'message' => 'Document already belongs to a folder',
+                $existingFolder = Folder::find($document->folder_id);
+                $folderName = $existingFolder ? $existingFolder->name : 'Unknown Folder';
+                return redirect()->route('folders.index')->with([
+                    'message' => 'Document already belongs to the folder: ' . $folderName,
                     'alert-type' => 'error'
                 ]);
             }
@@ -292,7 +322,7 @@ class FolderController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with([
+            return redirect()->route('folders.index')->with([
                 'message' => 'Document added to folder successfully',
                 'alert-type' => 'success'
             ]);
@@ -388,29 +418,56 @@ class FolderController extends Controller
     {
         // Check if the document is already in a folder
         if ($document->folder_id) {
-            return redirect()->back()->with([
-                'message' => 'Document already belongs to a folder',
+            $existingFolder = Folder::find($document->folder_id);
+            $folderName = $existingFolder ? $existingFolder->name : 'Unknown Folder';
+            return redirect()->route('folders.index')->with([
+                'message' => 'Document already belongs to the folder: ' . $folderName,
                 'alert-type' => 'error'
             ]);
         }
-        
+
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
-        
+
         if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
         }
 
         // Get all folders the user has access to
+        // $folders = Folder::where('tenant_id', $userdetails->tenant_id)
+        //     ->where(function ($query) use ($authUser) {
+        //         $query->where('created_by', $authUser->id)
+        //             ->orWhereHas('users', function ($q) use ($authUser) {
+        //                 $q->where('user_id', $authUser->id);
+        //             });
+        //     })
+        //     ->get();
         $folders = Folder::where('tenant_id', $userdetails->tenant_id)
-            ->where(function($query) use ($authUser) {
+            ->where(function ($query) use ($authUser) {
                 $query->where('created_by', $authUser->id)
-                    ->orWhereHas('users', function($q) use ($authUser) {
+                    ->orWhereHas('users', function ($q) use ($authUser) {
                         $q->where('user_id', $authUser->id);
                     });
             })
-            ->get();
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->paginate(6);
+        // $folders = Folder::with(['creator' => function ($query) {
+        //     $query->select('id', 'name'); // Only get necessary user fields
+        // }])
+        //     ->where('tenant_id', $userdetails->tenant_id)
+        //     ->where(function ($query) use ($authUser) {
+        //         $query->where('created_by', $authUser->id)
+        //             ->orWhereHas('users', function ($q) use ($authUser) {
+        //                 $q->where('user_id', $authUser->id);
+        //             });
+        //     })->paginate(6); // Paginate results for better performance
+        // ->latest() // Orders by created_at in descending order
+        // ->take(6)  // Limits to 6 most recent
+        // ->get(['id', 'name','description', 'created_at', 'created_by']); // Only select needed columns
 
         return view('folders.select-folder', compact('folders', 'authUser', 'userTenant', 'document'));
     }
@@ -425,15 +482,15 @@ class FolderController extends Controller
         }
 
         // $users = User::with('UserDetails')->where('tenant_id', $userdetails->tenant_id)->get();
-        $users = User::with(['userDetail' => function($query) {
+        $users = User::with(['userDetail' => function ($query) {
             $query->select('user_id', 'designation', 'department_id');
         }])
-        ->whereHas('userDetail', function($q) use ($userdetails) {
-            $q->where('tenant_id', $userdetails->tenant_id);
-        })
-        ->select('id', 'name', 'email')
-        ->orderBy('name')
-        ->get();
+            ->whereHas('userDetail', function ($q) use ($userdetails) {
+                $q->where('tenant_id', $userdetails->tenant_id);
+            })
+            ->select('id', 'name', 'email')
+            ->orderBy('name')
+            ->get();
         return view('admin.folders.permissions', compact('folder', 'users', 'authUser'));
     }
 
@@ -495,4 +552,4 @@ class FolderController extends Controller
                 ->withInput();
         }
     }
-} 
+}

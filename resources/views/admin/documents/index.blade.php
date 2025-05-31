@@ -62,7 +62,7 @@
                                         <a href="#" class="nav-link dropdown-toggle"
                                             data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
-                                            {{-- <a href="{{route('document.send', $document)}}" class="dropdown-item">Send</a> --}}
+                                            {{-- <a href="{{ route('folders.select', $document->id) }}" class="dropdown-item">Add to Folder</a> --}}
                                             <a href="" onclick="showSendOptions(event, {{ $document->id }})"
                                                 class="dropdown-item">Send</a>
                                         </div>
