@@ -37,7 +37,7 @@
                         @forelse ($received_documents as $key => $received)
                             <tr>
                                 <td>{{ $key+1}}</td>
-                                <td><a href="{{route('memo.view', $received->memo->id)}}" target="__blank">
+                                <td><a href="{{route('memo.view', $received->memo->id)}}">
                                     {{$received->memo->docuent_number}}
                                 </a></td>
                                 <td>{{$received->memo->title}}</td>

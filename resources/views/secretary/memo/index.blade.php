@@ -45,7 +45,7 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td><a href="{{ route('memo.view', $document) }}">{{ $document->docuent_number }}</a>
                                 </td>
-                                <td><a href="{{ route('memo.view', $document)}}" target="__blank">{{ $document->title }}</a></td>
+                                <td><a href="{{ route('memo.view', $document)}}">{{ $document->title }}</a></td>
                                 {{-- <td></td> --}}
                                 <td>{{$document->status}}</td>
                                 <td>

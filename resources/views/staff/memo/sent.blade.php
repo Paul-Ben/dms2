@@ -37,7 +37,7 @@
                         @forelse ($sent_documents as $key => $sent)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a href="{{ route('memo.generate', $sent->memo->id) }}" target="__blank">
+                                <td><a href="{{ route('memo.view', $sent->memo->id) }}">
                                     {{ $sent->memo->docuent_number }}
                                 </a>
                             </td>
