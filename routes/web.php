@@ -9,6 +9,7 @@ use App\Models\Tenant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\VisitorActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,10 @@ Route::get('/users/search', [SearchController::class, 'searchUser'])->name('sear
     Route::get('/document/charge/{fileCharge}', [SuperAdminActions::class, 'editFileCharge'])->name('edit.fileChargeForm');
     Route::put('/document/charge/{fileCharge}', [SuperAdminActions::class, 'updateFileCharge'])->name('update.fileCharge');
     Route::delete('/document/charge/{fileCharge}', [SuperAdminActions::class, 'deleteFileCharge'])->name('delete.fileCharge');
+
+
+    Route::get('/superadmin/visitor-activities', [VisitorActivityController::class, 'index'])->name('superadmin.visitor.activities');
+
     
     /**Role management related links */
     Route::get('/roles/index', [SuperAdminActions::class, 'roleIndex'])->name('role.index');

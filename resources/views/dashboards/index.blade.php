@@ -194,7 +194,6 @@
                         </div>
                     </div> --}}
                         @role('Admin|Secretary|Staff|IT Admin|superadmin')
-                            
                             <div class="nav-item dropdown">
                                 <a href="#"
                                     class="nav-link dropdown-toggle {{ request()->routeIs('memo.received', 'memo.index', 'memo.create', 'memo.sent') ? 'active' : '' }}"
@@ -214,25 +213,24 @@
                             </div>
                         @endrole
                         @role('Admin|Secretary|Staff|IT Admin|superadmin')
-                            
-                        <div class="nav-item dropdown">
-                            <a href="#"
-                                class="nav-link dropdown-toggle {{ request()->routeIs('folders.index', 'folders.index', 'memo.create') ? 'active' : '' }}"
-                                data-bs-toggle="dropdown"><i class="fa fa-paper-plane"></i>Folders</a>
-                            <div class="dropdown-menu bg-transparent border-0">
-                                <a href="{{ route('folders.index') }}"
-                                    class="dropdown-item {{ request()->routeIs('folders.index') ? 'active' : '' }}"><i
-                                        class="fa fa-th me-2"></i>My Folders</a>
-                                <a href="{{ route('folders.create') }}"
-                                    class="dropdown-item {{ request()->routeIs('folders.create') ? 'active' : '' }}"><i
-                                        class="fa fa-plus me-2"></i>Create Folder</a>
-                                {{-- <a href="{{ route('memo.received') }}" class="dropdown-item"><i
+                            <div class="nav-item dropdown">
+                                <a href="#"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('folders.index', 'folders.index', 'memo.create') ? 'active' : '' }}"
+                                    data-bs-toggle="dropdown"><i class="fa fa-paper-plane"></i>Folders</a>
+                                <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="{{ route('folders.index') }}"
+                                        class="dropdown-item {{ request()->routeIs('folders.index') ? 'active' : '' }}"><i
+                                            class="fa fa-th me-2"></i>My Folders</a>
+                                    <a href="{{ route('folders.create') }}"
+                                        class="dropdown-item {{ request()->routeIs('folders.create') ? 'active' : '' }}"><i
+                                            class="fa fa-plus me-2"></i>Create Folder</a>
+                                    {{-- <a href="{{ route('memo.received') }}" class="dropdown-item"><i
                                         class="fa fa-inbox"></i>Incoming Memos </a>
                                 <a href="{{ route('memo.sent') }}" class="dropdown-item"><i
                                         class="fa fa-paper-plane"></i>Outgoing Memos</a> --}}
+                                </div>
                             </div>
-                        </div>
-                    @endrole
+                        @endrole
                         @role('IT Admin')
                             <a href="{{ route('designation.index') }}"
                                 class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
@@ -277,6 +275,9 @@
                                     </a>
                                 </div>
                             </div>
+                            <a href="{{ route('superadmin.visitor.activities') }}"
+                                class="nav-item nav-link {{ request()->routeIs('superadmin.visitor.activities') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>User Activity</a>
                         @endrole
                     </div>
             </nav>
@@ -442,7 +443,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
     <!-- JavaScript Libraries -->
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('dbf/lib/chart/chart.min.js') }}"></script>
     <script src="{{ asset('dbf/lib/easing/easing.min.js') }}"></script>
