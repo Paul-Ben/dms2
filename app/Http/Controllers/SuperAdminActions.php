@@ -1287,6 +1287,29 @@ class SuperAdminActions extends Controller
         return redirect()->route('document.index')->with($notification);
     }
 
+    public function myDocument_show(Document $document)
+    {
+        $authUser = Auth::user();
+        $userdetails = UserDetails::where('user_id', $authUser->id)->first();
+        $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
+        if (Auth::user()->default_role === 'superadmin') {
+            return view('superadmin.documents.myshow', compact('document', 'authUser', 'userTenant'));
+        }
+        if (Auth::user()->default_role === 'Admin') {
+            return view('admin.documents.myshow', compact('document', 'authUser', 'userTenant'));
+        }
+        if (Auth::user()->default_role === 'Secretary') {
+            return view('secretary.documents.myshow', compact('document', 'authUser', 'userTenant'));
+        }
+        if (Auth::user()->default_role === 'User') {
+            return view('user.documents.myshow', compact('document', 'authUser', 'userTenant'));
+        }
+        if (in_array(Auth::user()->default_role, ['Staff', 'IT Admin'])) {
+            return view('staff.documents.myshow', compact('document', 'authUser', 'userTenant'));
+        }
+        return view('errors.404', compact('authUser', 'userTenant'));
+    }
+
     /**Show a document to the user */
     public function document_show($received, Document $document)
     {

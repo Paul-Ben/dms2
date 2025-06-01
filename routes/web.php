@@ -130,6 +130,7 @@ Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->nam
     Route::post('/document/send2admin', [SuperAdminActions::class, 'secSendToAdmin'])->name('document.senddoc2admin');
     Route::get('/document/file/document', [SuperAdminActions::class, 'user_file_document'])->name('document.file');
     Route::get('/document/document/{received}/view', [SuperAdminActions::class, 'document_show'])->name('document.view');
+    Route::get('/document/document/{document}/myview', [SuperAdminActions::class, 'myDocument_show'])->name('document.myview');
     Route::get('/document/document/{sent}/view', [SuperAdminActions::class, 'document_show_sent'])->name('document.view_sent');
     Route::post('/document/file/document', [SuperAdminActions::class, 'user_store_file_document'])->name('document.storefile');
     Route::get('/document/{document}/location', [SuperAdminActions::class, 'track_document'])->name('track');

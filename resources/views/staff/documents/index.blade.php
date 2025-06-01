@@ -52,7 +52,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td><a target="_blank"
-                                        href="{{ asset('storage/'. $document->file_path) }}">{{ $document->docuent_number }}</a>
+                                        href="{{ route('document.myview', $document->id) }}">{{ $document->docuent_number }}</a>
                                 </td>
                                 <td>{{ $document->title }}</td>
                                 {{-- <td></td> --}}
