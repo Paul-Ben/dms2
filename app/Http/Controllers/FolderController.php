@@ -223,10 +223,10 @@ class FolderController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'parent_id' => 'nullable|exists:folders,id',
-            'is_private' => 'boolean',
-            'permissions' => 'required_if:is_private,true|array',
-            'permissions.*.user_id' => 'required|exists:users,id',
-            'permissions.*.permission' => 'required|in:read,write,admin'
+            // 'is_private' => 'boolean',
+            // 'permissions' => 'required_if:is_private,true|array',
+            // 'permissions.*.user_id' => 'required|exists:users,id',
+            // 'permissions.*.permission' => 'required|in:read,write,admin'
         ]);
 
         if ($validator->fails()) {
@@ -239,25 +239,25 @@ class FolderController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'parent_id' => $request->parent_id,
-            'is_private' => $request->is_private ?? false
+            // 'is_private' => $request->is_private ?? false
         ]);
 
-        if ($request->is_private) {
-            // Remove all existing permissions
-            $folder->users()->detach();
+        // if ($request->is_private) {
+        //     // Remove all existing permissions
+        //     $folder->users()->detach();
 
-            // Add new permissions
-            if ($request->has('permissions')) {
-                foreach ($request->permissions as $permission) {
-                    $folder->users()->attach($permission['user_id'], [
-                        'permission' => $permission['permission']
-                    ]);
-                }
-            }
-        } else {
-            // If folder is not private, remove all permissions
-            $folder->users()->detach();
-        }
+        //     // Add new permissions
+        //     if ($request->has('permissions')) {
+        //         foreach ($request->permissions as $permission) {
+        //             $folder->users()->attach($permission['user_id'], [
+        //                 'permission' => $permission['permission']
+        //             ]);
+        //         }
+        //     }
+        // } else {
+        //     // If folder is not private, remove all permissions
+        //     $folder->users()->detach();
+        // }
 
         return redirect()->route('folders.index')
             ->with('success', 'Folder updated successfully');

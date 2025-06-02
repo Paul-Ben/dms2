@@ -79,7 +79,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group" id="permissions-section" 
+                        {{-- <div class="form-group" id="permissions-section" 
                              style="display: {{ $folder->is_private ? 'block' : 'none' }};">
                             <label>Folder Permissions</label>
                             <div class="table-responsive">
@@ -121,7 +121,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update Folder</button>

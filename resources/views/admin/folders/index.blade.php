@@ -168,11 +168,13 @@
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{{ route('folders.edit', $folder->id) }}"
-                                                        class="btn btn-sm btn-primary">
+                                                        class="btn btn-sm btn-primary me-1"
+                                                        title="Edit Folder">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                     <a href="{{ route('folders.permissions', $folder->id) }}"
-                                                        class="btn btn-sm btn-info">
+                                                        class="btn btn-sm btn-info me-1"
+                                                        title="Set Permissions">
                                                         <i class="fa fa-key"></i>
                                                     </a>
                                                     <form action="{{ route('folders.destroy', $folder->id) }}"
@@ -180,7 +182,8 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Are you sure you want to delete this folder?')">
+                                                            onclick="return confirm('Are you sure you want to delete this folder?')"
+                                                            title="Delete Folder">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>

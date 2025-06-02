@@ -21,7 +21,8 @@
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Memo Management</h6>
                 <div>
-                    <a class="btn btn-sm btn-primary" href="{{ route('memo.create') }}">Memo</a>
+                    <a class="btn btn-sm btn-primary" href="{{ route('memo.create') }}">
+                        <i class="fa fa-plus me-2"></i>Memo</a>
                     {{-- <a class="btn btn-sm btn-primary" href="{{ route('memo.template') }}">Add Template</a> --}}
                     <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}"><i
                             class="fa fa-arrow-left me-2"></i>Back</a>

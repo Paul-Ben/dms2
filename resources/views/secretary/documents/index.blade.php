@@ -50,8 +50,7 @@
                         @forelse ($documents as $key => $document)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td><a target="_blank"
-                                        href="{{ route('document.myview', $document->id) }}">{{ $document->docuent_number }}</a></td>
+                                <td><a href="{{ route('document.myview', $document->id) }}">{{ $document->docuent_number }}</a></td>
                                 <td>{{$document->title}}</td>
                                 {{-- <td></td> --}}
                                 <td>Processing</td>

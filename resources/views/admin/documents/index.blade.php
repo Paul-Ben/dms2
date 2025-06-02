@@ -57,9 +57,8 @@
                                         href="{{ asset('storage/' . $document->file_path) }}">{{ $document->docuent_number }}</a>
 
                                 </td> --}}
-                               <td>
-                                    <a target="_blank"
-                                        href="{{ route('document.myview', $document->id) }}">{{ $document->docuent_number }}</a>
+                                <td>
+                                    <a href="{{ route('document.myview', $document->id) }}">{{ $document->docuent_number }}</a>
 
                                 </td>
                                 <td>{{ $document->title }}</td>

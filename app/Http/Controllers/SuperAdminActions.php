@@ -1730,7 +1730,7 @@ class SuperAdminActions extends Controller
             'message' => 'Document sent successfully',
             'alert-type' => 'success'
         );
-        return redirect()->route('document.index')->with($notification);
+        return redirect()->route('document.sent')->with($notification);
     }
 
     public function secSendToAdmin(Request $request, Document $document)
@@ -2649,7 +2649,7 @@ $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->firs
             'message' => 'Memo sent successfully',
             'alert-type' => 'success'
         );
-        return redirect()->route('memo.index')->with($notification);
+        return redirect()->route('memo.sent')->with($notification);
     }
 
 
