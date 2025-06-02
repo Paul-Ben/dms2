@@ -76,7 +76,7 @@ class FolderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin', 'superadmin', 'Staff'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
         }
 
@@ -97,7 +97,7 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin', 'superadmin', 'Staff'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
@@ -185,7 +185,7 @@ class FolderController extends Controller
         $userdetails = $authUser->userDetail;
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin', 'superadmin'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
         }
         // Check if user created the folder or has admin access
@@ -215,7 +215,7 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin', 'superadmin', 'Staff'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
@@ -268,7 +268,7 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin', 'superadmin', 'Staff'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
@@ -343,7 +343,7 @@ class FolderController extends Controller
     {
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
-        if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Staff', 'Admin', 'IT Admin', 'superadmin'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
         try {
@@ -481,7 +481,7 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'Staff', 'IT Admin', 'superadmin'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
         // Check if user created the folder or has admin access
@@ -510,7 +510,7 @@ class FolderController extends Controller
         $authUser = Auth::user();
         $userdetails = $authUser->userDetail;
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin', 'superadmin', 'Staff'])) {
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
