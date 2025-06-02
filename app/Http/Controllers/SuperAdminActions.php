@@ -2504,7 +2504,7 @@ $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->firs
         switch ($role) {
             case 'superadmin':
                 $recipients = User::all();
-                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser', 'userTenant'));
+                return view('admin.memo.send', compact('recipients', 'document', 'authUser', 'userTenant'));
 
             case 'Admin':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -2669,7 +2669,7 @@ $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->firs
                 $mda = collect(); // Return an empty collection
             }
 
-            return view('superadmin.documents.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
+            return view('admin.memo.sent', compact('sent_documents', 'recipient', 'mda', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($sent_documents, $recipient) = DocumentStorage::getSentMemos();
@@ -2717,7 +2717,7 @@ $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->firs
         if (Auth::user()->default_role === 'superadmin') {
             list($received_documents) = DocumentStorage::getReceivedDocuments();
 
-            return view('superadmin.documents.received', compact('received_documents', 'authUser', 'userTenant'));
+            return view('admin.memo.received', compact('received_documents', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             list($received_documents) = DocumentStorage::getReceivedMemos();
