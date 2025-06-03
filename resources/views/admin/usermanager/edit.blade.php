@@ -126,12 +126,7 @@
                                         <option value="female">Female</option>
                                     </select>
                                 </div>
-                                {{-- <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="departmentSelect"
-                                        class="form-label
-                                    ">Signature</label>
-                                    <input type="text" value="{{$user_details->userDetail->signature}}" name="signature" class="form-control">
-                                </div> --}}
+                               
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="signatureInput" class="form-label">Signature</label>
                                     <input type="file" name="signature" id="signatureInput" class="form-control"

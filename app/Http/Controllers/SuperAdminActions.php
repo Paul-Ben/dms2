@@ -190,12 +190,23 @@ class SuperAdminActions extends Controller
         try {
             DB::beginTransaction();
 
-            // Handle file uploads
+            // // Handle file uploads
+            // Initialize signature path
             $signaturePath = null;
+            $oldSignaturePath = $user->userDetail->signature ?? null;
 
-
+            // Handle signature upload
             if ($request->hasFile('signature')) {
+                // Store new signature first
                 $signaturePath = $request->file('signature')->store('signatures', 'public');
+
+                // Delete old signature AFTER successful upload of new one
+                if ($oldSignaturePath && Storage::disk('public')->exists($oldSignaturePath)) {
+                    Storage::disk('public')->delete($oldSignaturePath);
+                }
+            } else {
+                // Keep existing signature if no new one uploaded
+                $signaturePath = $oldSignaturePath;
             }
 
             // Create user
@@ -346,7 +357,7 @@ class SuperAdminActions extends Controller
                 'default_role' => $validated['default_role'],
             ];
 
-            
+
             if ($request->input('password') != $user->password) {
                 $user->update([
                     'password' => Hash::make($request->input('password')),
@@ -402,7 +413,7 @@ class SuperAdminActions extends Controller
             ]);
         }
     }
-  
+
 
     public function user_delete(User $user)
     {
@@ -418,7 +429,7 @@ class SuperAdminActions extends Controller
         return view('superadmin.usermanager.uploadUser', compact('authUser', 'userTenant'));
     }
 
-   
+
     public function userUploadCsv(Request $request)
     {
         // Validate the uploaded file
@@ -1952,7 +1963,7 @@ class SuperAdminActions extends Controller
         return redirect()->route('memo.index')->with($notification);
     }
 
-  
+
 
     public function generateMemoPdf(Memo $memo)
     {
@@ -2635,7 +2646,7 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'User') {
             $receipts = Payment::where('customerId', $authUser->id)->orderBy('id', 'desc')->paginate(10);
-           
+
             return view('user.receipts.index', compact('receipts', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));

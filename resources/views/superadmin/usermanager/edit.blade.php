@@ -121,11 +121,17 @@
                                         <option value="female">Female</option>
                                     </select>
                                 </div>
+                                
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="departmentSelect"
-                                        class="form-label
-                                    ">Signature</label>
-                                    <input type="text" value="{{$user_details->userDetail->signature}}" name="signature" class="form-control">
+                                    <label for="signatureInput" class="form-label">Signature</label>
+                                    <input type="file" name="signature" id="signatureInput" class="form-control"
+                                        accept="image/*">
+                                    @if (!empty($user_details->userDetail->signature) && file_exists(public_path($user_details->userDetail->signature)))
+                                        <div class="mt-2">
+                                            <img src="{{ asset($user_details->userDetail->signature) }}" alt="Signature"
+                                                style="max-width: 120px; max-height: 60px; border: 1px solid #0e0909;">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">
