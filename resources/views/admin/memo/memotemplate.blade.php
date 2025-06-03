@@ -161,12 +161,19 @@
             <div class="org-address">{{ $senderUser->userDetail->tenant->name }}</div>
         </div>
         <div class="memo-title">INTERNAL MEMO</div>
-        <table class="meta-table">
+        <table class="meta-table" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+                <col style="width: 7%;">
+                <col style="width: 23%;">
+                <col style="width: 1%;">
+                <col style="width: 7%;">
+                <col style="width: 23%;">
+            </colgroup>
             <tr>
                 <td class="meta-label">To:</td>
                 <td>{{ $memo->receiver }}</td>
                 <td class="meta-divider"></td>
-                <td class="meta-label">Date:</td>
+                <td class="meta-label"  style="padding-left: 12px;">Date:</td>
                 <td>{{ $memo->created_at->format('M j, Y') }}</td>
             </tr>
             <tr>
@@ -174,10 +181,9 @@
                 <td>
                     {{ $memo->sender . ', ' }}
                     {{ $senderUser->userDetail->designation }}
-
                 </td>
                 <td class="meta-divider"></td>
-                <td class="meta-label">Subject:</td>
+                <td class="meta-label"  style="padding-left: 12px;">Subject:</td>
                 <td>{{ $memo->title }}</td>
             </tr>
         </table>
@@ -185,13 +191,13 @@
             <p>
                 Dear Sir/Madam,
             </p>
-            {{-- <p><pre-wrap>{{$memo->content}}</pre-wrap></p> --}}
             <div style="white-space: pre-wrap;">{{ $memo->content }}</div>
 
         </div>
         <div class="signature">
+            <div><img src="{{ asset($senderUser->userDetail->signature ?? '') }}" width="45px" height="30px"
+                    alt=""></div>
             <div class="name">{{ $senderUser->name }}</div>
-            <div>{{ $senderUser->userDetail->signature }}</div>
             <div>{{ $senderUser->userDetail->designation }}</div>
         </div>
         <div class="footer">
@@ -223,7 +229,7 @@
             });
         });
     </script> --}}
-{{-- <script>
+    {{-- <script>
         document.getElementById('download-pdf-btn').addEventListener('click', function() {
             const memoContent = document.querySelector('.memo-container');
             html2canvas(memoContent).then(canvas => {
@@ -241,39 +247,41 @@
     </script> --}}
 
     <script>
-document.getElementById('download-pdf-btn').addEventListener('click', function() {
-    const memoContent = document.querySelector('.memo-container');
-    html2canvas(memoContent, { scale: 2 }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new window.jspdf.jsPDF('p', 'mm', 'a3');
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
+        document.getElementById('download-pdf-btn').addEventListener('click', function() {
+            const memoContent = document.querySelector('.memo-container');
+            html2canvas(memoContent, {
+                scale: 2
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new window.jspdf.jsPDF('p', 'mm', 'a3');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
 
-        // Calculate the number of pages
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pageWidth;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                // Calculate the number of pages
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pageWidth;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-        let heightLeft = pdfHeight;
-        let position = 0;
+                let heightLeft = pdfHeight;
+                let position = 0;
 
-        // Add first page
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pageHeight;
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pageHeight;
 
-        // Add more pages if necessary
-        while (heightLeft > 0) {
-            position = heightLeft - pdfHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-            heightLeft -= pageHeight;
-        }
+                // Add more pages if necessary
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pageHeight;
+                }
 
-        pdf.save('memo.pdf');
-    });
-});
-</script>
- 
+                pdf.save('memo.pdf');
+            });
+        });
+    </script>
+
 </body>
 
 </html>
