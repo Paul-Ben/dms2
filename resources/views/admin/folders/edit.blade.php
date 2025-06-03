@@ -67,7 +67,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" 
                                        class="custom-control-input" 
@@ -77,7 +77,7 @@
                                        {{ old('is_private', $folder->is_private) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_private">Private Folder</label>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- <div class="form-group" id="permissions-section" 
                              style="display: {{ $folder->is_private ? 'block' : 'none' }};">
