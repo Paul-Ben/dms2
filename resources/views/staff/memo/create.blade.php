@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div style="text-align: center;">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                             <input type="text" name="user_id" class="form-control"

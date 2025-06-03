@@ -12,7 +12,7 @@
 
                         </div>
                     @endif
-                   
+
                     @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <i class="fa fa-exclamation-circle me-2"></i>
@@ -73,20 +73,25 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Phone</label>
-                                    <input type="text" name="phone" class="form-control" required>
+                                    <input type="text" name="phone_number" class="form-control" required>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Avatar</label>
-                                    <input type="file" name="avatar" class="form-control">
-                                </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
                                     <select name="default_role" class="form-select" required>
                                         <option selected>select role</option>
                                         @foreach ($roles as $role)
                                             <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="departmentSelect" class="form-label">Designation</label>
+                                    <select id="designationSelect" name="designation" class="form-select" required>
+                                        <option selected>select menu</option>
+                                        @foreach ($designations as $designation)
+                                            <option value="{{ $designation->name }}">{{ $designation->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -102,13 +107,12 @@
                                         @endforeach
                                     </select>
                                 </div>
-
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="departmentSelect" class="form-label">Designation</label>
-                                    <select id="designationSelect" name="designation" class="form-select" required>
-                                        <option selected>select menu</option>
-                                        @foreach ($designations as $designation)
-                                            <option value="{{ $designation->name }}">{{ $designation->name }}</option>
+                                    <label for="departmentSelect" class="form-label">Department</label>
+                                    <select id="departmentSelect" name="department_id" class="form-select" required>
+                                        <option value="">select menu</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -123,23 +127,15 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="departmentSelect" class="form-label">Department</label>
-                                    <select id="departmentSelect" name="department_id" class="form-select" required>
-                                        {{-- <option selected>select menu</option> --}}
-                                        <option value="">select menu</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect"
                                         class="form-label
                                     ">Signature</label>
-                                    <input type="text" name="signature" class="form-control">
+                                    <input type="file" name="signature" id="signatureInput" class="form-control"
+                                        accept="image/*">
                                 </div>
+                            </div>
+                            <div class="row">
+
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-xl-6 mb-3">
@@ -187,7 +183,7 @@
                                 </div>
                             </div>
                             <div style="text-align: center;">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
 
@@ -239,25 +235,5 @@
             });
         }
     </script>
-    {{-- <script>
-    function getDepartments(organisationId) {
-        if (organisationId) {
-            $.ajax({
-                url: '/get-departments/' + organisationId,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#departmentSelect').empty();
-                    $('#departmentSelect').append('<option selected>select menu</option>');
-                    $.each(data, function(key, value) {
-                        $('#departmentSelect').append('<option value="' + value.id + '">' + value.name + '</option>');
-                    });
-                }
-            });
-        } else {
-            $('#departmentSelect').empty();
-            $('#departmentSelect').append('<option selected>select menu</option>');
-        }
-    }
-</script> --}}
+
 @endsection

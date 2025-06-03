@@ -104,10 +104,82 @@ class SuperAdminActions extends Controller
         return response()->json($departments);
     }
 
+    // public function user_store(Request $request)
+    // {
+
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:8|confirmed',
+    //         'nin_number' => 'required|string',
+
+    //     ]);
+
+
+
+    //     // Create a new user instance
+    //     $user = new User();
+    //     $user->name = $request->input('name');
+    //     $user->email = $request->input('email');
+    //     $user->password = Hash::make($request->input('password'));
+    //     $user->default_role = $request->input('default_role');
+    //     // Assign the user a role
+    //     if ($request->input('default_role') === 'Admin') {
+
+    //         $user->assignRole('Admin');
+    //     }
+    //     if ($request->input('default_role') === 'Secretary') {
+
+    //         $user->assignRole('Secretary');
+    //     }
+    //     if ($request->input('default_role') === 'Staff') {
+
+    //         $user->assignRole('Staff');
+    //     }
+    //     if ($request->input('default_role') === 'User') {
+
+    //         $user->assignRole('User');
+    //     }
+    //     if ($request->input('default_role') === 'IT Admin') {
+
+    //         $user->assignRole('IT Admin');
+    //     }
+
+
+    //     $user->save();
+
+
+    //     // Create a new user detail instance
+    //     $user->userDetail()->create([
+    //         'user_id' => $user->id,
+    //         'department_id' => $request->input('department_id'),
+    //         'tenant_id' => $request->input('tenant_id'),
+    //         'phone_number' => $request->input('phone_number'),
+    //         'designation' => $request->input('designation'),
+    //         // 'avatar' => $request->input('avatar'),
+    //         'gender' => $request->input('gender'),
+    //         'signature' => $request->input('signature') ?: null,
+    //         'nin_number' => $request->input('nin_number'),
+    //         'psn' => $request->input('psn'),
+    //         'grade_level' => $request->input('grade_level'),
+    //         'rank' => $request->input('rank'),
+    //         'schedule' => $request->input('schedule'),
+    //         'employment_date' => $request->input('employment_date'),
+    //         'date_of_birth' => $request->input('date_of_birth'),
+
+    //     ]);
+
+    //     $notification = [
+    //         'message' => 'User created successfully',
+    //         'alert-type' => 'success'
+    //     ];
+
+    //     return redirect()->route('users.index')->with($notification);
+    // }
     public function user_store(Request $request)
     {
-
-        $request->validate([
+        // Validate the request data
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -115,66 +187,67 @@ class SuperAdminActions extends Controller
 
         ]);
 
+        try {
+            DB::beginTransaction();
+
+            // Handle file uploads
+            $signaturePath = null;
 
 
-        // Create a new user instance
-        $user = new User();
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
-        $user->default_role = $request->input('default_role');
-        // Assign the user a role
-        if ($request->input('default_role') === 'Admin') {
+            if ($request->hasFile('signature')) {
+                $signaturePath = $request->file('signature')->store('signatures', 'public');
+            }
 
-            $user->assignRole('Admin');
+            // Create user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'default_role' => $request->input('default_role'),
+            ]);
+
+            // Assign role
+            $user->assignRole($request->input('default_role'));
+
+            // Create user details
+            $user->userDetail()->create([
+                'department_id' => $request->input('department_id'),
+                'tenant_id' => $request->input('tenant_id'),
+                'phone_number' => $request->input('phone_number'),
+                'designation' => $request->input('designation'),
+                'gender' => $request->input('gender'),
+                'signature' => $signaturePath,
+                'nin_number' => $request->input('nin_number'),
+                'psn' => $request->input('psn'),
+                'grade_level' => $request->input('grade_level'),
+                'rank' => $request->input('rank'),
+                'schedule' => $request->input('schedule'),
+                'employment_date' => $request->input('employment_date'),
+                'date_of_birth' => $request->input('date_of_birth'),
+                'user_id' => $user->id,
+
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('users.index')->with([
+                'message' => 'User created successfully',
+                'alert-type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Delete uploaded files if transaction fails
+
+            if (isset($signaturePath)) {
+                Storage::disk('public')->delete($signaturePath);
+            }
+
+            return back()->withInput()->with([
+                'message' => 'Error creating user: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            ]);
         }
-        if ($request->input('default_role') === 'Secretary') {
-
-            $user->assignRole('Secretary');
-        }
-        if ($request->input('default_role') === 'Staff') {
-
-            $user->assignRole('Staff');
-        }
-        if ($request->input('default_role') === 'User') {
-
-            $user->assignRole('User');
-        }
-        if ($request->input('default_role') === 'IT Admin') {
-
-            $user->assignRole('IT Admin');
-        }
-
-
-        $user->save();
-
-
-        // Create a new user detail instance
-        $user->userDetail()->create([
-            'user_id' => $user->id,
-            'department_id' => $request->input('department_id'),
-            'tenant_id' => $request->input('tenant_id'),
-            'phone_number' => $request->input('phone_number'),
-            'designation' => $request->input('designation'),
-            'avatar' => $request->input('avatar'),
-            'gender' => $request->input('gender'),
-            'signature' => $request->input('signature') ?: null,
-            'nin_number' => $request->input('nin_number'),
-            'psn' => $request->input('psn'),
-            'grade_level' => $request->input('grade_level'),
-            'rank' => $request->input('rank'),
-            'schedule' => $request->input('schedule'),
-            'employment_date' => $request->input('employment_date'),
-            'date_of_birth' => $request->input('date_of_birth'),
-
-        ]);
-
-        $notification = [
-            'message' => 'User created successfully',
-            'alert-type' => 'success'
-        ];
-
-        return redirect()->route('users.index')->with($notification);
     }
 
     public function user_show(Request $request, User $user)
@@ -187,6 +260,7 @@ class SuperAdminActions extends Controller
             return view('superadmin.usermanager.show', compact('user', 'authUser', 'userTenant'));
         }
         if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
+
             return view('admin.usermanager.show', compact('user', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));
@@ -206,6 +280,7 @@ class SuperAdminActions extends Controller
                 return view('superadmin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'departments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
             if (in_array(Auth::user()->default_role, ['Admin', 'IT Admin'])) {
+
                 $user_details = User::with('userDetail')->where('id', $user->id)->first();
                 list($organisations, $roles, $departments, $designations) = UserAction::getOrganisationDetails();
                 // $designations = Designation::all();
@@ -216,7 +291,7 @@ class SuperAdminActions extends Controller
                 // dd($tenantDepartments);
                 return view('admin.usermanager.edit', compact('user', 'roles', 'organisations', 'organisationName', 'tenantDepartments', 'designations', 'user_details', 'authUser', 'userTenant'));
             }
-            return view('errors.404', compact('authUser'));
+            // return view('errors.404', compact('authUser', 'userTenant'));
         } catch (\Exception $e) {
             Log::error('Error while fetching user details: ' . $e->getMessage());
             $notification = [
@@ -229,93 +304,105 @@ class SuperAdminActions extends Controller
 
     public function user_update(Request $request, User $user)
     {
-
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|string|min:8',
-            'nin_number' => 'sometimes|string',
-            'phone_number' => 'sometimes|string',
-            'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // Validate the request data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+            'nin_number' => 'required|string',
+            'phone_number' => 'required|string',
             'default_role' => 'required|string',
+            'department_id' => 'required|exists:tenant_departments,id',
+            'tenant_id' => 'required|exists:tenants,id',
             'designation' => 'required|string',
-            'tenant_id' => 'required|integer',
-            'department_id' => 'required|integer',
-            'gender' => 'required|string',
-            'signature' => 'nullable|string',
+            'gender' => 'required|in:male,female',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            'psn' => 'nullable|string',
+            'grade_level' => 'nullable|string',
+            'rank' => 'nullable|string',
+            'schedule' => 'nullable|string',
+            'employment_date' => 'nullable|date',
+            'date_of_birth' => 'nullable|date',
         ]);
 
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'default_role' => $request->input('default_role'),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($request->input('password') != $user->password) {
-            $user->update([
-                'password' => Hash::make($request->input('password')),
+            // Handle signature upload
+            $signaturePath = $user->userDetail->signature ?? null;
+
+            if ($request->hasFile('signature')) {
+                // Delete old signature if exists
+                if ($signaturePath) {
+                    Storage::disk('public')->delete($signaturePath);
+                }
+                $signaturePath = $request->file('signature')->store('signatures', 'public');
+            }
+
+            // Update user
+            $userData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'default_role' => $validated['default_role'],
+            ];
+
+            
+            if ($request->input('password') != $user->password) {
+                $user->update([
+                    'password' => Hash::make($request->input('password')),
+                ]);
+            }
+
+            $user->update($userData);
+
+            // Sync roles
+            $user->syncRoles([$validated['default_role']]);
+
+            // Update user details
+            $userDetailData = [
+                'department_id' => $validated['department_id'],
+                'tenant_id' => $validated['tenant_id'],
+                'phone_number' => $validated['phone_number'],
+                'designation' => $validated['designation'],
+                'gender' => $validated['gender'],
+                'signature' => $signaturePath,
+                'nin_number' => $validated['nin_number'],
+                'psn' => $validated['psn'] ?? null,
+                'grade_level' => $validated['grade_level'] ?? null,
+                'rank' => $validated['rank'] ?? null,
+                'schedule' => $validated['schedule'] ?? null,
+                'employment_date' => $validated['employment_date'],
+                'date_of_birth' => $validated['date_of_birth'],
+            ];
+
+            // Update or create user details
+            if ($user->userDetail) {
+                $user->userDetail->update($userDetailData);
+            } else {
+                $user->userDetail()->create($userDetailData);
+            }
+
+            DB::commit();
+
+            return redirect()->route('users.index')->with([
+                'message' => 'User updated successfully',
+                'alert-type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Delete uploaded file if transaction fails
+            if ($request->hasFile('signature') && isset($signaturePath)) {
+                Storage::disk('public')->delete($signaturePath);
+            }
+
+            return back()->withInput()->with([
+                'message' => 'Error updating user: ' . $e->getMessage(),
+                'alert-type' => 'error'
             ]);
         }
-
-        $userDetail = $user->userDetail;
-
-        if (!$userDetail) {
-            $userDetail = new UserDetails();
-            $userDetail->user_id = $user->id;
-        }
-
-        $userDetail->update([
-            'nin_number' => $request->input('nin_number'),
-            'phone_number' => $request->input('phone_number'),
-            'designation' => $request->input('designation'),
-            'tenant_id' => $request->input('tenant_id'),
-            'department_id' => $request->input('department_id'),
-            'gender' => $request->input('gender'),
-            'signature' => $request->input('signature') ?: null,
-            'psn' => $request->input('psn'),
-            'grade_level' => $request->input('grade_level'),
-            'rank' => $request->input('rank'),
-            'schedule' => $request->input('schedule'),
-            'employment_date' => $request->input('employment_date'),
-            'date_of_birth' => $request->input('date_of_birth'),
-        ]);
-
-        if ($request->input('default_role') === 'Admin') {
-
-            $user->assignRole('Admin');
-        }
-        if ($request->input('default_role') === 'Staff') {
-
-            $user->assignRole('Staff');
-        }
-        if ($request->input('default_role') === 'Secretary') {
-
-            $user->assignRole('Secretary');
-        }
-        if ($request->input('default_role') === 'User') {
-
-            $user->assignRole('User');
-        }
-        if ($request->input('default_role') === 'IT Admin') {
-
-            $user->assignRole('IT Admin');
-        }
-
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-            $avatar->storeAs('public/avatars', $avatarName);
-            $userDetail->update([
-                'avatar' => $avatarName,
-            ]);
-        }
-        $notification = [
-            'message' => 'User updated successfully',
-            'alert-type' => 'success'
-        ];
-
-        return redirect()->route('users.index')->with($notification);
     }
+  
 
     public function user_delete(User $user)
     {
@@ -331,102 +418,7 @@ class SuperAdminActions extends Controller
         return view('superadmin.usermanager.uploadUser', compact('authUser', 'userTenant'));
     }
 
-    // public function userUploadCsv(Request $request)
-    // {
-    //     // Validate the uploaded file
-    //     $validator = Validator::make($request->all(), [
-    //         'csv_file' => 'required|file|mimes:csv,txt',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
-
-    //     // Get the uploaded file
-    //     $file = $request->file('csv_file');
-
-    //     // Read the CSV file
-    //     $csvData = array_map('str_getcsv', file($file->getRealPath()));
-
-    //     // Remove the header row (if present)
-    //     $header = array_shift($csvData);
-
-    //     $duplicates = [];
-    //     $uniqueEntries = [];
-
-    //     // Process and insert data into the database
-    //     try {
-    //         DB::beginTransaction();
-    //         $csvData = array_chunk($csvData, 100);
-    //         foreach ($csvData as $chunk) {
-    //             foreach ($chunk as $row) {
-    //                 // Validate and process each row
-    //                 if (count($row) === count($header)) {
-    //                     $data = array_combine($header, $row);
-    //                     $existingUser = User::where('email', $data['email'])->first();
-
-    //                     if ($existingUser) {
-    //                         // Add to duplicates array
-    //                         $duplicates[] = $data;
-    //                     } else {
-    //                         // Add to unique entries array
-    //                         $uniqueEntries[] = $data;
-
-    //                         // Create the user
-    //                         $user = User::create([
-    //                             'name' => $data['name'],
-    //                             'email' => $data['email'],
-    //                             'password' => Hash::make($data['password']), // Hash the password
-    //                             'default_role' => $data['role'],
-    //                             'email_verified_at' => Carbon::now()
-    //                         ]);
-
-    //                         // Create the user details
-    //                         UserDetails::create([
-    //                             'user_id' => $user->id,
-    //                             'nin_number' => $data['nin'],
-    //                             'gender' => $data['gender'],
-    //                             'phone_number' => $data['phone'],
-    //                             'tenant_id' => $data['tenant_id'],
-    //                             'designation' => $data['designation'],
-    //                             'department_id' => $data['department'],
-    //                             'account_type' => $data['account_type'],
-    //                             'state' => $data['state'],
-    //                             'lga' => $data['lga'],
-    //                             'country' => $data['country'],
-    //                         ]);
-
-    //                         // Assign the role to the user
-    //                         $role = Role::where('name', $data['role'])->first();
-    //                         if ($role) {
-    //                             $user->assignRole($role);
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //             DB::commit();
-    //             $notification = [
-    //                 'message' => 'Users uploaded successfully',
-    //                 'type' => 'success',
-    //             ];
-    //             if (!empty($duplicates)) {
-    //                 $notification = [
-    //                     'message' => 'Users uploaded successfully. However, the following entries were duplicates and skipped: ' . implode(', ', array_column($duplicates, 'email')),
-    //                     'type' => 'warning'
-    //                 ];
-    //                 return redirect()->back()->with($notification);
-    //             }
-    //             return redirect()->back()->with($notification);
-    //         }
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         $notification = [
-    //             'message' => 'Error uploading users: ' . $e->getMessage(),
-    //             'type' => 'error',
-    //         ];
-    //         return redirect()->back()->with($notification);
-    //     }
-    // }
+   
     public function userUploadCsv(Request $request)
     {
         // Validate the uploaded file
@@ -1324,9 +1316,9 @@ class SuperAdminActions extends Controller
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
-           
+
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->orderBy('updated_at', 'desc')->get();
-           
+
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Secretary') {
@@ -1578,12 +1570,12 @@ class SuperAdminActions extends Controller
 
     public function getSendform(Request $request, Document $document)
     {
-       
+
         $authUser = Auth::user();
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         $role = $authUser->default_role;
-        
+
         switch ($role) {
             case 'superadmin':
                 $recipients = User::all();
@@ -1709,7 +1701,7 @@ class SuperAdminActions extends Controller
         $userDepartment = $userDepartment->tenant_department->name ?? null;
         $userTenant = $userOrg->userDetail->tenant->name ?? null;
         $document = Document::where('id', $data->document_id)->first()->docuent_number ?? null;
-        
+
         $result = DocumentStorage::sendDocument($data);
         if ($result['status'] === 'error') {
             return redirect()->back()
@@ -1960,163 +1952,7 @@ class SuperAdminActions extends Controller
         return redirect()->route('memo.index')->with($notification);
     }
 
-    // public function generateMemoPdf(Memo $memo)
-    // {
-    //     // dd($memo);
-    //     $authUser = Auth::user();
-    //     // Create new FPDI instance
-    //     $pdf = new Fpdi();
-
-    //     // Set the source file (your letterhead template)
-    //     $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
-
-    //     // Import the first page of the template
-    //     $tplId = $pdf->importPage(1);
-
-    //     // Add a new page to the PDF and use the imported template
-    //     $pdf->AddPage();
-    //     $pdf->useTemplate($tplId);
-
-    //     // Set font and add dynamic content
-    //     $pdf->SetFont('Arial', '', 14);
-
-    //     //Add sender
-    //     $pdf->SetXY(35, 28);
-    //     $pdf->Write(0, $memo['sender']);
-
-    //     //Add recipient
-    //     $pdf->SetXY(125, 28);
-    //     $pdf->Write(0, $memo['receiver']);
-
-    //     $pdf->SetXY(130, 42);
-    //     $pdf->Write(0, $memo['created_at']);
-    //     // Add title/subject information
-    //     $pdf->SetXY(36, 42); // Adjust X and Y coordinates as needed
-    //     $pdf->Write(0,  $memo['title']);
-
-    //     // Add salutation
-    //     // $pdf->SetXY(25, 50); // Adjust X and Y coordinates as needed
-    //     // $pdf->Write(0,  'Dear Sir/Madam,');
-    //     $pdf->SetXY(25, 59); // Adjust X and Y coordinates as needed
-    //     $pdf->Write(0,  'Dear Sir/Madam,');
-
-    //     // Add body/content
-    //     $pdf->SetXY(25, 70); // Adjust Y coordinate for body text
-    //     $pdf->MultiCell(0, 10, $memo['content']);
-
-    //     // Add closing
-    //     $pdf->SetXY(25, 150); // Adjust Y coordinate for closing
-    //     $pdf->Write(0, 'Yours faithfully,');
-    //     $pdf->SetXY(25, 160); // Adjust Y coordinate for signature
-    //     $pdf->Write(0, $authUser->userDetail->signature);
-    //     $pdf->SetXY(25, 180); // Adjust Y coordinate for name
-    //     $pdf->Write(0, $authUser->name);
-    //     //Add Salutation
-
-    //     // $pdf->SetXY(25, 150);
-    //     // $pdf->Write(0, "Yours faithfully,");
-
-    //     // $pdf->SetXY(25, 160);
-    //     // $pdf->Write(0, $authUser->userDetail->signature);
-    //     // $pdf->SetXY(25, 180);
-    //     // $pdf->Write(0, $authUser->name);
-
-    //     // Output the PDF to browser for download or display
-    //     return response()->stream(function () use ($pdf) {
-    //         $pdf->Output('I', 'letter.pdf'); // Output inline in browser or use 'D' for download
-    //     }, 200, [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'inline; filename="letter.pdf"',
-    //     ]);
-    // }
-    // public function generateMemoPdf(Memo $memo)
-    // {
-    //     $authUser = Auth::user();
-    //     $pdf = new Fpdi();
-
-    //     // Set margins
-    //     $topMargin = 30;
-    //     $leftMargin = 25;
-    //     $bottomMargin = 50; // Space needed for closing section
-
-    //     // Set the source file (your letterhead template)
-    //     $pageCount = $pdf->setSourceFile(public_path('templates/letterhead.pdf'));
-    //     $tplId = $pdf->importPage(1);
-    //     $pdf->AddPage();
-    //     $pdf->useTemplate($tplId);
-
-    //     // Set font
-    //     $pdf->SetFont('Arial', '', 14);
-
-    //     // Header information
-    //     $pdf->SetXY(35, 28);
-    //     $pdf->Write(0, $memo['sender']);
-    //     $pdf->SetXY(125, 28);
-    //     $pdf->Write(0, $memo['receiver']);
-    //     $pdf->SetXY(130, 42);
-    //     $pdf->Write(0, $memo['created_at']);
-    //     $pdf->SetXY(36, 42);
-    //     $pdf->Write(0, $memo['title']);
-
-    //     // Salutation
-    //     $pdf->SetXY($leftMargin, 59);
-    //     $pdf->Write(0, 'Dear Sir/Madam,');
-
-    //     // Body content with dynamic positioning
-    //     $pdf->SetXY($leftMargin, 70);
-    //     $content = $memo['content'];
-
-    //     // Save current Y position
-    //     $yBeforeContent = $pdf->GetY();
-
-    //     // Write content and get ending Y position
-    //     $pdf->MultiCell(0, 10, $content);
-    //     $yAfterContent = $pdf->GetY();
-
-    //     // Calculate available space
-    //     $pageHeight = $pdf->getPageHeight();
-    //     $availableSpace = $pageHeight - $yAfterContent - $bottomMargin;
-
-    //     // Add page if needed
-    //     if ($availableSpace < 60) { // 60 = space needed for closing
-    //         $pdf->AddPage();
-    //         $yAfterContent = $topMargin; // Reset Y position
-    //     }
-
-    //     // Closing section - always at consistent position from bottom
-    //     $closingY = max($yAfterContent + 20, $pageHeight - $bottomMargin);
-
-    //     $pdf->SetXY($leftMargin, $closingY);
-    //     $pdf->Write(0, 'Yours faithfully,');
-
-    //     // $pdf->SetXY($leftMargin, $closingY + 10);
-    //     // $pdf->Write(0, $authUser->userDetail->signature);
-    //     // Add signature image instead of text signature
-    //     $signatureY = $closingY + 10;
-
-    //     // Check if user has a signature image (adjust path as needed)
-    //     $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
-
-    //     if (file_exists($signaturePath)) {
-    //         // Insert signature image (adjust width/height as needed)
-    //         $pdf->Image($signaturePath, 25, $signatureY, 40, 15);
-    //     } else {
-    //         // Fallback to text signature if image doesn't exist
-    //         $pdf->SetXY(25, $signatureY);
-    //         $pdf->Write(0, $authUser->userDetail->signature ?? '');
-    //     }
-
-    //     $pdf->SetXY($leftMargin, $closingY + 20);
-    //     $pdf->Write(0, $authUser->name);
-
-    //     // Output the PDF
-    //     return response()->stream(function () use ($pdf) {
-    //         $pdf->Output('I', 'letter.pdf');
-    //     }, 200, [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'inline; filename="letter.pdf"',
-    //     ]);
-    // }
+  
 
     public function generateMemoPdf(Memo $memo)
     {
@@ -2316,90 +2152,6 @@ class SuperAdminActions extends Controller
         ]);
     }
 
-    // public function generateMemoPdf(Memo $memo)
-    // {
-    //     $authUser = Auth::user();
-    //     $pdf = new Fpdi();
-
-    //     // Set dimensions from the letterhead template
-    //     $templatePath = public_path('templates/letterhead.pdf');
-    //     $pageCount = $pdf->setSourceFile($templatePath);
-    //     $template = $pdf->importPage(1);
-    //     $pdf->AddPage();
-    //     $pdf->useTemplate($template);
-
-    //     // Set font
-    //     $pdf->SetFont('Arial', '', 12);
-
-    //     // Header positions (adjust these based on your letterhead template)
-    //     $pdf->SetXY(35, 53);  // Sender position
-    //     $pdf->Write(0, $memo['sender']);
-
-    //     $pdf->SetXY(35, 69);  // Subject position
-    //     $pdf->Write(0, $memo['title']);
-
-    //     $pdf->SetXY(140, 53); // Recipient position
-    //     $pdf->Write(0, $memo['receiver']);
-
-    //     $pdf->SetXY(140, 69); // Date position
-    //     $pdf->Write(0, $memo['created_at']->format('M j, Y'));
-
-    //     // Content positioning
-    //     $contentStartY = 85; // Starting Y position for main content
-
-    //     // Salutation
-    //     $pdf->SetXY(30, $contentStartY);
-    //     $pdf->Write(0, 'Dear Sir/Madam,');
-
-    //     // Main content with MultiCell for automatic line breaks
-    //     $pdf->SetXY(30, $contentStartY + 15);
-    //     $pdf->MultiCell(150, 6, $memo['content']); // Width 150mm, height 6mm per line
-
-    //     // Get Y position after content
-    //     $yAfterContent = $pdf->GetY();
-
-    //     // Closing section - 3 line spaces after content
-    //     $lineHeight = 6; // Same as MultiCell line height
-    //     $closingY = $yAfterContent + (3 * $lineHeight);
-
-    //     // If closing would go past page bottom, add new page
-    //     if ($closingY > ($pdf->getPageHeight() - 30)) {
-    //         $pdf->AddPage();
-    //         $pdf->useTemplate($template);
-    //         $closingY = 50; // Reset Y position on new page
-    //     }
-
-    //     // Closing content
-    //     $pdf->SetXY(30, $closingY);
-    //     $pdf->Write(0, 'Yours faithfully,');
-
-    //     // Signature (image or text)
-    //     $signatureY = $closingY + 10;
-    //     $signaturePath = storage_path('app/signatures/' . $authUser->id . '.png');
-
-    //     if (file_exists($signaturePath)) {
-    //         $pdf->Image($signaturePath, 50, $signatureY, 40, 15);
-    //     } else {
-    //         $pdf->SetXY(30, $signatureY);
-    //         $pdf->Write(0, $authUser->userDetail->signature ?? '');
-    //     }
-
-    //     // Name and designation
-    //     $pdf->SetXY(30, $signatureY + 10);
-    //     $pdf->Write(0, $authUser->name);
-
-    //     $pdf->SetXY(30, $signatureY + 16);
-    //     $pdf->SetFont('Arial', 'I', 10);
-    //     $pdf->Write(0, $authUser->userDetail->designation ?? '');
-
-    //     // Output the PDF
-    //     return response()->stream(function () use ($pdf) {
-    //         $pdf->Output('I', 'memo.pdf');
-    //     }, 200, [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'inline; filename="memo.pdf"',
-    //     ]);
-    // }
 
     public function get_memo(Request $request, Memo $memo)
     {
@@ -2409,7 +2161,7 @@ class SuperAdminActions extends Controller
         $senderUsers = User::where('name', $memo['sender'])->with('userDetail')->first();
         $senderUser = User::where('id', $memo['user_id'])->with('userDetail')->first();
         // dd($senderUser);
-$receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->first();
+        $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->first();
 
         return view('admin.memo.show', compact('memo', 'authUser', 'userTenant', 'senderUser'));
     }
@@ -2883,7 +2635,7 @@ $receiverUser = User::where('name', $memo['receiver'])->with('userDetail')->firs
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'User') {
             $receipts = Payment::where('customerId', $authUser->id)->orderBy('id', 'desc')->paginate(10);
-            // dd($receipts);
+           
             return view('user.receipts.index', compact('receipts', 'authUser', 'userTenant'));
         }
         return view('errors.404', compact('authUser', 'userTenant'));

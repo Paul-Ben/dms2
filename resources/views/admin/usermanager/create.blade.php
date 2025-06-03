@@ -69,10 +69,10 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
+                                {{-- <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Avatar</label>
                                     <input type="file" name="avatar" class="form-control">
-                                </div>
+                                </div> --}}
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">User Role</label>
                                     <select name="default_role" class="form-select" required>
@@ -82,16 +82,20 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="genderSelect" class="form-label">Gender</label>
-                                    <select id="genderSelect" name="gender" class="form-select" required>
-                                        <option value=" ">select menu</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
+                                 <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Designation</label>
+                                    <input type="text" name="tenant_id" class="form-control"
+                                        value="{{ Auth::user()->userDetail->tenant_id }}" hidden>
+                                    <select id="organisationSelect" name="designation" class="form-select" required>
+                                        <option selected>select menu</option>
+                                        @foreach ($designations as $designation)
+                                            <option value="{{ $designation->name }}">{{ $designation->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="row">
+                                
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Department</label>
                                     <select id="departmentSelect" name="department_id" class="form-select" required>
@@ -103,20 +107,17 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 col-xl-6 mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Designation</label>
-                                    <input type="text" name="tenant_id" class="form-control"
-                                        value="{{ Auth::user()->userDetail->tenant_id }}" hidden>
-                                    <select id="organisationSelect" name="designation" class="form-select" required>
-                                        <option selected>select menu</option>
-                                        @foreach ($designations as $designation)
-                                            <option value="{{ $designation->name }}">{{ $designation->name }}</option>
-                                        @endforeach
+                               <div class="col-sm-12 col-xl-6 mb-3">
+                                    <label for="genderSelect" class="form-label">Gender</label>
+                                    <select id="genderSelect" name="gender" class="form-select" required>
+                                        <option value=" ">select menu</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-12 col-xl-6 mb-3">
                                     <label for="departmentSelect" class="form-label">Signature</label>
-                                    <input type="text" name="signature" class="form-control">
+                                    <input type="file" name="signature" id="signatureInput" class="form-control" accept="image/*">
                                 </div>
                             </div>
                             <div class="row">
@@ -165,7 +166,7 @@
                                 </div>
                             </div>
                             <div style="text-align: center;">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </form>
