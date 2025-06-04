@@ -44,7 +44,13 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $activity->user ? $activity->user->name : 'Guest' }}</td>
                                 <td>{{ $activity->ip_address }}</td>
-                                <td>{{ $activity->url ?? 'N/A' }}</td>
+                                {{-- <td><a href="{{ $activity->url ?? 'N/A' }}" target="_blank">{{ $activity->url ?? 'N/A' }}</a></td> --}}
+                                <td>
+                                    <a href="#"
+                                        title="{{ $activity->url ?? 'N/A' }}">
+                                        {{ Str::limit($activity->url ?? 'N/A', 20) }}
+                                    </a>
+                                </td>
                                 <td>{{ $activity->browser }}</td>
                                 <td>{{ $activity->device ?? 'N/A' }}</td>
                                 {{-- <td>{{ $activity->country ?? 'N/A' }}</td> --}}
