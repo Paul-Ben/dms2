@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackupLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProfileController;
@@ -179,6 +180,11 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::get('/folders/{folder}/add-documents', [FolderController::class, 'showAddDocuments'])->name('folders.add-documents');
     Route::post('/folders/{folder}/add-documents', [FolderController::class, 'addDocuments'])->name('folders.add-documents');
     Route::get('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
+
+    // Backup routes
+    Route::get('/superadmin/backup', [BackupLogController::class, 'index'])->name('backup.index');
+    Route::get('/superadmin/{backup}/download', [BackupLogController::class, 'download'])->name('backup.download');
+    Route::delete('/superadmin/{backup}/delete-backup', [BackupLogController::class, 'destroy'])->name('backup.delete');
 });
 
 require __DIR__ . '/auth.php';
