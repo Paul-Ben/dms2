@@ -31,7 +31,8 @@ class WeeklyIncrementalBackup extends Command
             $excludedTables = ['migrations', 'cache', 'sessions', 'password_resets', 'failed_jobs'];
             $tables = DB::select('SHOW TABLES');
             $tables = array_map(function ($table) {
-                return $table->Tables_in_dms; // Replace 'your_database_name' with your actual database name
+                return $table->Tables_in_efiling_db; // Replace 'your_database_name' with your actual database name
+                // return $table->Tables_in_dms; // Replace 'your_database_name' with your actual database name
             }, $tables);
             $tables = array_diff($tables, $excludedTables);
 

@@ -251,33 +251,43 @@
                         @endrole
 
                         @role('superadmin')
-                            <a href="{{ route('users.index') }}"
-                                class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
-                                    class="fa fa-user-circle me-2"></i>Manage User</a>
-                            <a href="{{ route('set.charge') }}"
-                                class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
-                                    class="fa fa-user-circle me-2"></i>Set File Charge</a>
-                            <a href="{{ route('designation.index') }}"
-                                class="nav-item nav-link {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
-                                    class="fa fa-user-circle me-2"></i>Designations</a>
-                            <a href="{{ route('role.index') }}"
-                                class="nav-item nav-link {{ request()->routeIs('role.index') ? 'active' : '' }}"><i
-                                    class="fa fa-user-circle me-2"></i>Roles</a>
                             <div class="nav-item dropdown">
                                 <a href="#"
-                                    class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create') ? 'active' : '' }}"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('users.index', 'designation.index', 'role.index', 'user.create', 'user.edit', 'superadmin.visitor.activities') ? 'active' : '' }}"
+                                    data-bs-toggle="dropdown"><i class="fa fa-building me-2"></i>User Manager</a>
+                                <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="{{ route('users.index') }}"
+                                        class="dropdown-item {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                                            class="fa fa-user-circle me-2"></i>Manage User</a>
+                                    <a href="{{ route('designation.index') }}"
+                                        class="dropdown-item {{ request()->routeIs('designation.index') ? 'active' : '' }}"><i
+                                            class="fa fa-user-circle me-2"></i>Designations</a>
+                                    <a href="{{ route('role.index') }}"
+                                        class="dropdown-item {{ request()->routeIs('role.index') ? 'active' : '' }}"><i
+                                            class="fa fa-user-circle me-2"></i>Roles</a>
+                                    <a href="{{ route('superadmin.visitor.activities') }}"
+                                        class="dropdown-item {{ request()->routeIs('superadmin.visitor.activities') ? 'active' : '' }}"><i
+                                            class="fa fa-user-circle me-2"></i>User Activity</a>
+                                </div>
+                            </div>
+                             <div class="nav-item dropdown">
+                                <a href="#"
+                                    class="nav-link dropdown-toggle {{ request()->routeIs('organisation.index', 'organisation.create', 'department.index', 'department.create', 'department.edit') ? 'active' : '' }}"
                                     data-bs-toggle="dropdown"><i class="fa fa-building me-2"></i>MDA Manager</a>
                                 <div class="dropdown-menu bg-transparent border-0">
-                                    <a href="{{ route('organisation.index') }}" class="nav-item nav-link"><i
+                                    <a href="{{ route('organisation.index') }}" class="dropdown-item {{ request()->routeIs('organisation.index') ? 'active' : '' }}" ><i
                                             class="fa fa-building me-2"></i>Organisations</a>
-                                    <a href="{{ route('department.index') }}" class="dropdown-item"><i
+                                    <a href="{{ route('department.index') }}" class="dropdown-item {{ request()->routeIs('department.index') ? 'active' : '' }}"><i
                                             class="fa fa-file me-2"></i>Departments
                                     </a>
                                 </div>
                             </div>
-                            <a href="{{ route('superadmin.visitor.activities') }}"
-                                class="nav-item nav-link {{ request()->routeIs('superadmin.visitor.activities') ? 'active' : '' }}"><i
-                                    class="fa fa-user-circle me-2"></i>User Activity</a>
+                             <a href="{{ route('set.charge') }}"
+                                class="nav-item nav-link {{ request()->routeIs('set.charge') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Set File Charge</a>
+                            <a href="{{ route('backup.index') }}"
+                                class="nav-item nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"><i
+                                    class="fa fa-user-circle me-2"></i>Backups</a>
                         @endrole
                     </div>
             </nav>
