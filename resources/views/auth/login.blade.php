@@ -162,6 +162,6 @@
                     window.location.href = "{{ route('login') }}";
                 }
             });
-    }, 60000); // 1 minute interval
+    }, 300000); // 5 minute interval
     </script>
 @endsection
