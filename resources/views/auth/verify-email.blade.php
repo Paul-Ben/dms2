@@ -47,6 +47,15 @@
                     by clicking on the link we just emailed to you? If you didn't receive the email, we 
                     will gladly send you another.
                 </p>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @if (session('status') == 'verification-link-sent')
                 <div class="mb-4 font-medium text-sm text-success">
                     {{ 'A new verification link has been sent to the email address you provided during registration.' }}
