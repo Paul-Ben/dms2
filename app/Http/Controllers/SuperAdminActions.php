@@ -1209,7 +1209,7 @@ class SuperAdminActions extends Controller
             'uploaded_by' => $document->uploaded_by,
             'status' => 'pending',
             'description' => $document->description,
-            'metadata' => json_encode($document->metadata),
+            // 'metadata' => json_encode($document->metadata),
         ]);
 
         // Log document upload activity
