@@ -1590,7 +1590,11 @@ class SuperAdminActions extends Controller
         switch ($role) {
             case 'superadmin':
                 $recipients = User::all();
-                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser'));
+                $notification = [
+                    'message' => 'Messages sent are end to end encrypted.',
+                    'alert-type' => 'info'
+                ];
+                return view('superadmin.documents.send', compact('recipients', 'document', 'authUser'))->with($notification);
 
             case 'Admin':
                 $tenantId = $authUser->userDetail->tenant_id ?? null;
@@ -1619,7 +1623,12 @@ class SuperAdminActions extends Controller
                     return redirect()->back()->with($notification);
                 }
 
-                return view('admin.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'));
+                $notification = [
+                        'message' => 'Messages are end to end encrypted.',
+                        'alert-type' => 'info',
+                    ];
+
+                return view('admin.documents.send', compact('recipients', 'document', 'document_locations', 'authUser', 'userTenant'))->with($notification);
 
             case 'User':
                 $recipients = User::where('default_role', 'Admin')->get();
