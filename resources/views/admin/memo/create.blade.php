@@ -64,7 +64,12 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xl-12 mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Message/Body</label>
-                                    <textarea class="form-control" name="content" id="exampleInputEmail1" cols="30" rows="5"></textarea>
+                                    <div class="position-relative">
+                                        <textarea class="form-control" name="content" id="memoContent" cols="30" rows="5"></textarea>
+                                        <button type="button" id="speechButton" class="btn btn-link position-absolute" style="right: 10px; bottom: 10px;">
+                                            <i class="fas fa-microphone" id="micIcon" style="font-size: 1.2rem; color: #6c757d;"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div style="text-align: center;">
@@ -81,16 +86,57 @@
         </div>
         <!-- Form End -->
 
-        {{-- <script>
-            // Example metadata object
-            const metadata = {
-                author: "John Doe",
-                created_at: "2023-10-01",
-                tags: ["important", "urgent"]
+        <style>
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+        </style>
+
+        <script>
+            // Speech Recognition Setup
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            const speechButton = document.getElementById('speechButton');
+            const micIcon = document.getElementById('micIcon');
+            const memoContent = document.getElementById('memoContent');
+            let isListening = false;
+
+            speechButton.addEventListener('click', () => {
+                if (!isListening) {
+                    // Start listening
+                    recognition.start();
+                    isListening = true;
+                    micIcon.style.color = '#dc3545'; // Red color when active
+                    micIcon.style.animation = 'pulse 1.5s infinite';
+                } else {
+                    // Stop listening
+                    recognition.stop();
+                    isListening = false;
+                    micIcon.style.color = '#6c757d';
+                    micIcon.style.animation = 'none';
+                }
+            });
+
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0])
+                    .map(result => result.transcript)
+                    .join('');
+                
+                memoContent.value = transcript;
             };
 
-            // Convert the metadata object to a JSON string and set it to the hidden input
-            document.getElementById('metadataField').value = JSON.stringify(metadata);
-        </script> --}}
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                micIcon.style.color = '#6c757d';
+                micIcon.style.animation = 'none';
+            };
+        </script>
     </div>
 @endsection
