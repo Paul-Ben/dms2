@@ -106,7 +106,7 @@ class RegisteredUserController extends Controller
             'company_name' => 'required_if:account_type,corporate|max:255',
             'rc_number' => 'required_if:account_type,corporate|max:255',
             'company_address' => 'required_if:account_type,corporate|max:255',
-            'g-recaptcha-response' => 'recaptcha',
+            'g-recaptcha-response' => 'required|captcha',
             'region' => 'required|in:nigeria,international',
             'state' => 'nullable|required_if:region,nigeria',
             'lga' => 'nullable|required_if:region,nigeria',

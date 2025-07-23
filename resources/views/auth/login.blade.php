@@ -36,6 +36,7 @@
                         @if ($errors->any())
                             <div id="lockout-message" class="alert alert-danger mb-0 w-100">
                                 <span id="error-text">{{ $errors->first('email') }}</span>
+                                <span id="error-text">{{ $errors->first('g-recaptcha-response') }}</span>
                                 @if ($lockoutSeconds)
                                     <div>
                                         Try again in <span id="countdown">{{ $lockoutSeconds }}</span> seconds.
@@ -96,7 +97,7 @@
                             placeholder="Enter your password" autocomplete="current-password" required>
                     </div> --}}
                         <div class="m-2 text-center">
-                            {!! htmlFormSnippet() !!}
+                            {!! NoCaptcha::display() !!}
 
                             @if ($errors->has('g-recaptcha-response'))
                                 <div>

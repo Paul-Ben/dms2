@@ -1,16 +1,19 @@
 @extends('layouts.logandregister')
 @section('content')
-   
+
     <div class="container text-center d-none d-sm-block">
         <div class="row no-wrap">
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/hero_image1.png')}}" alt="" style="border-radius: 1em;" width="220"></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/hero_image1.png') }}" alt=""
+                        style="border-radius: 1em;" width="220"></div>
             </div>
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/landing_image_2.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/landing_image_2.jpg') }}" alt=""
+                        style="border-radius: 1em;" width="220"></div>
             </div>
             <div class="col-4">
-                <div class="p-3 "><img src="{{ asset('landing/images/landing_image1.jpg')}}" alt="" style="border-radius: 1em;" width="220"></div>
+                <div class="p-3 "><img src="{{ asset('landing/images/landing_image1.jpg') }}" alt=""
+                        style="border-radius: 1em;" width="220"></div>
             </div>
         </div>
     </div>
@@ -25,6 +28,15 @@
                     <h2 class="mb-4 text-center"><span style="color: #0C4F24;">Register</span></h2>
                     <p class="sub-title py-3 text-center">Benue State Government Electronic Document Management System</p>
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
@@ -55,12 +67,13 @@
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="form-floating mb-4">
-                                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required name="password">
+                                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                                        required name="password">
                                     <label for="floatingPassword">Password</label>
-                                
+
                                     <!-- Eye icon inside input -->
-                                    <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3" 
-                                       id="toggleFloatingPassword" style="cursor: pointer;"></i>
+                                    <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                                        id="toggleFloatingPassword" style="cursor: pointer;"></i>
                                     {{-- <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
                                         required name="password">
 
@@ -77,8 +90,8 @@
                                         placeholder="Confirm Password" required name="password_confirmation">
                                     <label for="floatingConfirmPassword">Confirm Password</label>
                                     <!-- Eye icon inside input -->
-                                    <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3" 
-                                       id="toggleFloatingPassword2" style="cursor: pointer;"></i>
+                                    <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                                        id="toggleFloatingPassword2" style="cursor: pointer;"></i>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +103,7 @@
                                     <input type="tel" class="form-control" id="floatingPhone" placeholder="+1234567890"
                                         name="phone_number" style="padding: 16px;" value="{{ old('phone_number') }}"
                                         required pattern="^\+?[0-9\s\-()]{6,}$">
-                                        <label for="floatingPhone">Phone Number</label>
+                                    <label for="floatingPhone">Phone Number</label>
                                     <input type="text" name="default_role" value="User " hidden>
                                     <input type="text" name="designation" value="User " hidden>
                                     <small id="phoneError" class="text-danger" style="display: none;">Invalid phone number
@@ -101,8 +114,8 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingNIN"
-                                    placeholder="Type your 11-digit NIN" name="nin_number" value="{{ old('nin_number') }}"
-                                        required pattern="[0-9]{11}" maxlength="11">
+                                        placeholder="Type your 11-digit NIN" name="nin_number"
+                                        value="{{ old('nin_number') }}" required pattern="[0-9]{11}" maxlength="11">
                                     <label for="floatingNIN">NIN: Type your 11-digit NIN</label>
                                 </div>
                             </div>
@@ -230,7 +243,7 @@
                         <!-- International Fields -->
 
                         <div class="m-2 d-flex justify-content-center">
-                            {!! htmlFormSnippet() !!}
+                            {!! NoCaptcha::display() !!}
 
                             @if ($errors->has('g-recaptcha-response'))
                                 <div>
@@ -246,13 +259,12 @@
 
                         <p class="text-center mb-0">Already have an Account? <a href="{{ route('login') }}">Sign In</a>
                         </p>
-                        {{-- <p class="text-center"><small class="text-center text-muted">BENGEDMS Powered by BDIC</small></p> --}}
                     </form>
                     <div class="d-flex justify-content-center mt-2">
-                         <p class="text-center sub-title">BENGEDMS, Powered by </p><a href="https://bdic.ng/" target="__blank"><img
-                    src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
+                        <p class="text-center sub-title">BENGEDMS, Powered by </p><a href="https://bdic.ng/"
+                            target="__blank"><img src="{{ asset('landing/images/BDIC logo 1 1.svg') }}"></a>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -439,24 +451,24 @@
         // Password field toggle
         const togglePassword = document.getElementById('toggleFloatingPassword');
         const passwordInput = document.getElementById('floatingPassword');
-    
-        togglePassword.addEventListener('click', function () {
+
+        togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.classList.toggle('bi-eye');
             this.classList.toggle('bi-eye-slash');
         });
-    
+
         // Confirm Password field toggle
         const toggleConfirmPassword = document.getElementById('toggleFloatingPassword2');
         const confirmPasswordInput = document.getElementById('floatingConfirmPassword');
-    
-        toggleConfirmPassword.addEventListener('click', function () {
+
+        toggleConfirmPassword.addEventListener('click', function() {
             const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             confirmPasswordInput.setAttribute('type', type);
             this.classList.toggle('bi-eye');
             this.classList.toggle('bi-eye-slash');
         });
     </script>
-    
+
 @endsection

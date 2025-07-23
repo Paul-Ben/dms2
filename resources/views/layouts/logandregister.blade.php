@@ -317,7 +317,7 @@
     </style>
 
     <!---- ReCaptcha ------>
-    {!! htmlScriptTagJsApi() !!}
+    {!! NoCaptcha::renderJs() !!}
 
 </head>
 
