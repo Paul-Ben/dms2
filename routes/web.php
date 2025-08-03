@@ -148,7 +148,7 @@ Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->nam
     Route::get('/document/memo/{memo}/view', [SuperAdminActions::class, 'get_memo'])->name('memo.view');
     Route::get('/generate-letter/{memo}/memo', [SuperAdminActions::class, 'generateMemoPdf'])->name('memo.generate');
     Route::get('/document/memo/template', [SuperAdminActions::class, 'createMemoTemplateForm'])->name('memo.template');
-    Route::post('/document/memo/template', [SuperAdminActions::class, 'storeMemoTemplate'])->name('memo.template.store');
+    Route::post('/document/memo/template', action: [SuperAdminActions::class, 'storeMemoTemplate'])->name('memo.template.store');
     Route::get('/document/memo/template/{template}/edit', [SuperAdminActions::class, 'editMemoTemplateForm'])->name('memo.template.edit');
     Route::get('/document/memo/{memo}/send', [SuperAdminActions::class, 'getSendMemoform'])->name('memo.send');
     Route::get('/document/memo/{memo}/sendout', [SuperAdminActions::class, 'getSendMemoExternalForm'])->name('memo.sendout');

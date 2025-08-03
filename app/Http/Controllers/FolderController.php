@@ -434,7 +434,7 @@ class FolderController extends Controller
         $userdetails = UserDetails::where('user_id', $authUser->id)->first();
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
 
-        if (!in_array($authUser->default_role, ['Secretary', 'Admin', 'IT Admin'])) {
+        if (!in_array($authUser->default_role, ['Secretary', 'Admin','Staff', 'IT Admin', 'superadmin'])) {
             return view('errors.404', compact('authUser', 'userTenant'));
         }
 

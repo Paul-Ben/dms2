@@ -287,7 +287,7 @@
         <div class="bg-light rounded p-3 p-md-4">
             <div class="email-container">
                 <div class="toolbar">
-                    
+
                     {{-- <a href="{{ route('document.reply', $document_received->document_id) }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">
@@ -343,16 +343,15 @@
                             </button>
                         </a>
                     @endif --}}
-                    
-                    <a href="{{ route('folders.select', $document->id) }}" 
-                        class="text-decoration-none"
+
+                    <a href="{{ route('folders.select', $document->id) }}" class="text-decoration-none"
                         title="Add to folder">
-                         <button class="btn">
+                        <button class="btn">
                             <i class="fas fa-folder-plus"></i>
                             Add to Folder
-                         </button>
-                     </a>
-                    
+                        </button>
+                    </a>
+
                     <a href="{{ url()->previous() }}" class="text-decoration-none">
                         <button class="btn">
                             <svg viewBox="0 0 24 24">
@@ -366,15 +365,29 @@
                 <!-- Document Preview Section -->
                 <div class="attachment mt-3">
                     <div class="file-details">
-                        <strong>Document:</strong> {{ e($document->docuent_number) }} |
-                        {{ $document->file_path }}
+                        <strong>Document:</strong> {{ e($document->docuent_number) }} 
                         <div id="previewContainer" class="mt-3"
                             style="display: flex; flex-direction: column; height: 90vh; min-height: 300px;">
                             {{-- <iframe id="pdfPreview" style="width: 100%; height: 800px; min-height: 300px;" frameborder="0"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
-                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                            {{-- <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document->file_path) }}">
-                            </iframe>
+                            </iframe> --}}
+                            {{-- <iframe src="{{ $document->file_path }}" style="width: 100%; height: 600px;" frameborder="0"></iframe> --}}
+                            @php
+                                // Determine if the stored file_path is a full URL or a relative path
+                                $fileUrl = $document->file_path;
+
+                                // Basic check if the file_path starts with http:// or https:// --> means full URL (e.g. Cloudinary)
+                                if (!preg_match('/^https?:\/\//', $fileUrl)) {
+                                    // If relative path assumed, generate full URL via asset helper
+                                    $fileUrl = asset('storage/' . $fileUrl);
+                                }
+                            @endphp
+
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                src="{{ $fileUrl }}"></iframe>
+
                         </div>
                     </div>
                 </div>
@@ -410,7 +423,7 @@
                     </div>
                 </div> --}}
             </div>
-           
+
             <!-- Previous Minuting Timeline Section -->
             {{-- <div class="container py-3 py-md-4">
                 <div class="row justify-content-center">

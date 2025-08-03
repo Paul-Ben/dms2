@@ -372,9 +372,22 @@
                             style="display: flex; flex-direction: column; height: 90vh; min-height: 300px;">
                             {{-- <iframe id="pdfPreview" style="width: 100%; height: 800px; min-height: 300px;" frameborder="0"
                                 src="{{ asset('storage/' . $document_received->document->file_path) }}"></iframe> --}}
-                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                            {{-- <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
                                 src="{{ asset('storage/' . $document->file_path) }}">
-                            </iframe>
+                            </iframe> --}}
+                             @php
+                                // Determine if the stored file_path is a full URL or a relative path
+                                $fileUrl = $document->file_path;
+
+                                // Basic check if the file_path starts with http:// or https:// --> means full URL (e.g. Cloudinary)
+                                if (!preg_match('/^https?:\/\//', $fileUrl)) {
+                                    // If relative path assumed, generate full URL via asset helper
+                                    $fileUrl = asset('storage/' . $fileUrl);
+                                }
+                            @endphp
+
+                            <iframe id="pdfPreview" style="flex: 1 1 auto; height: 1000px; width: 100%; border: none;"
+                                src="{{ $fileUrl }}"></iframe>
                         </div>
                     </div>
                 </div>

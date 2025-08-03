@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\DocumentStorage;
+use App\Helpers\CloudinaryHelper;
 use App\Helpers\FileService;
 use App\Helpers\SendMailHelper;
 use App\Helpers\StampHelper;
@@ -1069,12 +1070,28 @@ class SuperAdminActions extends Controller
 
         if ($request->hasFile('file_path')) {
             $uploadedBy = $request->input('uploaded_by');
+            $tenantId = Auth::user()->userDetail->tenant_id;
             $filePath = $request->file('file_path');
             $pdf = new Fpdi();
             $pageCount = $pdf->setSourceFile($filePath->getPathname());
-            $filename = time() . '_' . $filePath->getClientOriginalName();
-            $file_path = $filePath->storeAs('documents/users/' . $uploadedBy, $filename, 'public');
-            $file = $request->merge(['file_path' => $filename]);
+            // $filename = time() . '_' . $filePath->getClientOriginalName();
+            // $file_path = $filePath->storeAs('documents/users/' . $uploadedBy, $filename, 'public');
+            // $file = $request->merge(['file_path' => $filename]);
+
+            try {
+                $cloudinary = new CloudinaryHelper();
+                $folder = 'documents/' . $tenantId . '/' . $uploadedBy;
+
+                // Upload file - note that $file->getRealPath() or $file->getPathname() (both valid locally)
+                $result = $cloudinary->upload($filePath, $folder);
+            }catch (Exception $e) {
+                Log::error('Document upload error: ' . $e->getMessage());
+
+                return [
+                    'status' => 'error',
+                    'errors' => ['file_path' => $e->getMessage()]
+                ];
+            }
         }
 
         $reference = Str::random(12);
@@ -1085,7 +1102,8 @@ class SuperAdminActions extends Controller
         $documentHold = DocumentHold::create([
             'title' => $request->title,
             'docuent_number' => $request->document_number,
-            'file_path' => 'documents/users/' . $uploadedBy . '/' . $filename,
+            // 'file_path' => 'documents/users/' . $uploadedBy . '/' . $filename,
+            'file_path' => $result['secure_url'],
             'uploaded_by' => Auth::user()->id,
             'status' => $request->status ?? 'pending',
             'description' => $request->description,
@@ -1123,7 +1141,7 @@ class SuperAdminActions extends Controller
             ];
 
             return redirect()->back()->with($notification);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             report($e);
             Log::error('Error initializing payment gateway: ' . $e->getMessage());
             $notification = [
@@ -1322,18 +1340,19 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $received)->first();
-
+            
             return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
-
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->orderBy('updated_at', 'desc')->get();
-
+           
             return view('admin.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
+           
         }
         if (Auth::user()->default_role === 'Secretary') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document', 'attachments'])->where('id', $received)->first();
+           
             $document_locations = FileMovement::with(['document', 'sender.userDetail', 'recipient.userDetail.tenant_department'])->where('document_id', $document_received->document_id)->orderBy('updated_at', 'desc')->get();
 
             return view('secretary.documents.show', compact('document_received', 'document_locations', 'authUser', 'userTenant'));
@@ -1361,12 +1380,11 @@ class SuperAdminActions extends Controller
         $userTenant = Tenant::where('id', $userdetails->tenant_id)->first();
         if (Auth::user()->default_role === 'superadmin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
-
+            
             return view('superadmin.documents.show', compact('document_received', 'authUser', 'userTenant'));
         }
         if (Auth::user()->default_role === 'Admin') {
             $document_received =  FileMovement::with(['sender', 'recipient', 'document'])->where('id', $sent)->first();
-            // dd($document_received);
 
             return view('admin.documents.show', compact('document_received', 'authUser', 'userTenant', 'recipients', 'notification'));
         }

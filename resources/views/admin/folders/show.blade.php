@@ -277,7 +277,7 @@
                                                 <div>
                                                     <h5 class="mb-1">
                                                         <i class="fas fa-file-alt text-primary mr-2"></i>
-                                                        <a href="{{ route('document.view', $document) }}" class="text-decoration-none">
+                                                        <a href="{{ route('document.myview', $document) }}" class="text-decoration-none">
                                                             {{ $document->title }}
                                                         </a>
                                                     </h5>
@@ -293,7 +293,7 @@
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="{{ route('document.view', $document) }}">
+                                                        <a class="dropdown-item" href="{{ route('document.myview', $document) }}">
                                                             <i class="fas fa-eye mr-2"></i> View
                                                         </a>
                                                         <a class="dropdown-item" href="{{ route('folders.remove-document', ['folder' => $folder->id, 'document' => $document->id]) }}" 

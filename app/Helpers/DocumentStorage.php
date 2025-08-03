@@ -18,6 +18,7 @@ use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\CloudinaryHelper;
 use Illuminate\Support\Facades\Validator;
 use setasign\Fpdf\Fpdf;
 use setasign\Fpdi\Fpdi;
@@ -74,26 +75,45 @@ class DocumentStorage
             'metadata' => 'nullable|json',
         ]);
 
-        if ($data->hasFile('file_path')) {
-            $filePath = $data->file('file_path');
-            $filename = time() . '_' . $filePath->getClientOriginalName();
-            // $filePath->move(public_path('documents/'), $filename); 
-            $filePath->storeAs('documents' . '/' . $tenantId . '/' . $uploadedBy, $filename, 'public');
-            $data->file_path = $filename; // Update the file path in the data
+        // $fileUrl = null;
+        // $publicId = null;
+
+        // if ($data->hasFile('file_path')) {
+        //     $file = $data->file('file_path');
+        //     $cloudinary = new CloudinaryHelper();
+        //     $folder = 'documents/' . $tenantId . '/' . $uploadedBy;
+        //     $result = $cloudinary->upload($file, $folder);
+
+        //     $fileUrl = $result['secure_url'];
+        //     $publicId = $result['public_id'];
+        // }
+
+        try {
+            $cloudinary = new CloudinaryHelper();
+            $folder = 'documents/' . $tenantId . '/' . $uploadedBy;
+            $result = $cloudinary->upload($data->file('file_path'), $folder);
+
+
+            // Create the document record
+            Document::create([
+                'title' => $data->title,
+                'docuent_number' => $data->document_number,
+                // 'file_path' => $data->file_path,
+                // 'file_path' => 'documents' . '/' . $tenantId . '/' . $uploadedBy . '/' . $filename,
+                'file_path' => $result['secure_url'],
+                'uploaded_by' => $authUser->id,
+                'status' => $data->status ?? 'pending',
+                'description' => $data->description,
+                // 'metadata' => json_encode($data->metadata),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Document upload error: ' . $e->getMessage());
+
+            return [
+                'status' => 'error',
+                'errors' => ['file_path' => $e->getMessage()]
+            ];
         }
-
-        // Create the document record
-        Document::create([
-            'title' => $data->title,
-            'docuent_number' => $data->document_number,
-            // 'file_path' => $data->file_path,
-            'file_path' => 'documents' . '/' . $tenantId . '/' . $uploadedBy . '/' . $filename,
-            'uploaded_by' => $authUser->id,
-            'status' => $data->status ?? 'pending',
-            'description' => $data->description,
-            // 'metadata' => json_encode($data->metadata),
-        ]);
-
         // Log the activity
         Activity::create([
             'action' => 'You uploaded a document',
@@ -140,18 +160,32 @@ class DocumentStorage
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        if ($data->hasFile('attachment')) {
-            // Get the uploaded file
-            $file = $data->file('attachment');
+        // if ($data->hasFile('attachment')) {
+        //     // Get the uploaded file
+        //     $file = $data->file('attachment');
 
-            // Define the path where you want to store the file
-            $destinationPath = public_path('documents/attachments');
+        //     // Define the path where you want to store the file
+        //     $destinationPath = public_path('documents/attachments');
 
-            // Generate a unique filename (optional)
-            $fileName = time() . '_' . $file->getClientOriginalName();
+        //     // Generate a unique filename (optional)
+        //     $fileName = time() . '_' . $file->getClientOriginalName();
 
-            // Move the file to the public attachments directory
-            $file->move($destinationPath, $fileName);
+        //     // Move the file to the public attachments directory
+        //     $file->move($destinationPath, $fileName);
+        // }
+        if($data->hasFile('attachment')){
+            try{
+                $cloudinary = new CloudinaryHelper();
+                $folder = 'attachments';
+                $fileName = $cloudinary->upload($data->file('attachment'), $folder);
+                $data->attachment = $fileName;
+            }catch(\Exception $e){
+                Log::error($e);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to upload file to Cloudinary. Please try again later.',
+                ], 500);
+            }
         }
 
         foreach ($data->recipient_id as $recipient) {
@@ -164,7 +198,7 @@ class DocumentStorage
             if ($data->hasFile('attachment')) {
                 Attachments::create([
                     'file_movement_id' => $document_action->id,
-                    'attachment' => $fileName,
+                    'attachment' => $fileName['secure_url'],
                     'document_id' => $data->document_id,
                 ]);
             }
@@ -220,7 +254,7 @@ class DocumentStorage
     //             ], [
     //                 'message' => $data->message,
     //             ]);
-                
+
     //             if ($fileName) {
     //                 Attachments::firstOrCreate([
     //                     'file_movement_id' => $document_action->id,
