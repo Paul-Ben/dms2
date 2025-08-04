@@ -176,7 +176,7 @@ class DocumentStorage
         if($data->hasFile('attachment')){
             try{
                 $cloudinary = new CloudinaryHelper();
-                $folder = 'attachments';
+                $folder = 'edms_attachments';
                 $fileName = $cloudinary->upload($data->file('attachment'), $folder);
                 $data->attachment = $fileName;
             }catch(\Exception $e){
