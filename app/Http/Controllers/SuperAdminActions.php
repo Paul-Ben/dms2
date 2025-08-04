@@ -1080,7 +1080,7 @@ class SuperAdminActions extends Controller
 
             try {
                 $cloudinary = new CloudinaryHelper();
-                $folder = 'documents/' . $tenantId . '/' . $uploadedBy;
+                $folder = 'edms_documents/' . $tenantId . '/' . $uploadedBy;
 
                 // Upload file - note that $file->getRealPath() or $file->getPathname() (both valid locally)
                 $result = $cloudinary->upload($filePath, $folder);

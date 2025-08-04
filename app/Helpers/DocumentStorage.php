@@ -90,7 +90,7 @@ class DocumentStorage
 
         try {
             $cloudinary = new CloudinaryHelper();
-            $folder = 'documents/' . $tenantId . '/' . $uploadedBy;
+            $folder = 'edms_documents/' . $tenantId . '/' . $uploadedBy;
             $result = $cloudinary->upload($data->file('file_path'), $folder);
 
 
