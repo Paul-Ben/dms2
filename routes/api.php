@@ -3,6 +3,10 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardAPIController;
 use App\Http\Controllers\Api\SuperAdminAPIController;
+use App\Http\Controllers\Api\ProfileAPIController;
+use App\Http\Controllers\Api\FolderAPIController;
+use App\Http\Controllers\Api\ContactAPIController;
+use App\Http\Controllers\Api\FileChargeAPIController;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,9 +47,22 @@ Route::get('/agencies', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Contact Form Routes (Public)
+Route::post('/contact', [ContactAPIController::class, 'submit']);
+Route::get('/contact/info', [ContactAPIController::class, 'getContactInfo']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [DashboardAPIController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    
+    // Session Check
+    Route::get('/session/check', [SuperAdminAPIController::class, 'checkSession']);
+    
+    // Profile Management Routes
+    Route::get('/profile', [ProfileAPIController::class, 'show']);
+    Route::put('/profile', [ProfileAPIController::class, 'update']);
+    Route::post('/profile/change-password', [ProfileAPIController::class, 'changePassword']);
+    Route::post('/profile/upload-avatar', [ProfileAPIController::class, 'uploadAvatar']);
 });
  
 Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
@@ -109,6 +126,49 @@ Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
     Route::post('/document/memo/{memo}/send', [SuperAdminAPIController::class, 'sendMemo']);
     Route::get('/document/sent/memo', [SuperAdminAPIController::class, 'sentMemos']);
     Route::get('/document/received/memo', [SuperAdminAPIController::class, 'receivedMemos']);
+
+    /** Role Management Routes */
+    Route::get('/roles', [SuperAdminAPIController::class, 'roleIndex']);
+    Route::post('/roles', [SuperAdminAPIController::class, 'roleStore']);
+    Route::get('/roles/{role}/edit', [SuperAdminAPIController::class, 'roleEdit']);
+    Route::put('/roles/{role}', [SuperAdminAPIController::class, 'roleUpdate']);
+    Route::delete('/roles/{role}', [SuperAdminAPIController::class, 'roleDelete']);
+
+    /** Designation Management Routes */
+    Route::get('/designations', [SuperAdminAPIController::class, 'designationIndex']);
+    Route::post('/designations', [SuperAdminAPIController::class, 'designationStore']);
+    Route::get('/designations/{designation}/edit', [SuperAdminAPIController::class, 'designationEdit']);
+    Route::put('/designations/{designation}', [SuperAdminAPIController::class, 'designationUpdate']);
+    Route::delete('/designations/{designation}', [SuperAdminAPIController::class, 'designationDelete']);
+
+    /** Search Routes */
+    Route::get('/search/users', [SuperAdminAPIController::class, 'searchUsers']);
+    Route::get('/search/organisations', [SuperAdminAPIController::class, 'searchOrganisations']);
+    Route::get('/search/departments', [SuperAdminAPIController::class, 'searchDepartments']);
+    Route::get('/search/documents', [SuperAdminAPIController::class, 'searchDocuments']);
+
+    /** Visitor Activities Routes */
+    Route::get('/visitor-activities', [SuperAdminAPIController::class, 'visitorActivitiesIndex']);
+    Route::get('/visitor-activities/{visitorActivity}', [SuperAdminAPIController::class, 'visitorActivitiesShow']);
+
+    /** File Charge Management Routes */
+    Route::apiResource('file-charges', FileChargeAPIController::class);
+    Route::get('/file-charges/active/list', [FileChargeAPIController::class, 'getActiveCharges']);
+    Route::patch('/file-charges/{fileCharge}/toggle-status', [FileChargeAPIController::class, 'toggleStatus']);
+
+    /** Organisation Department View */
+    Route::get('/organisations/{organisationId}/departments', [SuperAdminAPIController::class, 'getOrganisationDepartments']);
+
+    /** Folder Management Routes */
+    Route::get('/folders', [FolderAPIController::class, 'index'])->name('api.folders.list');
+    Route::post('/folders', [FolderAPIController::class, 'store'])->name('api.folders.create');
+    Route::get('/folders/{folder}', [FolderAPIController::class, 'show'])->name('api.folders.view');
+    Route::put('/folders/{folder}', [FolderAPIController::class, 'update'])->name('api.folders.edit');
+    Route::delete('/folders/{folder}', [FolderAPIController::class, 'destroy'])->name('api.folders.delete');
+    Route::post('/folders/{folder}/share', [FolderAPIController::class, 'share'])->name('api.folders.share');
+    Route::delete('/folders/{folder}/unshare', [FolderAPIController::class, 'unshare'])->name('api.folders.unshare');
+    Route::post('/folders/{folder}/documents', [FolderAPIController::class, 'addDocument'])->name('api.folders.attach-document');
+    Route::delete('/folders/{folder}/documents/{document}', [FolderAPIController::class, 'removeDocument'])->name('api.folders.detach-document');
 });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
