@@ -8,6 +8,10 @@
 /public/logos
 /storage/*.key
 /vendor
+/lang
+API_DOCUMENTATION.md
+API_ROUTES_DOCUMENTATION.md
+test_document.pdf
 .env
 .env.backup
 .env.production
