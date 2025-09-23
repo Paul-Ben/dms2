@@ -1372,4 +1372,294 @@ class SuperAdminAPIController extends Controller
         }
         return response()->json(['error' => 'Unauthorized'], 403);
     }
+
+    // Role Management Endpoints
+
+    public function roleIndex()
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $roles = Role::orderBy('name')->paginate(10);
+        return response()->json(['roles' => $roles], 200);
+    }
+
+    public function roleStore(Request $request)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+            'guard_name' => 'string|max:255'
+        ]);
+
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => $request->guard_name ?? 'web'
+        ]);
+
+        return response()->json(['message' => 'Role created successfully', 'role' => $role], 201);
+    }
+
+    public function roleEdit(Role $role)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(['role' => $role], 200);
+    }
+
+    public function roleUpdate(Request $request, Role $role)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+        ]);
+
+        $role->name = $request->name;
+        $role->save();
+
+        return response()->json(['message' => 'Role updated successfully', 'role' => $role], 200);
+    }
+
+    public function roleDelete(Role $role)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Prevent deletion of default roles
+        if (in_array($role->name, ['superadmin', 'Admin', 'Staff', 'User', 'Secretary'])) {
+            return response()->json(['error' => 'Cannot delete default system roles'], 422);
+        }
+
+        $role->delete();
+        return response()->json(['message' => 'Role deleted successfully'], 200);
+    }
+
+    // Designation Management Endpoints
+
+    public function designationIndex()
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $designations = Designation::orderBy('name')->paginate(10);
+        return response()->json(['designations' => $designations], 200);
+    }
+
+    public function designationStore(Request $request)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        $designation = Designation::create($request->all());
+        return response()->json(['message' => 'Designation created successfully', 'designation' => $designation], 201);
+    }
+
+    public function designationEdit(Designation $designation)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(['designation' => $designation], 200);
+    }
+
+    public function designationUpdate(Request $request, Designation $designation)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        $designation->name = $request->name;
+        $designation->description = $request->description;
+        $designation->save();
+
+        return response()->json(['message' => 'Designation updated successfully', 'designation' => $designation], 200);
+    }
+
+    public function designationDelete(Designation $designation)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $designation->delete();
+        return response()->json(['message' => 'Designation deleted successfully'], 200);
+    }
+
+    // Search Endpoints
+
+    public function searchUsers(Request $request)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $query = $request->get('query');
+        if (!$query) {
+            return response()->json(['users' => []], 200);
+        }
+
+        $users = User::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('email', 'LIKE', "%{$query}%")
+            ->with('userDetail')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['users' => $users], 200);
+    }
+
+    public function searchOrganisations(Request $request)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $query = $request->get('query');
+        if (!$query) {
+            return response()->json(['organisations' => []], 200);
+        }
+
+        $organisations = Tenant::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('category', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->get();
+
+        return response()->json(['organisations' => $organisations], 200);
+    }
+
+    public function searchDepartments(Request $request)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $query = $request->get('query');
+        if (!$query) {
+            return response()->json(['departments' => []], 200);
+        }
+
+        $departments = TenantDepartment::where('name', 'LIKE', "%{$query}%")
+            ->with('tenant')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['departments' => $departments], 200);
+    }
+
+    public function searchDocuments(Request $request)
+    {
+        $authUser = Auth::user();
+        $query = $request->get('query');
+        
+        if (!$query) {
+            return response()->json(['documents' => []], 200);
+        }
+
+        $documents = Document::where('title', 'LIKE', "%{$query}%")
+            ->orWhere('docuent_number', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->with(['uploader'])
+            ->limit(10)
+            ->get();
+
+        return response()->json(['documents' => $documents], 200);
+    }
+
+    // Visitor Activities Management
+
+    public function visitorActivitiesIndex()
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $activities = \App\Models\VisitorActivity::orderBy('created_at', 'desc')->paginate(10);
+        return response()->json(['visitor_activities' => $activities], 200);
+    }
+
+    public function visitorActivitiesShow(\App\Models\VisitorActivity $visitorActivity)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(['visitor_activity' => $visitorActivity], 200);
+    }
+
+    // Session Check Endpoint
+
+    public function checkSession()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['authenticated' => false], 401);
+        }
+
+        return response()->json([
+            'authenticated' => true,
+            'user' => $user,
+            'role' => $user->default_role
+        ], 200);
+    }
+
+    // Organisation Department View
+
+    public function getOrganisationDepartments($organisationId)
+    {
+        $authUser = Auth::user();
+        if (!in_array($authUser->default_role, ['superadmin', 'Admin'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $organisation = Tenant::find($organisationId);
+        if (!$organisation) {
+            return response()->json(['error' => 'Organisation not found'], 404);
+        }
+
+        $departments = TenantDepartment::where('tenant_id', $organisationId)
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'organisation' => $organisation,
+            'departments' => $departments
+        ], 200);
+    }
 }
