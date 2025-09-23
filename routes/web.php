@@ -177,7 +177,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
     // Folder document management routes
     Route::get('/folders/select/{document}', [FolderController::class, 'selectFolder'])->name('folders.select');
-    Route::get('/folders/{folder}/add-documents', [FolderController::class, 'showAddDocuments'])->name('folders.add-documents');
+    Route::get('/folders/{folder}/add-documents', [FolderController::class, 'showAddDocuments'])->name('folders.show-add-documents');
     Route::post('/folders/{folder}/add-documents', [FolderController::class, 'addDocuments'])->name('folders.add-documents');
     Route::get('/folders/{folder}/documents/{document}', [FolderController::class, 'removeDocument'])->name('folders.remove-document');
 
