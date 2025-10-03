@@ -51,7 +51,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/contact', [ContactAPIController::class, 'submit']);
 Route::get('/contact/info', [ContactAPIController::class, 'getContactInfo']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum,web', 'user.active'])->group(function () {
     Route::get('/dashboard', [DashboardAPIController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
@@ -65,14 +65,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/profile/upload-avatar', [ProfileAPIController::class, 'uploadAvatar']);
 });
  
-Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
+Route::prefix('dashboard')->middleware(['auth:sanctum,web', 'user.active'])->group(function () {
     /** User Management Routes */
     Route::get('/users', [SuperAdminAPIController::class, 'userIndex']);
     Route::get('/users/create', [SuperAdminAPIController::class, 'userCreate']);
     Route::post('/users/create', [SuperAdminAPIController::class, 'userStore']);
     Route::get('/users/{user}/edit', [SuperAdminAPIController::class, 'userEdit']);
     Route::put('/users/{user}/edit', [SuperAdminAPIController::class, 'userUpdate']);
+    Route::patch('/users/{user}/deactivate', [SuperAdminAPIController::class, 'deactivateUser']);
+    Route::patch('/users/{user}/activate', [SuperAdminAPIController::class, 'activateUser']);
     Route::get('/get-departments/{organisationId}', [SuperAdminAPIController::class, 'getDepartments']);
+
+    /** SuperAdmin User Management Routes */
+    Route::patch('/superadmin/users/{user}/deactivate', [SuperAdminAPIController::class, 'deactivateUser']);
+    Route::patch('/superadmin/users/{user}/activate', [SuperAdminAPIController::class, 'activateUser']);
 
     /** Organisation Management Routes */
     Route::get('/superadmin/organisations', [SuperAdminAPIController::class, 'orgIndex']);
