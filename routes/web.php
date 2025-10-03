@@ -45,17 +45,17 @@ Route::get('/session/check', function () {
     return response()->json(['authenticated' => auth()->check()]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'user.active'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user.active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('dashboard')->middleware('auth')->group(function () {
+Route::prefix('dashboard')->middleware(['auth', 'user.active'])->group(function () {
     /**User managem related links */
     Route::get('/users', [SuperAdminActions::class, 'user_index'])->name('users.index');
     Route::get('/users/create', [SuperAdminActions::class, 'user_create'])->name('user.create');
@@ -64,6 +64,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/users/{user}/view', [SuperAdminActions::class, 'user_show'])->name('user.view');
     Route::put('/users/{user}/edit', [SuperAdminActions::class, 'user_update'])->name('user.update');
     Route::delete('/users/{user}', [SuperAdminActions::class, 'user_destroy'])->name('user.delete');
+    Route::patch('/users/{user}/deactivate', [SuperAdminActions::class, 'user_deactivate'])->name('user.deactivate');
+    Route::patch('/users/{user}/activate', [SuperAdminActions::class, 'user_activate'])->name('user.activate');
 Route::get('/users/search', [SearchController::class, 'searchUser'])->name('search.user');
     Route::get('/get-departments/{organisationId}', [SuperAdminActions::class, 'getDepartments']);
     Route::get('/upload', [SuperAdminActions::class, 'showUserUploadForm'])->name('userUpload.form');
@@ -162,7 +164,7 @@ Route::get('/organisations/search', [SearchController::class, 'searchOrg'])->nam
 });
 
 // Folder Management Routes
-Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+Route::prefix('dashboard')->middleware(['auth', 'user.active'])->group(function () {
     // Additional folder management routes
     Route::post('/folders/{folder}/move', [FolderController::class, 'move'])->name('folders.move');
     Route::post('/folders/{folder}/share', [FolderController::class, 'share'])->name('folders.share');
