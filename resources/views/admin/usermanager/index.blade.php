@@ -68,6 +68,19 @@
                                         <div class="dropdown-menu">
                                             
                                             <a href="{{ route('user.edit', $user) }}" class="dropdown-item">Edit</a>
+                                            @if($user->user->is_active)
+                                                <form method="POST" action="{{ route('user.deactivate', $user->user->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to deactivate this user? They will not be able to log in until reactivated.')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="dropdown-item text-warning" style="border: none; background: none; text-align: left; width: 100%;">Deactivate</button>
+                                                </form>
+                                            @else
+                                                <form method="POST" action="{{ route('user.activate', $user->user->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to activate this user?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="dropdown-item text-success" style="border: none; background: none; text-align: left; width: 100%;">Activate</button>
+                                                </form>
+                                            @endif
                                             
                                         </div>
                                     </div>
@@ -106,5 +119,7 @@
                 }
             });
         });
+
+
     </script>
 @endsection
