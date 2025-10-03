@@ -61,7 +61,19 @@
                                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Details</a>
                                         <div class="dropdown-menu">
                                             <a href="{{route('user.edit', $user)}}" class="dropdown-item">Edit</a>
-                                            <a href="#" class="dropdown-item" style="background-color: rgb(239, 79, 79)">Delete</a>
+                                            @if($user->is_active)
+                                                <form method="POST" action="{{ route('user.deactivate', $user->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to deactivate this user? They will not be able to log in until reactivated.')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="dropdown-item text-warning" style="border: none; background: none; text-align: left; width: 100%;">Deactivate</button>
+                                                </form>
+                                            @else
+                                                <form method="POST" action="{{ route('user.activate', $user->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to activate this user?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="dropdown-item text-success" style="border: none; background: none; text-align: left; width: 100%;">Activate</button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
@@ -102,5 +114,7 @@
                 }
             });
         });
+
+
     </script>
 @endsection
