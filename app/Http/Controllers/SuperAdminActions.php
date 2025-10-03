@@ -422,6 +422,80 @@ class SuperAdminActions extends Controller
         return redirect()->route('user.index')->with('success', 'User  deleted successfully.');
     }
 
+    public function user_deactivate(User $user)
+    {
+        $authUser = Auth::user();
+        
+        // Check if user is superadmin or IT Admin 
+        if ($authUser->default_role !== 'superadmin' && $authUser->default_role !== 'IT Admin') {
+            return redirect()->back()->with([
+                'message' => 'Unauthorized action',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        // Prevent self-deactivation
+        if ($user->id === $authUser->id) {
+            return redirect()->back()->with([
+                'message' => 'You cannot deactivate your own account',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        try {
+            $user->update(['is_active' => false]);
+            
+            // Log the activity
+            Activity::create([
+                'action' => 'User Deactivated',
+                'user_id' => $authUser->id,
+            ]);
+
+            return redirect()->back()->with([
+                'message' => 'User deactivated successfully',
+                'alert-type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with([
+                'message' => 'Failed to deactivate user: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            ]);
+        }
+    }
+
+    public function user_activate(User $user)
+    {
+        $authUser = Auth::user();
+        
+        // Check if user is superadmin or IT Admin 
+        if ($authUser->default_role !== 'superadmin' && $authUser->default_role !== 'IT Admin') {
+            return redirect()->back()->with([
+                'message' => 'Unauthorized action',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        try {
+            $user->update(['is_active' => true]);
+            
+            // Log the activity
+            Activity::create([
+                'action' => 'User Activated',
+                'user_id' => $authUser->id,
+            ]);
+
+            return redirect()->back()->with([
+                'message' => 'User activated successfully',
+                'alert-type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with([
+                'message' => 'Failed to activate user: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            ]);
+        }
+    }
+
     public function showUserUploadForm()
     {
         $authUser = Auth::user();
