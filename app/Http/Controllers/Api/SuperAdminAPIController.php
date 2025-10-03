@@ -240,6 +240,52 @@ class SuperAdminAPIController extends Controller
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
 
+    public function deactivateUser(User $user)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($user->id === $authUser->id) {
+            return response()->json(['error' => 'You cannot deactivate your own account'], 400);
+        }
+
+        $user->update(['is_active' => false]);
+        
+        // Log the activity
+        Activity::create([
+            'action' => 'User Deactivated',
+            'user_id' => $authUser->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deactivated successfully'
+        ], 200);
+    }
+
+    public function activateUser(User $user)
+    {
+        $authUser = Auth::user();
+        if ($authUser->default_role !== 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $user->update(['is_active' => true]);
+        
+        // Log the activity
+        Activity::create([
+            'action' => 'User Activated',
+            'user_id' => $authUser->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User activated successfully'
+        ], 200);
+    }
+
     // Organisation Management Endpoints
 
     public function orgIndex()
