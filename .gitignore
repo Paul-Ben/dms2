@@ -8,6 +8,7 @@
 /public/logos
 /storage/*.key
 /vendor
+/dist
 /lang
 API_DOCUMENTATION.md
 API_ROUTES_DOCUMENTATION.md
@@ -28,3 +29,5 @@ yarn-error.log
 .DS_Store
 .DS_Store?
 *.DS_storage
+solutions.md 
+unused_files.md
